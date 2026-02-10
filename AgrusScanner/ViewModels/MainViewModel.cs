@@ -1,0 +1,310 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using AgrusScanner.Models;
+using AgrusScanner.Services;
+
+namespace AgrusScanner.ViewModels;
+
+public class MainViewModel : INotifyPropertyChanged
+{
+    private readonly PingScanner _pingScanner = new();
+    private readonly PortScanner _portScanner = new();
+    private readonly DnsResolver _dnsResolver = new();
+    private readonly AiServiceProber _aiProber = new();
+
+    private string _ipRange = DetectLocalSubnet();
+    private string _selectedPreset = "Quick (6 ports)";
+    private bool _isScanning;
+    private int _completedCount;
+    private int _totalCount;
+    private int _aliveCount;
+    private double _elapsedSeconds;
+    private CancellationTokenSource? _cts;
+
+    public MainViewModel()
+    {
+        StartCommand = new RelayCommand(async _ => await StartScanAsync(), _ => !IsScanning);
+        StopCommand = new RelayCommand(_ => StopScan(), _ => IsScanning);
+    }
+
+    private static string DetectLocalSubnet()
+    {
+        try
+        {
+            foreach (var iface in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (iface.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
+                    continue;
+                if (iface.NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Loopback)
+                    continue;
+
+                foreach (var addr in iface.GetIPProperties().UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
+                        continue;
+
+                    var ip = addr.Address.GetAddressBytes();
+                    var mask = addr.IPv4Mask.GetAddressBytes();
+
+                    // Calculate network address
+                    var network = new byte[4];
+                    for (int i = 0; i < 4; i++)
+                        network[i] = (byte)(ip[i] & mask[i]);
+
+                    // Count prefix bits
+                    int prefix = 0;
+                    foreach (var b in mask)
+                        for (int bit = 7; bit >= 0; bit--)
+                            if ((b & (1 << bit)) != 0) prefix++;
+                            else goto done;
+                    done:
+
+                    return $"{network[0]}.{network[1]}.{network[2]}.{network[3]}/{prefix}";
+                }
+            }
+        }
+        catch { }
+        return "192.168.1.0/24";
+    }
+
+    public ObservableCollection<HostResult> Results { get; } = [];
+
+    public string IpRange
+    {
+        get => _ipRange;
+        set { _ipRange = value; OnPropertyChanged(); }
+    }
+
+    public string SelectedPreset
+    {
+        get => _selectedPreset;
+        set { _selectedPreset = value; OnPropertyChanged(); }
+    }
+
+    public string[] Presets => ["Quick (6 ports)", "Common (22 ports)", "Extended (58 ports)", "AI Scan", "No port scan"];
+
+    public bool IsScanning
+    {
+        get => _isScanning;
+        set
+        {
+            _isScanning = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsNotScanning));
+            CommandManager.InvalidateRequerySuggested();
+        }
+    }
+
+    public bool IsNotScanning => !IsScanning;
+
+    public int CompletedCount
+    {
+        get => _completedCount;
+        set { _completedCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(ProgressText)); OnPropertyChanged(nameof(ProgressPercentage)); }
+    }
+
+    public int TotalCount
+    {
+        get => _totalCount;
+        set { _totalCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(ProgressText)); OnPropertyChanged(nameof(ProgressPercentage)); }
+    }
+
+    public int AliveCount
+    {
+        get => _aliveCount;
+        set { _aliveCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(ProgressText)); }
+    }
+
+    public double ElapsedSeconds
+    {
+        get => _elapsedSeconds;
+        set { _elapsedSeconds = value; OnPropertyChanged(); OnPropertyChanged(nameof(ProgressText)); }
+    }
+
+    public double ProgressPercentage => TotalCount > 0 ? (double)CompletedCount / TotalCount * 100 : 0;
+
+    public string ProgressText
+    {
+        get
+        {
+            if (!IsScanning && TotalCount == 0) return "Ready";
+            var pct = ProgressPercentage;
+            return $"{pct:F0}% | {CompletedCount}/{TotalCount} | {ElapsedSeconds:F1}s | {AliveCount} alive";
+        }
+    }
+
+    public ICommand StartCommand { get; }
+    public ICommand StopCommand { get; }
+
+    private int[] GetPortsForPreset() => SelectedPreset switch
+    {
+        "Quick (6 ports)" => ScanConfig.QuickPorts,
+        "Common (22 ports)" => ScanConfig.CommonPorts,
+        "Extended (58 ports)" => ScanConfig.ExtendedPorts,
+        "AI Scan" => ScanConfig.AiPorts,
+        _ => []
+    };
+
+    private bool IsAiScan => SelectedPreset == "AI Scan";
+
+    private async Task StartScanAsync()
+    {
+        List<IPAddress> addresses;
+        try
+        {
+            addresses = IpRangeParser.Parse(IpRange);
+        }
+        catch (ArgumentException ex)
+        {
+            System.Windows.MessageBox.Show(ex.Message, "Invalid IP Range",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+            return;
+        }
+
+        Results.Clear();
+        CompletedCount = 0;
+        TotalCount = addresses.Count;
+        AliveCount = 0;
+        ElapsedSeconds = 0;
+        IsScanning = true;
+
+        _cts = new CancellationTokenSource();
+        var ct = _cts.Token;
+        var ports = GetPortsForPreset();
+        var sw = Stopwatch.StartNew();
+
+        // Timer to update elapsed time
+        var timer = new System.Windows.Threading.DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(100)
+        };
+        timer.Tick += (_, _) => ElapsedSeconds = sw.Elapsed.TotalSeconds;
+        timer.Start();
+
+        try
+        {
+            var dispatcher = System.Windows.Application.Current.Dispatcher;
+
+            await _pingScanner.SweepAsync(addresses, 1000, 256, (ip, alive, ms) =>
+            {
+                dispatcher.Invoke(() =>
+                {
+                    var host = new HostResult
+                    {
+                        IpAddress = ip.ToString(),
+                        IsAlive = alive,
+                        PingMs = ms
+                    };
+                    Results.Add(host);
+                    CompletedCount++;
+                    if (alive) AliveCount++;
+
+                    // Queue port scan + DNS for alive hosts
+                    if (alive)
+                    {
+                        _ = ScanHostDetailsAsync(host, ip, ports, ct);
+                    }
+                });
+            }, ct);
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            timer.Stop();
+            ElapsedSeconds = sw.Elapsed.TotalSeconds;
+            IsScanning = false;
+            _cts?.Dispose();
+            _cts = null;
+        }
+    }
+
+    private async Task ScanHostDetailsAsync(HostResult host, IPAddress ip, int[] ports, CancellationToken ct)
+    {
+        var dispatcher = System.Windows.Application.Current.Dispatcher;
+        var runAiProbe = IsAiScan;
+
+        // DNS resolve
+        var hostname = await _dnsResolver.ResolveAsync(ip, ct);
+        if (!string.IsNullOrEmpty(hostname))
+        {
+            dispatcher.Invoke(() => host.Hostname = hostname);
+        }
+
+        // Port scan
+        if (ports.Length > 0)
+        {
+            var openPorts = await _portScanner.ScanAsync(ip, ports, 2000, 64, ct);
+            if (openPorts.Count > 0)
+            {
+                dispatcher.Invoke(() =>
+                {
+                    host.OpenPorts = new ObservableCollection<PortResult>(openPorts);
+                });
+
+                // AI service probing on open ports
+                if (runAiProbe)
+                {
+                    Models.AiServiceResult? bestResult = null;
+
+                    var probeTasks = openPorts.Select(async p =>
+                    {
+                        var result = await _aiProber.ProbeAsync(ip.ToString(), p.Port, ct);
+                        return result;
+                    });
+
+                    var results = await Task.WhenAll(probeTasks);
+
+                    foreach (var r in results)
+                    {
+                        if (r != null && (bestResult == null || r.Specificity > bestResult.Specificity))
+                            bestResult = r;
+                    }
+
+                    if (bestResult != null)
+                    {
+                        var display = string.IsNullOrEmpty(bestResult.Details)
+                            ? $"{bestResult.ServiceName} @ :{bestResult.Port}"
+                            : $"{bestResult.ServiceName} @ :{bestResult.Port} ({bestResult.Details})";
+
+                        dispatcher.Invoke(() => host.AiService = display);
+                    }
+                }
+            }
+        }
+    }
+
+    private void StopScan()
+    {
+        _cts?.Cancel();
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+public class RelayCommand : ICommand
+{
+    private readonly Action<object?> _execute;
+    private readonly Predicate<object?>? _canExecute;
+
+    public RelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null)
+    {
+        _execute = execute;
+        _canExecute = canExecute;
+    }
+
+    public bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
+    public void Execute(object? parameter) => _execute(parameter);
+
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
+}

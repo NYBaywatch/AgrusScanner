@@ -1,0 +1,210 @@
+<Window x:Class="AgrusScanner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AgrusScanner.ViewModels"
+        xmlns:local="clr-namespace:AgrusScanner"
+        Title="AGRUS SCANNER" Height="650" Width="950"
+        Icon="icon.ico"
+        MinHeight="400" MinWidth="700"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0"
+                Background="#1e1e1e"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+                Padding="12,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="IP Range:" Foreground="{StaticResource TextDimBrush}"
+                       VerticalAlignment="Center" Margin="0,0,4,0" />
+
+                <TextBox Grid.Column="1" Text="{Binding IpRange, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsNotScanning}"
+                         VerticalAlignment="Center" Margin="0,0,8,0" />
+
+                <Label Grid.Column="2" Content="Preset:" Foreground="{StaticResource TextDimBrush}"
+                       VerticalAlignment="Center" Margin="0,0,4,0" />
+
+                <ComboBox Grid.Column="3" ItemsSource="{Binding Presets}"
+                          SelectedItem="{Binding SelectedPreset}"
+                          IsEnabled="{Binding IsNotScanning}"
+                          VerticalAlignment="Center" Width="160" Margin="0,0,4,0" />
+
+                <!-- Help button with popup -->
+                <ToggleButton x:Name="HelpToggle" Grid.Column="4"
+                              Style="{StaticResource HelpToggleButton}"
+                              VerticalAlignment="Center" Margin="0,0,12,0" />
+                <Popup IsOpen="{Binding IsChecked, ElementName=HelpToggle}"
+                       PlacementTarget="{Binding ElementName=HelpToggle}"
+                       Placement="Bottom" StaysOpen="False"
+                       AllowsTransparency="True" PopupAnimation="Fade"
+                       HorizontalOffset="-120" VerticalOffset="4">
+                    <Border x:Name="HelpPopupContent" Background="#1a1a1a" BorderBrush="{StaticResource AccentDimBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="14,10"
+                            MaxWidth="320">
+                        <StackPanel>
+                            <TextBlock Text="SCAN PRESETS" FontWeight="Bold" FontSize="11"
+                                       Foreground="{StaticResource AccentBrush}" Margin="0,0,0,8" />
+
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
+                                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">Quick</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 6 common ports (HTTP, HTTPS, SSH, FTP, RDP, 8080)</Run>
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
+                                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">Common</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 22 well-known service ports (mail, DNS, SMB, DB, etc.)</Run>
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
+                                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">Extended</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 58 ports covering services, databases, and management</Run>
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
+                                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">AI Scan</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 14 ports for AI/ML services (Ollama, LM Studio, etc.)</Run>
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,8">
+                                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">No port scan</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - Ping sweep only, no port scanning</Run>
+                            </TextBlock>
+
+                            <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,8" />
+
+                            <TextBlock Text="CONTROLS" FontWeight="Bold" FontSize="11"
+                                       Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                IP Range: 192.168.1.1-254 or CIDR /24
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                Click START to scan, STOP to cancel.
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                Ctrl+= / Ctrl+- to zoom in/out
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                Ctrl+Mouse Wheel to zoom
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11">
+                                Ctrl+0 to reset zoom
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <Button Grid.Column="5" Content="START" Command="{Binding StartCommand}"
+                        Style="{StaticResource StartButton}"
+                        Visibility="{Binding IsNotScanning, Converter={StaticResource BoolToVis}}"
+                        VerticalAlignment="Center" Margin="0,0,4,0" />
+
+                <Button Grid.Column="6" Content="STOP" Command="{Binding StopCommand}"
+                        Style="{StaticResource StopButton}"
+                        Visibility="{Binding IsScanning, Converter={StaticResource BoolToVis}}"
+                        VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Progress bar -->
+        <ProgressBar Grid.Row="1" Value="{Binding ProgressPercentage, Mode=OneWay}"
+                     Maximum="100" Height="3" />
+
+        <!-- Results DataGrid -->
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Results}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserSortColumns="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  EnableRowVirtualization="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="IP ADDRESS" Binding="{Binding IpAddress}" Width="150" />
+                <DataGridTextColumn Header="HOSTNAME" Binding="{Binding Hostname}" Width="200" />
+                <DataGridTextColumn Header="PING" Binding="{Binding PingDisplay}" Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Setter Property="Padding" Value="0,0,8,0" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="STATUS" Binding="{Binding Status}" Width="80" />
+                <DataGridTextColumn Header="AI SERVICE" Binding="{Binding AiService}" Width="200">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AiService}" Value="">
+                                    <Setter Property="Text" Value="-" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="PORTS" Binding="{Binding PortsDisplay}" Width="*" />
+            </DataGrid.Columns>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{StaticResource BgBrush}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsAlive}" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource RowAliveColor}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsAlive}" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource AccentColor}" Opacity="0.12" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <!-- Status bar separator -->
+        <Border Grid.Row="3" Height="1" Background="{StaticResource BorderBrush}" />
+
+        <!-- Status bar -->
+        <StatusBar Grid.Row="4" Padding="12,6">
+            <StatusBarItem>
+                <TextBlock Text="{Binding ProgressText}" FontFamily="{StaticResource MonoFont}"
+                           Foreground="{StaticResource TextDimBrush}" FontSize="11" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

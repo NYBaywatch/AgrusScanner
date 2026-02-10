@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <AssemblyName>AgrusScanner</AssemblyName>
+    <RootNamespace>AgrusScanner</RootNamespace>
+    <Version>0.1.0</Version>
+    <Product>Agrus Scanner</Product>
+    <Description>Network reconnaissance and service scanning tool</Description>
+    <Copyright>Copyright (c) 2025 Agrus</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+  </ItemGroup>
+
+</Project>

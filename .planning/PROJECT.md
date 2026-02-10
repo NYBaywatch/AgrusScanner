@@ -1,4 +1,4 @@
-# Scanner
+# Agrus Scanner
 
 ## What This Is
 

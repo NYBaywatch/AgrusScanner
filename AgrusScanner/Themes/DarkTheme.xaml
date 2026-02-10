@@ -1,0 +1,320 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Colors -->
+    <Color x:Key="BgColor">#0a0a0a</Color>
+    <Color x:Key="SurfaceColor">#111111</Color>
+    <Color x:Key="BorderColor">#1a1a1a</Color>
+    <Color x:Key="AccentColor">#00ff41</Color>
+    <Color x:Key="AccentDimColor">#00aa2a</Color>
+    <Color x:Key="TextColor">#cccccc</Color>
+    <Color x:Key="TextDimColor">#666666</Color>
+    <Color x:Key="RowAliveColor">#0d1a0f</Color>
+    <Color x:Key="RowAlivePortsColor">#0f2612</Color>
+    <Color x:Key="RowDeadColor">#0a0a0a</Color>
+    <Color x:Key="RedColor">#ff4444</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="AccentDimBrush" Color="{StaticResource AccentDimColor}" />
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}" />
+    <SolidColorBrush x:Key="TextDimBrush" Color="{StaticResource TextDimColor}" />
+    <SolidColorBrush x:Key="RedBrush" Color="{StaticResource RedColor}" />
+
+    <!-- Font -->
+    <FontFamily x:Key="MonoFont">Consolas</FontFamily>
+
+    <!-- Window -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource BgBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+    </Style>
+
+    <!-- TextBox -->
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="CaretBrush" Value="{StaticResource AccentBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource AccentDimBrush}" />
+    </Style>
+
+    <!-- ComboBox toggle button template -->
+    <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Border" Grid.ColumnSpan="2"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="2" />
+            <Path x:Name="Arrow" Grid.Column="1"
+                  Fill="{StaticResource TextDimBrush}"
+                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource AccentDimBrush}" />
+                <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource AccentBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- ComboBox -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Template="{StaticResource ComboBoxToggleButton}"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Focusable="False" ClickMode="Press" />
+                        <ContentPresenter IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          Margin="8,4,24,4"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left" />
+                        <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                               Focusable="False" AllowsTransparency="True" PopupAnimation="Slide">
+                            <Border Background="#1a1a1a" BorderBrush="{StaticResource AccentDimBrush}"
+                                    BorderThickness="1" CornerRadius="2"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    Padding="0,4">
+                                <ScrollViewer>
+                                    <StackPanel IsItemsHost="True" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ComboBox item -->
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#222222" />
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Button base -->
+    <Style x:Key="BaseButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="16,6" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.85" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Start button -->
+    <Style x:Key="StartButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+        <Setter Property="Foreground" Value="#0a0a0a" />
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- Stop button -->
+    <Style x:Key="StopButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Background" Value="{StaticResource RedBrush}" />
+        <Setter Property="Foreground" Value="#ffffff" />
+        <Setter Property="BorderBrush" Value="{StaticResource RedBrush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- DataGrid -->
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="{StaticResource BgBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="RowBackground" Value="{StaticResource BgBrush}" />
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="CanUserResizeRows" Value="False" />
+        <Setter Property="RowHeight" Value="26" />
+    </Style>
+
+    <!-- DataGrid column header -->
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,1,1" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- DataGrid cell -->
+    <Style TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource AccentColor}" Opacity="0.15" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- DataGrid row -->
+    <Style TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource BgBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource AccentColor}" Opacity="0.1" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ProgressBar -->
+    <Style TargetType="ProgressBar">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Height" Value="3" />
+    </Style>
+
+    <!-- StatusBar -->
+    <Style TargetType="StatusBar">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <!-- Help toggle button -->
+    <Style x:Key="HelpToggleButton" TargetType="ToggleButton">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource TextDimBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Width="24" Height="24">
+                        <TextBlock Text="?" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}" FontWeight="Bold" FontSize="12"
+                                   Margin="0,-1,0,0" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Label -->
+    <Style TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+</ResourceDictionary>

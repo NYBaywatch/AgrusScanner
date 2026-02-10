@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="Agrus Scanner"
+           Version="0.1.0"
+           Manufacturer="Agrus"
+           Language="1033"
+           UpgradeCode="8F2B4A6E-3C7D-4E9F-A1B5-D6E8F0C2A4B7">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Agrus Scanner is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Add/Remove Programs icon -->
+    <Icon Id="AppIcon.ico" SourceFile="..\AgrusScanner\icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
+    <!-- Directory structure -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="Agrus Scanner" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ShortcutsFolder" Name="Agrus Scanner" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- Application files from self-contained publish output -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER" Source="publish">
+      <Files Include="**" />
+    </ComponentGroup>
+
+    <!-- Start Menu shortcut -->
+    <Component Id="StartMenuShortcut" Directory="ShortcutsFolder" Guid="A3D5F7B9-1C2E-4A6B-8D0F-E2C4A6B8D0F2">
+      <Shortcut Id="StartMenuLink"
+                Name="Agrus Scanner"
+                Target="[INSTALLFOLDER]AgrusScanner.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RemoveFolder Id="RemoveShortcutsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\Agrus\AgrusScanner"
+                     Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- Desktop shortcut -->
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="B4E6F8CA-2D3F-5B7C-9E1A-F3D5B7C9E1A3">
+      <Shortcut Id="DesktopLink"
+                Name="Agrus Scanner"
+                Target="[INSTALLFOLDER]AgrusScanner.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RegistryValue Root="HKCU" Key="Software\Agrus\AgrusScanner"
+                     Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- Feature tree -->
+    <Feature Id="Main" Title="Agrus Scanner" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <!-- Standard installer UI wizard -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+  </Package>
+</Wix>
