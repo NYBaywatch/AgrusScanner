@@ -16,8 +16,20 @@ public class ScanConfig
     ];
 
     public static readonly int[] AiPorts = [
-        11434, 8000, 8080, 3000, 4000, 1234, 5000, 3001,
-        7860, 5001, 8443, 4891, 1337, 3080
+        // LLM services
+        11434, 8000, 8080, 1234, 1337, 4891, 5001, 3000, 4000,
+        // Image generation
+        7860, 8188,
+        // ML platforms
+        8081, 8082, 8265, 8500, 8501, 47334, 47335,
+        // AI platforms / UIs
+        3001, 3080, 5000,
+        // GPU infrastructure
+        8002, 9400,
+        // Container detection
+        2375,
+        // Multi-use / fallback
+        8443, 21001, 21002
     ];
 
     public static readonly int[] ExtendedPorts = [

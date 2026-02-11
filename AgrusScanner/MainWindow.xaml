@@ -83,7 +83,7 @@
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
                                 <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">AI Scan</Run>
-                                <Run Foreground="{StaticResource TextBrush}"> - 14 ports for AI/ML services (Ollama, LM Studio, etc.)</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 28 ports for AI/ML services, GPU infra, and Docker</Run>
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,8">
                                 <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">No port scan</Run>
@@ -153,7 +153,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="STATUS" Binding="{Binding Status}" Width="80" />
-                <DataGridTextColumn Header="AI SERVICE" Binding="{Binding AiService}" Width="200">
+                <DataGridTextColumn Header="AI SERVICE" Binding="{Binding AiService}" Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -166,7 +166,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="PORTS" Binding="{Binding PortsDisplay}" Width="*" />
+                <DataGridTextColumn Header="PORTS" Binding="{Binding PortsDisplay}" Width="200" />
             </DataGrid.Columns>
 
             <DataGrid.RowStyle>

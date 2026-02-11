@@ -12,6 +12,7 @@ public class HostResult : INotifyPropertyChanged
     private bool _isAlive;
     private ObservableCollection<PortResult> _openPorts = [];
     private string _aiService = string.Empty;
+    private List<AiServiceResult> _aiResults = [];
 
     public string IpAddress
     {
@@ -51,6 +52,33 @@ public class HostResult : INotifyPropertyChanged
     {
         get => _aiService;
         set { _aiService = value; OnPropertyChanged(); }
+    }
+
+    public List<AiServiceResult> AiResults
+    {
+        get => _aiResults;
+        set
+        {
+            _aiResults = value;
+            OnPropertyChanged();
+            // Build the display string from all detected services
+            AiService = FormatAiServices(value);
+        }
+    }
+
+    private static string FormatAiServices(List<AiServiceResult> results)
+    {
+        if (results.Count == 0) return "";
+
+        var parts = new List<string>();
+        foreach (var r in results)
+        {
+            var entry = $"[{r.Category}] {r.ServiceName} :{r.Port}";
+            if (!string.IsNullOrEmpty(r.Details))
+                entry += $" ({r.Details})";
+            parts.Add(entry);
+        }
+        return string.Join(" | ", parts);
     }
 
     public string PortsDisplay =>

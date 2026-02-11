@@ -248,29 +248,12 @@ public class MainViewModel : INotifyPropertyChanged
                 // AI service probing on open ports
                 if (runAiProbe)
                 {
-                    Models.AiServiceResult? bestResult = null;
+                    var aiResults = await _aiProber.ProbeAllAsync(
+                        ip.ToString(), openPorts.Select(p => p.Port).ToArray(), ct);
 
-                    var probeTasks = openPorts.Select(async p =>
+                    if (aiResults.Count > 0)
                     {
-                        var result = await _aiProber.ProbeAsync(ip.ToString(), p.Port, ct);
-                        return result;
-                    });
-
-                    var results = await Task.WhenAll(probeTasks);
-
-                    foreach (var r in results)
-                    {
-                        if (r != null && (bestResult == null || r.Specificity > bestResult.Specificity))
-                            bestResult = r;
-                    }
-
-                    if (bestResult != null)
-                    {
-                        var display = string.IsNullOrEmpty(bestResult.Details)
-                            ? $"{bestResult.ServiceName} @ :{bestResult.Port}"
-                            : $"{bestResult.ServiceName} @ :{bestResult.Port} ({bestResult.Details})";
-
-                        dispatcher.Invoke(() => host.AiService = display);
+                        dispatcher.Invoke(() => host.AiResults = aiResults);
                     }
                 }
             }
