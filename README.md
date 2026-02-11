@@ -4,6 +4,14 @@ Network reconnaissance tool with deep AI/ML service detection. Scans your networ
 
 Built for security teams, IT admins, and researchers who need visibility into shadow AI, rogue LLM deployments, and GPU infrastructure on their networks.
 
+## Why
+
+AI services are showing up everywhere — developers spinning up Ollama on their laptops, teams running Stable Diffusion on shared GPUs, shadow deployments of open-source LLMs that nobody tracks. Traditional network scanners don't know what an LLM inference endpoint looks like.
+
+Agrus Scanner was built to close that gap. It goes beyond port scanning by actively probing discovered services with AI-specific API calls, pulling back model names, GPU details, container info, and version data. If someone on your network is running an AI service, Agrus finds it and tells you exactly what it is.
+
+![Agrus Scanner](docs/screenshot.png)
+
 ## Install
 
 Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases):
