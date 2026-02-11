@@ -28,29 +28,13 @@ Built for security teams, IT admins, and researchers who need visibility into sh
 
 Detection goes beyond port scanning - the prober queries service-specific API endpoints, extracts model names, versions, GPU info, and container details.
 
-## Requirements
+## Install
 
-- Windows 10/11
-- .NET 9 SDK (for building)
+Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases):
 
-## Build & Run
+**[AgrusScanner-Setup.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/AgrusScanner-Setup.msi)** — self-contained, no .NET runtime needed.
 
-```powershell
-dotnet run --project AgrusScanner
-```
-
-## Build MSI Installer
-
-Creates a self-contained installer (no .NET runtime required on target machine):
-
-```powershell
-# One-time: install WiX CLI
-dotnet tool install --global wix
-
-# Build installer
-.\build-installer.ps1
-# Output: Installer\bin\Release\AgrusScanner-Setup.msi
-```
+Requires Windows 10/11.
 
 ## Usage
 
