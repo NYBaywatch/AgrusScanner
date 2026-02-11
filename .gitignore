@@ -66,6 +66,9 @@ bld/
 .DS_Store
 Thumbs.db
 
+# Internal planning docs
+.planning/
+
 # Editor
 .vscode/
 
