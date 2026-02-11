@@ -1,5 +1,6 @@
 # Build script for Agrus Scanner MSI installer
 # Prerequisites: .NET 9 SDK, WiX Toolset v5 (dotnet tool install --global wix)
+# Optional: dotnet sign tool (dotnet tool install --global sign --prerelease) + Azure Trusted Signing account
 
 $ErrorActionPreference = "Stop"
 
@@ -35,10 +36,36 @@ if ($LASTEXITCODE -ne 0) { throw "WiX build failed" }
 
 # Report output
 $msi = Get-ChildItem "$binDir\Release" -Filter "*.msi" -Recurse | Select-Object -First 1
-if ($msi) {
-    Write-Host "`n=== Build Complete ===" -ForegroundColor Green
-    Write-Host "MSI: $($msi.FullName)" -ForegroundColor Green
-    Write-Host "Size: $([math]::Round($msi.Length / 1MB, 1)) MB" -ForegroundColor Green
-} else {
+if (-not $msi) {
     Write-Host "`nWarning: MSI file not found in expected location." -ForegroundColor Red
+    exit 1
 }
+
+# Code signing (optional — requires Azure Trusted Signing setup)
+# Install sign tool:  dotnet tool install --global sign --prerelease
+# Azure resources needed: signing account + certificate profile
+# See: https://learn.microsoft.com/en-us/azure/artifact-signing/
+$signTool = Get-Command sign -ErrorAction SilentlyContinue
+if ($signTool) {
+    $tsEndpoint = "https://eus.codesigning.azure.net/"
+    $tsAccount  = "agrussigning"
+    $tsProfile  = "agrus-public"
+
+    Write-Host "`n[4/4] Signing MSI with Azure Trusted Signing..." -ForegroundColor Yellow
+    sign code trusted-signing $msi.FullName `
+        --trusted-signing-endpoint $tsEndpoint `
+        --trusted-signing-account $tsAccount `
+        --trusted-signing-certificate-profile $tsProfile
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Warning: Signing failed. MSI built but unsigned." -ForegroundColor Red
+    } else {
+        Write-Host "MSI signed successfully." -ForegroundColor Green
+    }
+} else {
+    Write-Host "`nNote: 'sign' tool not found — MSI will be unsigned." -ForegroundColor DarkYellow
+    Write-Host "  Install with: dotnet tool install --global sign --prerelease" -ForegroundColor DarkYellow
+}
+
+Write-Host "`n=== Build Complete ===" -ForegroundColor Green
+Write-Host "MSI: $($msi.FullName)" -ForegroundColor Green
+Write-Host "Size: $([math]::Round($msi.Length / 1MB, 1)) MB" -ForegroundColor Green
