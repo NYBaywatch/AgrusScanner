@@ -6,7 +6,7 @@ Built for security teams, IT admins, and researchers who need visibility into sh
 
 ## Why
 
-There is a growning concernt for shadow AI, and this provides a simple way to scan networks.  Also many of the typical scanning tools for windows, have poorly written interfaces, specifically for anyone running a 4k+monitor.  I've been tired of trying to read tiny print so when a friend/client was looking for a way to scan for shadow AI, and without any windows type tool available,it seamed like a natural fit together.
+There is a growing concern for shadow AI, and this provides a simple way to scan networks.  Also many of the typical scanning tools for windows, have poorly written interfaces, specifically for anyone running a 4k+ monitor.  I've been tired of trying to read tiny print so when a friend/client was looking for a way to scan for shadow AI, and without any windows type tool available, it seemed like a natural fit together.
 
 Agrus Scanner was built to close that gap. It goes beyond port scanning by actively probing discovered services with AI-specific API calls, pulling back model names, GPU details, container info, and version data. If someone on your network is running an AI service, Agrus finds it and tells you exactly what it is.
 
