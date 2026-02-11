@@ -130,4 +130,4 @@ The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkil
 
 ## License
 
-All rights reserved.
+[MIT License](LICENSE) — use at your own risk. See LICENSE for full terms.

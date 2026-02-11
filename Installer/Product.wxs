@@ -61,8 +61,9 @@
       <ComponentRef Id="DesktopShortcut" />
     </Feature>
 
-    <!-- Standard installer UI wizard -->
+    <!-- Standard installer UI wizard with EULA -->
     <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
   </Package>
 </Wix>
