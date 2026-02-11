@@ -4,6 +4,14 @@ Network reconnaissance tool with deep AI/ML service detection. Scans your networ
 
 Built for security teams, IT admins, and researchers who need visibility into shadow AI, rogue LLM deployments, and GPU infrastructure on their networks.
 
+## Install
+
+Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases):
+
+**[AgrusScanner-Setup.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/AgrusScanner-Setup.msi)** — self-contained, no .NET runtime needed.
+
+Requires Windows 10/11.
+
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
@@ -27,14 +35,6 @@ Built for security teams, IT admins, and researchers who need visibility into sh
 | **Container** | Docker API with 33 AI image pattern matches |
 
 Detection goes beyond port scanning - the prober queries service-specific API endpoints, extracts model names, versions, GPU info, and container details.
-
-## Install
-
-Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases):
-
-**[AgrusScanner-Setup.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/AgrusScanner-Setup.msi)** — self-contained, no .NET runtime needed.
-
-Requires Windows 10/11.
 
 ## Usage
 
