@@ -133,6 +133,18 @@
                             <CheckBox IsChecked="{Binding SkipPing}" Content="Skip ping (scan all IPs)"
                                       Margin="0,0,0,8" />
 
+                            <TextBlock Text="MCP SERVER" FontWeight="Bold" FontSize="11"
+                                       Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Port:" FontSize="11" Foreground="{StaticResource TextBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBox Text="{Binding McpPort, UpdateSourceTrigger=LostFocus}"
+                                         FontSize="11" Width="60" />
+                                <TextBlock Text="(requires restart)" FontSize="10"
+                                           Foreground="{StaticResource TextDimBrush}"
+                                           VerticalAlignment="Center" Margin="6,0,0,0" />
+                            </StackPanel>
+
                             <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,8"
                                     Visibility="{Binding HasPortPreset, Converter={StaticResource BoolToVis}}" />
 

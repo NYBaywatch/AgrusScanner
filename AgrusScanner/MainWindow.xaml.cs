@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace AgrusScanner;
 

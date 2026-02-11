@@ -14,4 +14,7 @@ public class AppSettings
     public int[] QuickRemovedPorts { get; set; } = [];
     public int[] CommonRemovedPorts { get; set; } = [];
     public int[] ExtendedRemovedPorts { get; set; } = [];
+
+    // MCP server port
+    public int McpPort { get; set; } = 8999;
 }

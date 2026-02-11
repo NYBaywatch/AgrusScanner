@@ -1,0 +1,21 @@
+{
+  "id": "agrus-scanner",
+  "name": "Agrus Scanner",
+  "description": "Network reconnaissance and AI/ML service detection. Scan IP ranges with ping sweeps, port scanning, DNS resolution, and AI service probing across 45 detection signatures.",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "mcpUrl": {
+        "type": "string",
+        "description": "URL of the Agrus Scanner MCP server",
+        "default": "http://localhost:8999/mcp"
+      }
+    }
+  },
+  "uiHints": {
+    "mcpUrl": {
+      "label": "MCP Server URL",
+      "placeholder": "http://localhost:8999/mcp"
+    }
+  }
+}

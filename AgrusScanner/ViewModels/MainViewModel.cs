@@ -164,6 +164,20 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public int McpPort
+    {
+        get => _settings.McpPort;
+        set
+        {
+            if (value is >= 1 and <= 65535)
+            {
+                _settings.McpPort = value;
+                OnPropertyChanged();
+                SaveSettings();
+            }
+        }
+    }
+
     public bool IsAiPresetSelected => SelectedPreset == "AI Scan";
 
     public bool IsNotAiPresetSelected => !IsAiPresetSelected;
