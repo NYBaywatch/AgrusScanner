@@ -74,5 +74,6 @@ public partial class MainWindow : Window
         var transform = new ScaleTransform(_zoomLevel, _zoomLevel);
         ((FrameworkElement)Content).LayoutTransform = transform;
         HelpPopupContent.LayoutTransform = new ScaleTransform(_zoomLevel, _zoomLevel);
+        SettingsPopupContent.LayoutTransform = new ScaleTransform(_zoomLevel, _zoomLevel);
     }
 }

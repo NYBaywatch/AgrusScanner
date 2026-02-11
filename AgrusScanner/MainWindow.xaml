@@ -36,6 +36,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="0" Content="IP Range:" Foreground="{StaticResource TextDimBrush}"
@@ -56,7 +57,7 @@
                 <!-- Help button with popup -->
                 <ToggleButton x:Name="HelpToggle" Grid.Column="4"
                               Style="{StaticResource HelpToggleButton}"
-                              VerticalAlignment="Center" Margin="0,0,12,0" />
+                              VerticalAlignment="Center" Margin="0,0,4,0" />
                 <Popup IsOpen="{Binding IsChecked, ElementName=HelpToggle}"
                        PlacementTarget="{Binding ElementName=HelpToggle}"
                        Placement="Bottom" StaysOpen="False"
@@ -113,12 +114,74 @@
                     </Border>
                 </Popup>
 
-                <Button Grid.Column="5" Content="START" Command="{Binding StartCommand}"
+                <!-- Settings button with popup -->
+                <ToggleButton x:Name="SettingsToggle" Grid.Column="5"
+                              Style="{StaticResource SettingsToggleButton}"
+                              VerticalAlignment="Center" Margin="0,0,12,0" />
+                <Popup IsOpen="{Binding IsChecked, ElementName=SettingsToggle}"
+                       PlacementTarget="{Binding ElementName=SettingsToggle}"
+                       Placement="Bottom" StaysOpen="False"
+                       AllowsTransparency="True" PopupAnimation="Fade"
+                       HorizontalOffset="-200" VerticalOffset="4">
+                    <Border x:Name="SettingsPopupContent" Background="#1a1a1a" BorderBrush="{StaticResource AccentDimBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="14,10"
+                            Width="320">
+                        <StackPanel>
+                            <TextBlock Text="SETTINGS" FontWeight="Bold" FontSize="11"
+                                       Foreground="{StaticResource AccentBrush}" Margin="0,0,0,8" />
+
+                            <CheckBox IsChecked="{Binding SkipPing}" Content="Skip ping (scan all IPs)"
+                                      Margin="0,0,0,8" />
+
+                            <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,8"
+                                    Visibility="{Binding HasPortPreset, Converter={StaticResource BoolToVis}}" />
+
+                            <StackPanel Visibility="{Binding HasPortPreset, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="CUSTOM PORTS" FontWeight="Bold" FontSize="11"
+                                           Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
+
+                                <TextBlock FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,4">
+                                    <Run Text="Preset: " /><Run Text="{Binding PresetDisplayName, Mode=OneWay}" Foreground="{StaticResource TextBrush}" />
+                                </TextBlock>
+
+                                <TextBlock Text="Built-in:" FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,2" />
+                                <TextBlock Text="{Binding BuiltInPortsDisplay}" TextWrapping="Wrap"
+                                           FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,6" />
+
+                                <!-- AI preset lock notice -->
+                                <TextBlock Text="Built-in AI ports cannot be removed"
+                                           FontSize="10" Foreground="{StaticResource TextDimBrush}" FontStyle="Italic"
+                                           Visibility="{Binding IsAiPresetSelected, Converter={StaticResource BoolToVis}}"
+                                           Margin="0,0,0,6" />
+
+                                <TextBlock Text="Additional ports (comma-separated):" FontSize="11"
+                                           Foreground="{StaticResource TextBrush}" Margin="0,0,0,4" />
+                                <TextBox Text="{Binding ExtraPortsText, UpdateSourceTrigger=LostFocus}"
+                                         FontSize="11" Margin="0,0,0,6" />
+
+                                <!-- Remove ports (hidden for AI preset) -->
+                                <StackPanel Visibility="{Binding IsNotAiPresetSelected, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Remove ports (comma-separated):" FontSize="11"
+                                               Foreground="{StaticResource TextBrush}" Margin="0,0,0,4" />
+                                    <TextBox Text="{Binding RemovedPortsText, UpdateSourceTrigger=LostFocus}"
+                                             FontSize="11" Margin="0,0,0,6" />
+                                </StackPanel>
+
+                                <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,6" />
+
+                                <TextBlock Text="{Binding EffectivePortCountDisplay}" FontSize="11"
+                                           Foreground="{StaticResource AccentBrush}" FontWeight="Bold" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <Button Grid.Column="6" Content="START" Command="{Binding StartCommand}"
                         Style="{StaticResource StartButton}"
                         Visibility="{Binding IsNotScanning, Converter={StaticResource BoolToVis}}"
                         VerticalAlignment="Center" Margin="0,0,4,0" />
 
-                <Button Grid.Column="6" Content="STOP" Command="{Binding StopCommand}"
+                <Button Grid.Column="7" Content="STOP" Command="{Binding StopCommand}"
                         Style="{StaticResource StopButton}"
                         Visibility="{Binding IsScanning, Converter={StaticResource BoolToVis}}"
                         VerticalAlignment="Center" />

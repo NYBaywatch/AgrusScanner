@@ -15,7 +15,9 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly PortScanner _portScanner = new();
     private readonly DnsResolver _dnsResolver = new();
     private readonly AiServiceProber _aiProber = new();
+    private readonly SettingsService _settingsService = new();
 
+    private AppSettings _settings;
     private string _ipRange = DetectLocalSubnet();
     private string _selectedPreset = "Quick (6 ports)";
     private bool _isScanning;
@@ -24,11 +26,15 @@ public class MainViewModel : INotifyPropertyChanged
     private int _aliveCount;
     private double _elapsedSeconds;
     private CancellationTokenSource? _cts;
+    private string _extraPortsText = "";
+    private string _removedPortsText = "";
 
     public MainViewModel()
     {
+        _settings = _settingsService.Load();
         StartCommand = new RelayCommand(async _ => await StartScanAsync(), _ => !IsScanning);
         StopCommand = new RelayCommand(_ => StopScan(), _ => IsScanning);
+        RefreshSettingsFlyout();
     }
 
     private static string DetectLocalSubnet()
@@ -82,7 +88,12 @@ public class MainViewModel : INotifyPropertyChanged
     public string SelectedPreset
     {
         get => _selectedPreset;
-        set { _selectedPreset = value; OnPropertyChanged(); }
+        set
+        {
+            _selectedPreset = value;
+            OnPropertyChanged();
+            RefreshSettingsFlyout();
+        }
     }
 
     public string[] Presets => ["Quick (6 ports)", "Common (22 ports)", "Extended (58 ports)", "AI Scan", "No port scan"];
@@ -140,7 +151,79 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
 
-    private int[] GetPortsForPreset() => SelectedPreset switch
+    // --- Settings properties ---
+
+    public bool SkipPing
+    {
+        get => _settings.SkipPing;
+        set
+        {
+            _settings.SkipPing = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
+    public bool IsAiPresetSelected => SelectedPreset == "AI Scan";
+
+    public bool IsNotAiPresetSelected => !IsAiPresetSelected;
+
+    public bool HasPortPreset => SelectedPreset != "No port scan";
+
+    public string BuiltInPortsDisplay
+    {
+        get
+        {
+            var basePorts = GetBasePortsForPreset();
+            if (basePorts.Length == 0) return "None";
+            return string.Join(", ", basePorts);
+        }
+    }
+
+    public string ExtraPortsText
+    {
+        get => _extraPortsText;
+        set
+        {
+            _extraPortsText = value;
+            OnPropertyChanged();
+            ApplyExtraPorts(value);
+        }
+    }
+
+    public string RemovedPortsText
+    {
+        get => _removedPortsText;
+        set
+        {
+            _removedPortsText = value;
+            OnPropertyChanged();
+            ApplyRemovedPorts(value);
+        }
+    }
+
+    public string EffectivePortCountDisplay
+    {
+        get
+        {
+            var ports = GetPortsForPreset();
+            return $"Effective: {ports.Length} ports";
+        }
+    }
+
+    public string PresetDisplayName => SelectedPreset switch
+    {
+        "Quick (6 ports)" => "Quick",
+        "Common (22 ports)" => "Common",
+        "Extended (58 ports)" => "Extended",
+        "AI Scan" => "AI Scan",
+        "No port scan" => "No port scan",
+        _ => SelectedPreset
+    };
+
+    // --- Port logic ---
+
+    private int[] GetBasePortsForPreset() => SelectedPreset switch
     {
         "Quick (6 ports)" => ScanConfig.QuickPorts,
         "Common (22 ports)" => ScanConfig.CommonPorts,
@@ -149,7 +232,107 @@ public class MainViewModel : INotifyPropertyChanged
         _ => []
     };
 
+    private int[] GetExtraPortsForPreset() => SelectedPreset switch
+    {
+        "Quick (6 ports)" => _settings.QuickExtraPorts,
+        "Common (22 ports)" => _settings.CommonExtraPorts,
+        "Extended (58 ports)" => _settings.ExtendedExtraPorts,
+        "AI Scan" => _settings.AiExtraPorts,
+        _ => []
+    };
+
+    private int[] GetRemovedPortsForPreset() => SelectedPreset switch
+    {
+        "Quick (6 ports)" => _settings.QuickRemovedPorts,
+        "Common (22 ports)" => _settings.CommonRemovedPorts,
+        "Extended (58 ports)" => _settings.ExtendedRemovedPorts,
+        _ => [] // AI has no removals
+    };
+
+    private int[] GetPortsForPreset()
+    {
+        var basePorts = GetBasePortsForPreset();
+        var extra = GetExtraPortsForPreset();
+        var removed = GetRemovedPortsForPreset();
+
+        var result = basePorts
+            .Concat(extra)
+            .Except(removed)
+            .Distinct()
+            .OrderBy(p => p)
+            .ToArray();
+
+        return result;
+    }
+
     private bool IsAiScan => SelectedPreset == "AI Scan";
+
+    private void ApplyExtraPorts(string text)
+    {
+        var ports = ParsePortList(text);
+        switch (SelectedPreset)
+        {
+            case "Quick (6 ports)": _settings.QuickExtraPorts = ports; break;
+            case "Common (22 ports)": _settings.CommonExtraPorts = ports; break;
+            case "Extended (58 ports)": _settings.ExtendedExtraPorts = ports; break;
+            case "AI Scan": _settings.AiExtraPorts = ports; break;
+        }
+        SaveSettings();
+        OnPropertyChanged(nameof(EffectivePortCountDisplay));
+    }
+
+    private void ApplyRemovedPorts(string text)
+    {
+        var ports = ParsePortList(text);
+        switch (SelectedPreset)
+        {
+            case "Quick (6 ports)": _settings.QuickRemovedPorts = ports; break;
+            case "Common (22 ports)": _settings.CommonRemovedPorts = ports; break;
+            case "Extended (58 ports)": _settings.ExtendedRemovedPorts = ports; break;
+            // AI preset: no removals allowed
+        }
+        SaveSettings();
+        OnPropertyChanged(nameof(EffectivePortCountDisplay));
+    }
+
+    private static int[] ParsePortList(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return [];
+        return text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(s => int.TryParse(s, out var p) && p is > 0 and <= 65535 ? p : -1)
+            .Where(p => p > 0)
+            .Distinct()
+            .ToArray();
+    }
+
+    private void RefreshSettingsFlyout()
+    {
+        // Load the text fields from current settings for the selected preset
+        _extraPortsText = FormatPortList(GetExtraPortsForPreset());
+        _removedPortsText = FormatPortList(GetRemovedPortsForPreset());
+
+        OnPropertyChanged(nameof(ExtraPortsText));
+        OnPropertyChanged(nameof(RemovedPortsText));
+        OnPropertyChanged(nameof(BuiltInPortsDisplay));
+        OnPropertyChanged(nameof(EffectivePortCountDisplay));
+        OnPropertyChanged(nameof(IsAiPresetSelected));
+        OnPropertyChanged(nameof(IsNotAiPresetSelected));
+        OnPropertyChanged(nameof(HasPortPreset));
+        OnPropertyChanged(nameof(PresetDisplayName));
+    }
+
+    private static string FormatPortList(int[] ports)
+    {
+        if (ports.Length == 0) return "";
+        return string.Join(", ", ports);
+    }
+
+    private void SaveSettings()
+    {
+        _settingsService.Save(_settings);
+    }
+
+    // --- Scan logic ---
 
     private async Task StartScanAsync()
     {
@@ -175,6 +358,7 @@ public class MainViewModel : INotifyPropertyChanged
         _cts = new CancellationTokenSource();
         var ct = _cts.Token;
         var ports = GetPortsForPreset();
+        var skipPing = SkipPing;
         var sw = Stopwatch.StartNew();
 
         // Timer to update elapsed time
@@ -203,8 +387,8 @@ public class MainViewModel : INotifyPropertyChanged
                     CompletedCount++;
                     if (alive) AliveCount++;
 
-                    // Queue port scan + DNS for alive hosts
-                    if (alive)
+                    // Queue port scan + DNS for alive hosts (or all hosts if skip ping)
+                    if (alive || skipPing)
                     {
                         _ = ScanHostDetailsAsync(host, ip, ports, ct);
                     }
