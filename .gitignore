@@ -67,8 +67,10 @@ bld/
 Thumbs.db
 
 # Editor
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 
 # Installer
 Installer/publish/
+
+# Windows reserved names (accidental creation in Git Bash/WSL)
+nul
