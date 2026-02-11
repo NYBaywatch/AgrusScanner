@@ -10,6 +10,8 @@ There is a growing concern for shadow AI, and this provides a simple way to scan
 
 It also works as a straightforward network scanner — ping sweeps, port scanning, and hostname resolution are all built in. You don't need a separate tool for basic recon. But where Agrus really stands out is AI detection: it goes beyond port scanning by actively probing discovered services with AI-specific API calls, pulling back model names, GPU details, container info, and version data. If someone on your network is running an AI service, Agrus finds it and tells you exactly what it is.
 
+It also runs as an MCP server, so AI agents like Claude Code and OpenClaw can use it as a tool — scan networks, probe hosts, and pull back results autonomously. Point your agent at the endpoint and it handles the rest.
+
 ![Agrus Scanner](docs/screenshot.png)
 
 ## Install
