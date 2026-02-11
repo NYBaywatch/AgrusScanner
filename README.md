@@ -8,7 +8,7 @@ Built for security teams, IT admins, and researchers who need visibility into sh
 
 There is a growing concern for shadow AI, and this provides a simple way to scan networks.  Also many of the typical scanning tools for windows are slow and have poorly written interfaces, specifically for anyone running a 4k+ monitor.  Agrus Scanner is built in native C#/.NET with WPF — no Electron, no embedded browser — so it launches fast, scans fast, and stays light on resources.  I've been tired of trying to read tiny print so when a friend/client was looking for a way to scan for shadow AI, and without any windows type tool available, it seemed like a natural fit together.
 
-Agrus Scanner was built to close that gap. It goes beyond port scanning by actively probing discovered services with AI-specific API calls, pulling back model names, GPU details, container info, and version data. If someone on your network is running an AI service, Agrus finds it and tells you exactly what it is.
+It also works as a straightforward network scanner — ping sweeps, port scanning, and hostname resolution are all built in. You don't need a separate tool for basic recon. But where Agrus really stands out is AI detection: it goes beyond port scanning by actively probing discovered services with AI-specific API calls, pulling back model names, GPU details, container info, and version data. If someone on your network is running an AI service, Agrus finds it and tells you exactly what it is.
 
 ![Agrus Scanner](docs/screenshot.png)
 
