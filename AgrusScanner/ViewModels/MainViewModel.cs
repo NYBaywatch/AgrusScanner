@@ -32,14 +32,11 @@ public class MainViewModel : INotifyPropertyChanged
     private string _removedPortsText = "";
     private string? _updateText;
     private string? _updateUrl;
-    private bool _showAliveOnly;
-
     public MainViewModel()
     {
         _settings = _settingsService.Load();
         StartCommand = new RelayCommand(async _ => await StartScanAsync(), _ => !IsScanning);
         StopCommand = new RelayCommand(_ => StopScan(), _ => IsScanning);
-        ToggleAliveFilterCommand = new RelayCommand(_ => ShowAliveOnly = !ShowAliveOnly);
         ExportCommand = new RelayCommand(_ => ExportResults(), _ => CanExport);
         OpenUpdateCommand = new RelayCommand(_ =>
         {
@@ -49,6 +46,7 @@ public class MainViewModel : INotifyPropertyChanged
         RefreshSettingsFlyout();
 
         ResultsView = CollectionViewSource.GetDefaultView(Results);
+        ResultsView.Filter = obj => obj is HostResult h && (h.IsAlive || h.OpenPorts.Count > 0);
 
         // Fire-and-forget update check
         _ = CheckForUpdateAsync();
@@ -179,7 +177,6 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
     public ICommand ExportCommand { get; }
-    public ICommand ToggleAliveFilterCommand { get; }
     public ICommand OpenUpdateCommand { get; }
 
     public bool CanExport => !IsScanning && Results.Count > 0;
@@ -192,27 +189,6 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     public bool HasUpdate => !string.IsNullOrEmpty(_updateText);
-
-    public bool ShowAliveOnly
-    {
-        get => _showAliveOnly;
-        set
-        {
-            _showAliveOnly = value;
-            OnPropertyChanged();
-            ApplyFilter();
-        }
-    }
-
-    private void ApplyFilter()
-    {
-        if (ResultsView is ICollectionView view)
-        {
-            view.Filter = ShowAliveOnly
-                ? obj => obj is HostResult h && (h.IsAlive || h.OpenPorts.Count > 0)
-                : null;
-        }
-    }
 
     // --- Settings properties ---
 
