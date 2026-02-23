@@ -62,7 +62,7 @@ if ($signTool) {
         Write-Host "MSI signed successfully." -ForegroundColor Green
     }
 } else {
-    Write-Host "`nNote: 'sign' tool not found — MSI will be unsigned." -ForegroundColor DarkYellow
+    Write-Host "`nNote: 'sign' tool not found - MSI will be unsigned." -ForegroundColor DarkYellow
     Write-Host "  Install with: dotnet tool install --global sign --prerelease" -ForegroundColor DarkYellow
 }
 
