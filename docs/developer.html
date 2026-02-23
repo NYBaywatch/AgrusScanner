@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrus Scanner - Developer Documentation</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #e8863a;
+    --accent-dim: #e8863a33;
+    --link: #58a6ff;
+    --green: #3fb950;
+    --green-dim: #3fb95022;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #79c0ff;
+    --code-bg: #0d1117;
+    --code-border: #30363d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(12px);
+  }
+  .topbar-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+  .topbar-sep { color: var(--border); font-size: 20px; font-weight: 300; }
+  .topbar-title { color: var(--text-muted); font-size: 14px; }
+  .topbar-badge {
+    margin-left: auto;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .topbar-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color .2s;
+  }
+  .topbar-link:hover { color: var(--link); }
+
+  /* ── Layout ── */
+  .layout {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: sticky;
+    top: 49px;
+    width: 260px;
+    min-width: 260px;
+    height: calc(100vh - 49px);
+    overflow-y: auto;
+    padding: 24px 0 24px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .sidebar-section {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+  }
+  .sidebar-section:first-child { margin-top: 0; }
+  .sidebar a {
+    display: block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all .15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg-tertiary);
+    border-left-color: var(--accent);
+  }
+
+  /* ── Main Content ── */
+  .content {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 48px 80px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--accent), #f0a060);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .subtitle a { color: var(--link); text-decoration: none; }
+  .subtitle a:hover { text-decoration: underline; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 48px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+    color: var(--text);
+  }
+
+  p { margin-bottom: 14px; }
+  strong { color: var(--text); font-weight: 600; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  ul, ol { padding-left: 24px; margin-bottom: 14px; }
+  li { margin-bottom: 4px; }
+
+  /* ── Code ── */
+  code {
+    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    background: var(--bg-tertiary);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 14px 0 20px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+  }
+  .keyword { color: var(--purple); }
+  .string { color: #a5d6ff; }
+  .comment { color: var(--text-muted); font-style: italic; }
+  .type { color: var(--green); }
+  .attr { color: var(--cyan); }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--bg-tertiary);
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  tr:hover td { background: var(--bg-secondary); }
+
+  /* ── Architecture Diagram ── */
+  .arch-diagram {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--text-muted);
+  }
+  .arch-diagram .layer-label {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .arch-diagram .component {
+    color: var(--cyan);
+  }
+  .arch-diagram .dim { color: var(--text-muted); }
+
+  /* ── Info boxes ── */
+  .info-box {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-dim);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .info-box.green {
+    border-left-color: var(--green);
+    background: var(--green-dim);
+  }
+
+  /* ── File tree ── */
+  .file-tree {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 14px 0 20px;
+    white-space: pre;
+    color: var(--text-muted);
+  }
+  .file-tree .dir { color: var(--link); font-weight: 600; }
+  .file-tree .file { color: var(--text); }
+  .file-tree .comment { color: #484f58; }
+
+  /* ── Tags ── */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-orange { background: var(--accent-dim); color: var(--accent); }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-blue { background: #58a6ff22; color: var(--link); }
+  .tag-purple { background: #bc8cff22; color: var(--purple); }
+
+  /* ── Pipeline steps ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .pipeline-step {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding: 0 0 28px;
+  }
+  .pipeline-step:last-child { padding-bottom: 0; }
+  .pipeline-num {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 1;
+  }
+  .pipeline-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 36px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .pipeline-body { flex: 1; padding-top: 6px; }
+  .pipeline-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .pipeline-file { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .pipeline-file a { color: var(--link); }
+  .pipeline-desc { color: var(--text-muted); font-size: 13.5px; }
+  .pipeline-desc ul { margin-top: 4px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 24px; }
+    .topbar-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Top Bar ═══ -->
+<div class="topbar">
+  <a href="https://github.com/NYBaywatch/AgrusScanner" class="topbar-logo">Agrus Scanner</a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">Developer Documentation</span>
+  <span class="topbar-badge">Internal</span>
+  <a href="https://github.com/NYBaywatch/AgrusScanner" class="topbar-link">GitHub</a>
+  <a href="user-guide.html" class="topbar-link">User Guide</a>
+</div>
+
+<div class="layout">
+
+<!-- ═══ Sidebar ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-section">Architecture</div>
+  <a href="#architecture">Overview</a>
+  <a href="#project-structure">Project Structure</a>
+  <a href="#tech-stack">Tech Stack</a>
+
+  <div class="sidebar-section">Core Engine</div>
+  <a href="#scanning-pipeline">Scanning Pipeline</a>
+  <a href="#concurrency">Concurrency Model</a>
+  <a href="#probe-system">AI Probe System</a>
+  <a href="#docker-patterns">Docker Patterns</a>
+
+  <div class="sidebar-section">Integration</div>
+  <a href="#mcp-server">MCP Server</a>
+  <a href="#agent-integrations">Agent Integrations</a>
+
+  <div class="sidebar-section">Internals</div>
+  <a href="#models">Models</a>
+  <a href="#services">Services</a>
+  <a href="#ui-layer">UI Layer</a>
+  <a href="#settings">Settings &amp; Persistence</a>
+
+  <div class="sidebar-section">Contributing</div>
+  <a href="#build">Build &amp; Packaging</a>
+  <a href="#extending">Extending the Scanner</a>
+</nav>
+
+<!-- ═══ Content ═══ -->
+<main class="content">
+
+<h1>Developer Documentation</h1>
+<p class="subtitle">Internal reference for contributors and maintainers of <a href="https://github.com/NYBaywatch/AgrusScanner">Agrus Scanner</a>.</p>
+
+<!-- ── Architecture ── -->
+<h2 id="architecture">Architecture Overview</h2>
+<p>Agrus Scanner follows the <strong>MVVM</strong> (Model-View-ViewModel) pattern built on WPF/.NET 9.0. The core scanning logic lives in stateless service classes, the UI binds to an <code>ObservableCollection</code> on the ViewModel, and an embedded ASP.NET Core server exposes MCP tools for agent integration.</p>
+
+<div class="arch-diagram"><span class="dim">&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;</span>
+<span class="dim">&#9474;</span>  <span class="layer-label">VIEW</span>         <span class="component">MainWindow.xaml</span>                    <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>                   &#8597; data binding                     <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>  <span class="layer-label">VIEWMODEL</span>    <span class="component">MainViewModel.cs</span>                    <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>                   &#8595; orchestrates                     <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>  <span class="layer-label">SERVICES</span>     <span class="component">PingScanner</span>  <span class="component">PortScanner</span>  <span class="component">AiServiceProber</span> <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>               <span class="component">DnsResolver</span>  <span class="component">IpRangeParser</span>  <span class="component">ServiceNameMap</span><span class="dim">&#9474;</span>
+<span class="dim">&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;</span>
+<span class="dim">&#9474;</span>  <span class="layer-label">MCP</span>          <span class="component">McpHostManager</span> + <span class="component">ScannerMcpTools</span>        <span class="dim">&#9474;</span>
+<span class="dim">&#9474;</span>               ASP.NET Core  &#8594;  /mcp endpoint          <span class="dim">&#9474;</span>
+<span class="dim">&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span></div>
+
+<!-- ── Project Structure ── -->
+<h2 id="project-structure">Project Structure</h2>
+
+<div class="file-tree"><span class="dir">Scanner/</span>
+&#9500;&#9472;&#9472; <span class="dir">AgrusScanner/</span>                          <span class="comment"># Main WPF application</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">Models/</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">ScanConfig.cs</span>                  <span class="comment"># Port presets &amp; scan configuration</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">HostResult.cs</span>                  <span class="comment"># Per-host result (INotifyPropertyChanged)</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">PortResult.cs</span>                  <span class="comment"># Open port with service name</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">AiServiceResult.cs</span>             <span class="comment"># AI service detection result</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">AppSettings.cs</span>                 <span class="comment"># User settings (MCP port, custom ports)</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">Services/</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">PingScanner.cs</span>                 <span class="comment"># ICMP ping sweep (256 concurrent)</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">PortScanner.cs</span>                 <span class="comment"># TCP connect scan (64 concurrent/host)</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">DnsResolver.cs</span>                 <span class="comment"># Reverse DNS (PTR) resolution</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">IpRangeParser.cs</span>               <span class="comment"># CIDR/range/single IP parsing</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">AiServiceProber.cs</span>             <span class="comment"># HTTP probing, 45 probe definitions</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">ServiceNameMap.cs</span>              <span class="comment"># Port &#8594; service name lookup (70+ entries)</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">SettingsService.cs</span>             <span class="comment"># JSON persistence to %LOCALAPPDATA%</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">ViewModels/</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">MainViewModel.cs</span>               <span class="comment"># UI state, commands, scan orchestration</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">Mcp/</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">ScannerMcpTools.cs</span>             <span class="comment"># MCP tool definitions (4 tools)</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">McpHostManager.cs</span>              <span class="comment"># ASP.NET Core MCP server host</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">Converters/</span>                        <span class="comment"># WPF value converters</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="dir">Themes/</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">DarkTheme.xaml</span>                 <span class="comment"># Dark theme resource dictionary</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="file">App.xaml / App.xaml.cs</span>              <span class="comment"># Startup (--mcp-only detection)</span>
+&#9474;   &#9500;&#9472;&#9472; <span class="file">MainWindow.xaml / .xaml.cs</span>          <span class="comment"># Main UI layout + code-behind</span>
+&#9474;   &#9492;&#9472;&#9472; <span class="file">TrayIcon.cs</span>                        <span class="comment"># System tray for MCP-only mode</span>
+&#9500;&#9472;&#9472; <span class="dir">Installer/</span>                             <span class="comment"># WiX MSI installer project</span>
+&#9500;&#9472;&#9472; <span class="dir">openclaw-plugin/</span>                       <span class="comment"># OpenClaw agent plugin (TypeScript)</span>
+&#9500;&#9472;&#9472; <span class="file">.claude/skills/agrus-scanner/SKILL.md</span>  <span class="comment"># Claude Code skill definition</span>
+&#9500;&#9472;&#9472; <span class="file">.mcp.json</span>                              <span class="comment"># Claude Code MCP server config</span>
+&#9500;&#9472;&#9472; <span class="dir">docs/</span>                                  <span class="comment"># Documentation &amp; assets</span>
+&#9500;&#9472;&#9472; <span class="file">AgrusScanner.sln</span>                       <span class="comment"># Visual Studio solution</span>
+&#9500;&#9472;&#9472; <span class="file">build-installer.ps1</span>                    <span class="comment"># Build automation</span>
+&#9492;&#9472;&#9472; <span class="file">LICENSE</span>                                <span class="comment"># MIT</span></div>
+
+<h3>Key Source Files</h3>
+<table>
+  <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Models/ScanConfig.cs">ScanConfig.cs</a></td><td>Port presets (Quick / Common / Extended / AI)</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs">AiServiceProber.cs</a></td><td>45 AI probe definitions + detail extraction</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PingScanner.cs">PingScanner.cs</a></td><td>ICMP ping sweep</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PortScanner.cs">PortScanner.cs</a></td><td>TCP connect scan</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/DnsResolver.cs">DnsResolver.cs</a></td><td>Reverse DNS resolution</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/IpRangeParser.cs">IpRangeParser.cs</a></td><td>IP range parsing (CIDR / range / single)</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/ServiceNameMap.cs">ServiceNameMap.cs</a></td><td>Port number &rarr; service name map</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/ViewModels/MainViewModel.cs">MainViewModel.cs</a></td><td>Scan orchestration + UI state</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Mcp/ScannerMcpTools.cs">ScannerMcpTools.cs</a></td><td>MCP tool definitions</td></tr>
+    <tr><td><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Mcp/McpHostManager.cs">McpHostManager.cs</a></td><td>MCP server lifecycle</td></tr>
+  </tbody>
+</table>
+
+<!-- ── Tech Stack ── -->
+<h2 id="tech-stack">Tech Stack</h2>
+<table>
+  <thead><tr><th>Component</th><th>Technology</th></tr></thead>
+  <tbody>
+    <tr><td>Runtime</td><td>.NET 9.0 (self-contained, Windows)</td></tr>
+    <tr><td>UI</td><td>WPF (Windows Presentation Foundation)</td></tr>
+    <tr><td>MCP SDK</td><td>ModelContextProtocol v0.8.0-preview.1</td></tr>
+    <tr><td>MCP Transport</td><td>ASP.NET Core (Streamable HTTP)</td></tr>
+    <tr><td>Networking</td><td>System.Net (Ping, TcpClient, Dns, HttpClient)</td></tr>
+    <tr><td>Serialization</td><td>System.Text.Json</td></tr>
+    <tr><td>Installer</td><td>WiX Toolset</td></tr>
+    <tr><td>System Tray</td><td>System.Windows.Forms (NotifyIcon)</td></tr>
+  </tbody>
+</table>
+<div class="info-box green">No Electron, no embedded browser, no Node.js runtime.</div>
+
+<!-- ── Scanning Pipeline ── -->
+<h2 id="scanning-pipeline">Scanning Pipeline</h2>
+<p>The scan runs through 5 phases, orchestrated by <code>MainViewModel.RunScanAsync()</code>:</p>
+
+<div class="pipeline">
+  <div class="pipeline-step">
+    <div class="pipeline-num">1</div>
+    <div class="pipeline-body">
+      <div class="pipeline-title">IP Range Parsing</div>
+      <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/IpRangeParser.cs">IpRangeParser.cs</a></div>
+      <div class="pipeline-desc">
+        <ul>
+          <li>Accepts CIDR (<code>192.168.1.0/24</code>), range (<code>10.0.0.1-254</code>), or single IPs</li>
+          <li>Short-form ranges supported (expands last octet)</li>
+          <li>Max 65,536 addresses per scan</li>
+          <li>Network/broadcast excluded for CIDR (except /31, /32)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pipeline-step">
+    <div class="pipeline-num">2</div>
+    <div class="pipeline-body">
+      <div class="pipeline-title">Ping Sweep</div>
+      <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PingScanner.cs">PingScanner.cs</a></div>
+      <div class="pipeline-desc">
+        <ul>
+          <li>256 concurrent ICMP pings via <code>SemaphoreSlim</code></li>
+          <li>1000ms timeout (configurable)</li>
+          <li>Callback per result: <code>Action&lt;IPAddress, bool, long&gt;</code></li>
+          <li>Can be skipped for hosts blocking ICMP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pipeline-step">
+    <div class="pipeline-num">3</div>
+    <div class="pipeline-body">
+      <div class="pipeline-title">DNS Resolution <span class="tag tag-blue">parallel with Phase 4</span></div>
+      <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/DnsResolver.cs">DnsResolver.cs</a></div>
+      <div class="pipeline-desc">
+        <ul>
+          <li><code>Dns.GetHostEntryAsync()</code> for PTR record lookup</li>
+          <li>Updates UI in real-time via <code>Dispatcher.Invoke()</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pipeline-step">
+    <div class="pipeline-num">4</div>
+    <div class="pipeline-body">
+      <div class="pipeline-title">Port Scanning</div>
+      <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PortScanner.cs">PortScanner.cs</a></div>
+      <div class="pipeline-desc">
+        <ul>
+          <li>TCP connect scan via <code>TcpClient.ConnectAsync()</code></li>
+          <li>64 concurrent connections per host</li>
+          <li>2000ms timeout (configurable)</li>
+          <li>Service name resolved via <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/ServiceNameMap.cs">ServiceNameMap.cs</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pipeline-step">
+    <div class="pipeline-num">5</div>
+    <div class="pipeline-body">
+      <div class="pipeline-title">AI Service Probing <span class="tag tag-orange">AI preset only</span></div>
+      <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs">AiServiceProber.cs</a></div>
+      <div class="pipeline-desc">
+        <ul>
+          <li>32 concurrent HTTP probes</li>
+          <li>Iterates 45 probe definitions ordered by specificity</li>
+          <li>Each probe: GET request &rarr; match status code / body / headers</li>
+          <li>Keeps best match per port (highest specificity wins)</li>
+          <li>Special Docker API handling: enumerates containers, filters by 33 AI image patterns</li>
+          <li>Detail extraction: model names, versions, GPU info, VRAM, metrics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Concurrency ── -->
+<h2 id="concurrency">Concurrency Model</h2>
+<table>
+  <thead><tr><th>Phase</th><th>Max Concurrent</th><th>Mechanism</th></tr></thead>
+  <tbody>
+    <tr><td>Ping Sweep</td><td>256</td><td><code>SemaphoreSlim(256)</code></td></tr>
+    <tr><td>Port Scan</td><td>64 per host</td><td><code>SemaphoreSlim(64)</code></td></tr>
+    <tr><td>AI Probing</td><td>32 total</td><td><code>SemaphoreSlim(32)</code></td></tr>
+  </tbody>
+</table>
+<p>All I/O is fully async. UI thread safety via <code>Dispatcher.Invoke()</code>. Shared state protected by <code>lock</code> objects. <code>CancellationToken</code> propagates through the entire pipeline.</p>
+
+<!-- ── Probe System ── -->
+<h2 id="probe-system">AI Service Probe System</h2>
+
+<h3>How Probes Work</h3>
+<p>Each probe definition in <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs">AiServiceProber.cs</a> has:</p>
+
+<pre><code><span class="keyword">class</span> <span class="type">ProbeDefinition</span>
+{
+    <span class="type">string</span> <span class="attr">Path</span>;           <span class="comment">// HTTP endpoint to hit (e.g., "/api/tags")</span>
+    <span class="type">string</span> <span class="attr">ServiceName</span>;    <span class="comment">// What we call it (e.g., "Ollama")</span>
+    <span class="type">string</span> <span class="attr">Category</span>;       <span class="comment">// Grouping (e.g., "LLM", "Image Gen")</span>
+    <span class="type">string</span> <span class="attr">Confidence</span>;     <span class="comment">// "high", "medium", "low"</span>
+    <span class="type">int</span>    <span class="attr">Specificity</span>;    <span class="comment">// 100 = most specific, 20 = generic fallback</span>
+    <span class="type">int?</span>   <span class="attr">StatusCode</span>;     <span class="comment">// Expected HTTP status (null = don't check)</span>
+    <span class="type">string?</span> <span class="attr">BodyContains</span>;  <span class="comment">// Substring match in response body</span>
+    <span class="type">string?</span> <span class="attr">HeaderContains</span>;<span class="comment">// Substring match in response headers</span>
+    <span class="type">int?</span>   <span class="attr">PortHint</span>;       <span class="comment">// Only run on this port (null = any port)</span>
+}</code></pre>
+
+<h3>Matching Logic</h3>
+<ol>
+  <li>Iterate probes from highest to lowest specificity</li>
+  <li>Skip probes where <code>PortHint</code> doesn't match current port</li>
+  <li>Send HTTP GET with <code>User-Agent: AgrusScanner/1.0</code></li>
+  <li>HTTPS for ports 8443, 2376; HTTP otherwise</li>
+  <li>Match against <code>StatusCode</code>, <code>BodyContains</code>, <code>HeaderContains</code></li>
+  <li>Track best match (highest specificity) per port</li>
+  <li>Extract details (models, versions, GPU info) from response body</li>
+</ol>
+
+<h3>All 45 Probe Definitions</h3>
+<table>
+  <thead><tr><th>Category</th><th>Probes</th><th>Services</th><th>Details</th></tr></thead>
+  <tbody>
+    <tr><td><span class="tag tag-purple">LLM</span></td><td>16</td><td>12</td><td>Ollama (2), vLLM, HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI, FastChat (2)</td></tr>
+    <tr><td><span class="tag tag-green">Image Gen</span></td><td>4</td><td>2</td><td>Stable Diffusion A1111 (2), ComfyUI (2)</td></tr>
+    <tr><td><span class="tag tag-blue">ML Platform</span></td><td>10</td><td>9</td><td>NVIDIA Triton (2), TorchServe (2), TensorFlow Serving, MLflow (2), Ray Serve, BentoML, KServe, MindsDB, Tabby</td></tr>
+    <tr><td><span class="tag tag-orange">AI Platform</span></td><td>5</td><td>5</td><td>Open WebUI, AnythingLLM, LibreChat, Flowise, Dify</td></tr>
+    <tr><td><span class="tag tag-orange">GPU Infra</span></td><td>3</td><td>3</td><td>NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics</td></tr>
+    <tr><td><span class="tag tag-blue">Container</span></td><td>1</td><td>1</td><td>Docker API (with 33 AI image patterns)</td></tr>
+    <tr><td><span class="tag tag-purple">Fallback</span></td><td>4</td><td>4</td><td>OpenAI-compatible, LM Studio/TGW, Gradio AI App, Generic LLM</td></tr>
+  </tbody>
+</table>
+
+<!-- ── Docker Patterns ── -->
+<h3 id="docker-patterns">Docker AI Container Patterns</h3>
+<p>Matched case-insensitively against container image names:</p>
+<pre><code>ollama, localai, vllm, text-generation-inference, tritonserver,
+torchserve, tensorflow/serving, stable-diffusion, comfyui,
+open-webui, anythingllm, librechat, flowise, dify, litellm,
+koboldcpp, tabbyml, whisper, llama, mistral, deepseek, qdrant,
+chromadb, weaviate, milvus, bentoml, langchain, langserve,
+ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
+
+<!-- ── MCP Server ── -->
+<h2 id="mcp-server">MCP Server</h2>
+
+<h3>Startup</h3>
+<p><strong>File:</strong> <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Mcp/McpHostManager.cs">McpHostManager.cs</a></p>
+<ul>
+  <li>Embedded ASP.NET Core <code>WebApplication</code></li>
+  <li>Endpoint: <code>http://localhost:{port}/mcp</code> (default port: 8999)</li>
+  <li>Server info: <code>name: "agrus-scanner", version: "0.2.0"</code></li>
+  <li>Started automatically in GUI mode, or via <code>--mcp-only</code> flag for headless</li>
+</ul>
+
+<h3>Tool Definitions</h3>
+<p><strong>File:</strong> <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Mcp/ScannerMcpTools.cs">ScannerMcpTools.cs</a></p>
+<table>
+  <thead><tr><th>Tool</th><th>Parameters</th><th>Returns</th></tr></thead>
+  <tbody>
+    <tr><td><code>scan_network</code></td><td><code>ip_range</code> (required), <code>preset</code> (optional: quick/common/extended/ai/none), <code>skip_ping</code> (optional)</td><td>JSON array of host objects</td></tr>
+    <tr><td><code>probe_host</code></td><td><code>ip</code> (required), <code>ports</code> (optional: csv or preset name)</td><td>JSON host object</td></tr>
+    <tr><td><code>export_results</code></td><td><code>file_path</code> (required), <code>format</code> (optional: json/csv/auto)</td><td>JSON confirmation with path and count</td></tr>
+    <tr><td><code>list_presets</code></td><td>none</td><td>JSON array of preset definitions</td></tr>
+  </tbody>
+</table>
+<p>All tools are static methods, accept <code>CancellationToken</code>, return serialized JSON strings.</p>
+
+<h3>MCP-Only Mode</h3>
+<pre><code>AgrusScanner.exe --mcp-only</code></pre>
+<ul>
+  <li>No main window &mdash; system tray icon (<a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/TrayIcon.cs">TrayIcon.cs</a>) with context menu</li>
+  <li>MCP server starts immediately</li>
+  <li>Exit from tray menu</li>
+</ul>
+
+<!-- ── Agent Integrations ── -->
+<h2 id="agent-integrations">Agent Integrations</h2>
+
+<h3>Claude Code</h3>
+<p><strong>Config:</strong> <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/.mcp.json">.mcp.json</a> in project root points to <code>http://localhost:8999/mcp</code></p>
+<p><strong>Skill:</strong> <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/.claude/skills/agrus-scanner/SKILL.md">.claude/skills/agrus-scanner/SKILL.md</a> &mdash; AgentSkills-compatible markdown defining when/how to use the tools.</p>
+
+<h3>OpenClaw</h3>
+<p><strong>Plugin:</strong> <a href="https://github.com/NYBaywatch/AgrusScanner/tree/master/openclaw-plugin">openclaw-plugin/</a> &mdash; TypeScript plugin that proxies tool calls to the MCP server.</p>
+<pre><code>openclaw plugins install ./openclaw-plugin</code></pre>
+
+<!-- ── Models ── -->
+<h2 id="models">Models</h2>
+
+<h3>HostResult</h3>
+<p>Represents a single discovered host. Implements <code>INotifyPropertyChanged</code> for real-time UI binding.</p>
+<p><strong>Properties:</strong> <code>IpAddress</code>, <code>Hostname</code>, <code>IsAlive</code>, <code>PingMs</code>, <code>OpenPorts</code> (List&lt;PortResult&gt;), <code>AiServices</code> (List&lt;AiServiceResult&gt;), <code>Status</code></p>
+
+<h3>PortResult</h3>
+<p>Simple record: <code>Port</code> (int), <code>ServiceName</code> (string)</p>
+
+<h3>AiServiceResult</h3>
+<p><strong>Properties:</strong> <code>ServiceName</code>, <code>Category</code>, <code>Port</code>, <code>Confidence</code>, <code>Specificity</code>, <code>Details</code></p>
+
+<h3>ScanConfig</h3>
+<p>Holds scan parameters and defines the 4 static port presets (Quick / Common / Extended / AI).</p>
+
+<h3>AppSettings</h3>
+<p>Persisted user preferences: <code>McpPort</code>, <code>ExtraPorts</code> dict, <code>RemovedPorts</code> dict, <code>SkipPing</code></p>
+
+<!-- ── Services ── -->
+<h2 id="services">Services</h2>
+<div class="info-box green">All scanning services are <strong>stateless</strong> &mdash; they can be reused across scans without cleanup.</div>
+<table>
+  <thead><tr><th>Service</th><th>Responsibility</th><th>Key Method</th></tr></thead>
+  <tbody>
+    <tr><td><code>PingScanner</code></td><td>ICMP ping sweep</td><td><code>ScanAsync(IEnumerable&lt;IPAddress&gt;, callback, ct)</code></td></tr>
+    <tr><td><code>PortScanner</code></td><td>TCP port scanning</td><td><code>ScanAsync(string ip, int[] ports, ct)</code></td></tr>
+    <tr><td><code>DnsResolver</code></td><td>Reverse DNS</td><td><code>ResolveAsync(string ip, ct)</code></td></tr>
+    <tr><td><code>AiServiceProber</code></td><td>AI service HTTP probing</td><td><code>ProbeAllAsync(string ip, int[] openPorts, ct)</code></td></tr>
+    <tr><td><code>IpRangeParser</code></td><td>IP range parsing</td><td><code>Parse(string input)</code> (static)</td></tr>
+    <tr><td><code>ServiceNameMap</code></td><td>Port &rarr; name lookup</td><td><code>GetServiceName(int port)</code> (static)</td></tr>
+    <tr><td><code>SettingsService</code></td><td>JSON settings I/O</td><td><code>Load()</code>, <code>Save(settings)</code></td></tr>
+  </tbody>
+</table>
+
+<!-- ── UI Layer ── -->
+<h2 id="ui-layer">UI Layer</h2>
+<h3>MainWindow.xaml</h3>
+<ul>
+  <li>WPF DataGrid bound to <code>ObservableCollection&lt;HostResult&gt;</code></li>
+  <li>Columns: IP, Hostname, Ping, Status, AI Service, Ports</li>
+  <li>Dark theme via <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Themes/DarkTheme.xaml">DarkTheme.xaml</a></li>
+  <li>Zoom: Ctrl+=/- and Ctrl+MouseWheel</li>
+  <li>Settings panel with preset selection, custom port overrides</li>
+  <li>Export button: saves results to CSV or TXT via <code>SaveFileDialog</code></li>
+</ul>
+
+<h3>Visual Indicators</h3>
+<ul>
+  <li>Alive hosts: green-tinted row (<code>#1a2a1a</code>)</li>
+  <li>AI services: orange accent</li>
+  <li>Progress bar: real-time scan percentage</li>
+  <li>Status bar: <code>% | completed/total | elapsed | alive count</code></li>
+</ul>
+
+<!-- ── Settings ── -->
+<h2 id="settings">Settings &amp; Persistence</h2>
+<p><strong>Location:</strong> <code>%LOCALAPPDATA%\AgrusScanner\settings.json</code></p>
+<pre><code>{
+  <span class="string">"McpPort"</span>: <span class="attr">8999</span>,
+  <span class="string">"SkipPing"</span>: <span class="keyword">false</span>,
+  <span class="string">"ExtraPorts"</span>: {
+    <span class="string">"quick"</span>: <span class="string">"9090,8888"</span>,
+    <span class="string">"common"</span>: <span class="string">""</span>
+  },
+  <span class="string">"RemovedPorts"</span>: {
+    <span class="string">"quick"</span>: <span class="string">"21"</span>,
+    <span class="string">"common"</span>: <span class="string">""</span>
+  }
+}</code></pre>
+<p>Loaded on startup by <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/SettingsService.cs">SettingsService.cs</a>. Custom ports are merged with presets at scan time (union extra, subtract removed).</p>
+
+<!-- ── Build ── -->
+<h2 id="build">Build &amp; Packaging</h2>
+<pre><code><span class="comment"># Build the application</span>
+dotnet build AgrusScanner.sln -c Release
+
+<span class="comment"># Publish self-contained</span>
+dotnet publish AgrusScanner/AgrusScanner.csproj -c Release -r win-x64 --self-contained
+
+<span class="comment"># Build MSI installer</span>
+.\build-installer.ps1</code></pre>
+<p>The installer project uses WiX Toolset to produce an MSI. The published app is self-contained (includes .NET runtime, no installation required on target).</p>
+
+<!-- ── Extending ── -->
+<h2 id="extending">Extending the Scanner</h2>
+
+<h3>Adding a New AI Service Probe</h3>
+<p>In <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs">AiServiceProber.cs</a>, add a <code>ProbeDefinition</code> to the <code>Probes</code> array:</p>
+<pre><code><span class="keyword">new</span>()
+{
+    Path = <span class="string">"/api/health"</span>,          <span class="comment">// Endpoint to probe</span>
+    ServiceName = <span class="string">"MyService"</span>,     <span class="comment">// Display name</span>
+    Category = <span class="string">"LLM"</span>,             <span class="comment">// Category for grouping</span>
+    Confidence = <span class="string">"high"</span>,           <span class="comment">// high/medium/low</span>
+    Specificity = <span class="attr">85</span>,              <span class="comment">// Higher = preferred over generic</span>
+    BodyContains = <span class="string">"my_unique_key"</span>,<span class="comment">// Substring match</span>
+    PortHint = <span class="attr">5555</span>                <span class="comment">// Optional: only probe this port</span>
+},</code></pre>
+<p>Place it in the array ordered by category, with higher-specificity probes before lower ones.</p>
+
+<p>To extract details, add a case to <code>TryExtractDetails()</code>:</p>
+<pre><code><span class="string">"MyService"</span> <span class="keyword">when</span> root.TryGetProperty(<span class="string">"models"</span>, <span class="keyword">out var</span> m) =>
+    FormatModelNames(m),</code></pre>
+
+<h3>Adding a Docker AI Pattern</h3>
+<p>Append to the <code>AiDockerPatterns</code> array in <code>AiServiceProber.cs</code>:</p>
+<pre><code><span class="string">"myservice"</span>  <span class="comment">// case-insensitive substring match on image name</span></code></pre>
+
+<h3>Adding a New Port Preset</h3>
+<p>Add a static array to <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Models/ScanConfig.cs">ScanConfig.cs</a>:</p>
+<pre><code><span class="keyword">public static readonly</span> <span class="type">int</span>[] MyPresetPorts = [<span class="attr">80</span>, <span class="attr">443</span>, <span class="attr">8080</span>, <span class="attr">5555</span>];</code></pre>
+<p>Then wire it into the ViewModel and MCP tools.</p>
+
+<h3>Adding a New MCP Tool</h3>
+<p>In <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Mcp/ScannerMcpTools.cs">ScannerMcpTools.cs</a>:</p>
+<pre><code>[<span class="type">McpServerTool</span>(Name = <span class="string">"my_tool"</span>)]
+<span class="keyword">public static async</span> Task&lt;<span class="type">string</span>&gt; MyTool(
+    [<span class="type">Description</span>(<span class="string">"Parameter description"</span>)] <span class="type">string</span> param,
+    <span class="type">CancellationToken</span> ct)
+{
+    <span class="comment">// Implementation</span>
+    <span class="keyword">return</span> JsonSerializer.Serialize(result);
+}</code></pre>
+
+</main>
+</div>
+
+</body>
+</html>

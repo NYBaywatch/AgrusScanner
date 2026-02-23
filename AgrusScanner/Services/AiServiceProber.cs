@@ -114,12 +114,20 @@ public class AiServiceProber
             BodyContains = "\"data\"",
             PortHint = 4891
         },
-        // LocalAI — /readyz is unique to LocalAI
+        // LocalAI — /models returns model list
         new()
         {
-            Path = "/readyz", ServiceName = "LocalAI", Category = "LLM",
-            Confidence = "high", Specificity = 78,
-            StatusCode = 200
+            Path = "/models", ServiceName = "LocalAI", Category = "LLM",
+            Confidence = "high", Specificity = 80,
+            BodyContains = "LocalAI"
+        },
+        // LocalAI fallback — /readyz + /v1/models combo (port 8080 typical)
+        new()
+        {
+            Path = "/v1/models", ServiceName = "LocalAI", Category = "LLM",
+            Confidence = "medium", Specificity = 65,
+            BodyContains = "\"object\"",
+            PortHint = 8080
         },
         // FastChat controller — distinctive port 21001
         new()
@@ -235,12 +243,12 @@ public class AiServiceProber
             StatusCode = 200,
             PortHint = 8265
         },
-        // BentoML — /readyz
+        // BentoML — /docs returns BentoML-specific OpenAPI
         new()
         {
-            Path = "/readyz", ServiceName = "BentoML", Category = "ML Platform",
-            Confidence = "medium", Specificity = 65,
-            StatusCode = 200,
+            Path = "/docs", ServiceName = "BentoML", Category = "ML Platform",
+            Confidence = "high", Specificity = 80,
+            BodyContains = "BentoML",
             PortHint = 3000
         },
         // KServe V2 — /v2/health/ready
@@ -291,12 +299,12 @@ public class AiServiceProber
             Confidence = "high", Specificity = 88,
             BodyContains = "LibreChat"
         },
-        // Flowise — /api-docs (Swagger)
+        // Flowise — root contains "Flowise"
         new()
         {
-            Path = "/api-docs", ServiceName = "Flowise", Category = "AI Platform",
-            Confidence = "medium", Specificity = 70,
-            StatusCode = 200
+            Path = "/", ServiceName = "Flowise", Category = "AI Platform",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "Flowise"
         },
         // Dify — /console/api/
         new()
@@ -366,19 +374,12 @@ public class AiServiceProber
             Confidence = "medium", Specificity = 55,
             BodyContains = "\"data\""
         },
-        // Generic health endpoint
-        new()
-        {
-            Path = "/health", ServiceName = "LLM Service", Category = "LLM",
-            Confidence = "low", Specificity = 20,
-            StatusCode = 200
-        },
-        // Gradio detection — root page contains "gradio"
+        // Gradio detection — root page loads Gradio JS framework
         new()
         {
             Path = "/", ServiceName = "Gradio AI App", Category = "AI Platform",
-            Confidence = "medium", Specificity = 60,
-            BodyContains = "gradio"
+            Confidence = "medium", Specificity = 70,
+            BodyContains = "gradio-app"
         },
     ];
 
@@ -643,7 +644,8 @@ public class AiServiceProber
                     FormatModelNames(data),
                 "Tabby" when root.TryGetProperty("model", out var model) =>
                     model.GetString() ?? "",
-                "LocalAI" => "ready",
+                "LocalAI" when root.TryGetProperty("data", out var localData) =>
+                    FormatModelNames(localData),
 
                 // Image generation
                 "Stable Diffusion (A1111)" when path.Contains("sd-models") =>

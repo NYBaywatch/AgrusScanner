@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Text.Json;
 using AgrusScanner.Models;
@@ -15,6 +16,11 @@ public class ScannerMcpTools
     private static readonly DnsResolver _dns = new();
     private static readonly AiServiceProber _aiProber = new();
     private static readonly JsonSerializerOptions _json = new() { WriteIndented = true };
+    private static readonly List<HostScanRecord> _lastResults = [];
+
+    private record HostScanRecord(
+        string Ip, string Hostname, bool Alive, long? PingMs,
+        List<PortResult> OpenPorts, List<AiServiceResult> AiServices);
 
     [McpServerTool(Name = "scan_network"), Description("Scan an IP range: ping sweep, port scan, DNS resolution, and optional AI/ML service detection. Returns JSON array of host results.")]
     public static async Task<string> ScanNetwork(
@@ -26,7 +32,7 @@ public class ScannerMcpTools
         var addresses = IpRangeParser.Parse(ip_range);
         var ports = GetPortsForPreset(preset);
         var runAiProbe = preset.Equals("ai", StringComparison.OrdinalIgnoreCase);
-        var results = new List<object>();
+        var results = new List<HostScanRecord>();
         var lockObj = new object();
 
         // Ping sweep
@@ -45,7 +51,13 @@ public class ScannerMcpTools
         });
         await Task.WhenAll(tasks);
 
-        return JsonSerializer.Serialize(results, _json);
+        lock (lockObj)
+        {
+            _lastResults.Clear();
+            _lastResults.AddRange(results);
+        }
+
+        return JsonSerializer.Serialize(results.Select(FormatRecord), _json);
     }
 
     [McpServerTool(Name = "probe_host"), Description("Deep-scan a single IP address: port scan and AI/ML service detection. Returns JSON object with full host detail.")]
@@ -77,8 +89,70 @@ public class ScannerMcpTools
         var (alive, ms) = await _ping.PingAsync(address, 1000, cancellationToken);
         var result = await ScanSingleHost(address, alive ? ms : null, portList, runAiProbe, cancellationToken);
 
-        return JsonSerializer.Serialize(result, _json);
+        lock (_lastResults)
+        {
+            _lastResults.Clear();
+            _lastResults.Add(result);
+        }
+
+        return JsonSerializer.Serialize(FormatRecord(result), _json);
     }
+
+    [McpServerTool(Name = "export_results"), Description("Export the last scan_network or probe_host results to a file. Supports JSON and CSV formats.")]
+    public static async Task<string> ExportResults(
+        [Description("Output file path (e.g. scan-results.json or scan-results.csv)")] string file_path,
+        [Description("Format: json or csv (default: inferred from file extension, falls back to json)")] string format = "auto",
+        CancellationToken cancellationToken = default)
+    {
+        if (_lastResults.Count == 0)
+            return """{"error": "No scan results to export. Run scan_network or probe_host first."}""";
+
+        var fmt = format.ToLowerInvariant();
+        if (fmt == "auto")
+            fmt = file_path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ? "csv" : "json";
+
+        var fullPath = Path.GetFullPath(file_path);
+
+        if (fmt == "csv")
+        {
+            var lines = new List<string>
+            {
+                "ip,hostname,alive,ping_ms,open_ports,ai_services"
+            };
+            foreach (var host in _lastResults)
+            {
+                var portsStr = string.Join(";", host.OpenPorts.Select(p => $"{p.Port}/{p.ServiceName}"));
+                var aiStr = string.Join(";", host.AiServices.Select(a => $"{a.ServiceName}:{a.Port}"));
+                lines.Add($"{host.Ip},{Csv(host.Hostname)},{host.Alive},{host.PingMs?.ToString() ?? ""},{Csv(portsStr)},{Csv(aiStr)}");
+            }
+            await File.WriteAllLinesAsync(fullPath, lines, cancellationToken);
+        }
+        else
+        {
+            var json = JsonSerializer.Serialize(_lastResults.Select(h => new
+            {
+                ip = h.Ip,
+                hostname = h.Hostname,
+                alive = h.Alive,
+                ping_ms = h.PingMs,
+                open_ports = h.OpenPorts.Select(p => new { p.Port, service = p.ServiceName }).ToArray(),
+                ai_services = h.AiServices.Select(a => new
+                {
+                    service = a.ServiceName,
+                    category = a.Category,
+                    port = a.Port,
+                    confidence = a.Confidence,
+                    details = a.Details
+                }).ToArray()
+            }), _json);
+            await File.WriteAllTextAsync(fullPath, json, cancellationToken);
+        }
+
+        return JsonSerializer.Serialize(new { exported = _lastResults.Count, path = fullPath, format = fmt }, _json);
+    }
+
+    private static string Csv(string value) =>
+        value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
 
     [McpServerTool(Name = "list_presets"), Description("List available scan presets with their port counts and port numbers.")]
     public static string ListPresets()
@@ -104,7 +178,7 @@ public class ScannerMcpTools
         _ => ScanConfig.QuickPorts
     };
 
-    private static async Task<object> ScanSingleHost(
+    private static async Task<HostScanRecord> ScanSingleHost(
         IPAddress address, long? pingMs, int[] ports, bool runAiProbe, CancellationToken ct)
     {
         var ip = address.ToString();
@@ -118,21 +192,23 @@ public class ScannerMcpTools
         if (runAiProbe && openPorts.Count > 0)
             aiServices = await _aiProber.ProbeAllAsync(ip, openPorts.Select(p => p.Port).ToArray(), ct);
 
-        return new
-        {
-            ip,
-            hostname,
-            alive = pingMs.HasValue,
-            ping_ms = pingMs,
-            open_ports = openPorts.Select(p => new { p.Port, service = p.ServiceName }).ToArray(),
-            ai_services = aiServices.Select(a => new
-            {
-                service = a.ServiceName,
-                category = a.Category,
-                port = a.Port,
-                confidence = a.Confidence,
-                details = a.Details
-            }).ToArray()
-        };
+        return new HostScanRecord(ip, hostname, pingMs.HasValue, pingMs, openPorts, aiServices);
     }
+
+    private static object FormatRecord(HostScanRecord h) => new
+    {
+        ip = h.Ip,
+        hostname = h.Hostname,
+        alive = h.Alive,
+        ping_ms = h.PingMs,
+        open_ports = h.OpenPorts.Select(p => new { p.Port, service = p.ServiceName }).ToArray(),
+        ai_services = h.AiServices.Select(a => new
+        {
+            service = a.ServiceName,
+            category = a.Category,
+            port = a.Port,
+            confidence = a.Confidence,
+            details = a.Details
+        }).ToArray()
+    };
 }

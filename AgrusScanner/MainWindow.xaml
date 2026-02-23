@@ -37,6 +37,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="0" Content="IP Range:" Foreground="{StaticResource TextDimBrush}"
@@ -100,6 +102,12 @@
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
                                 Click START to scan, STOP to cancel.
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                Ctrl+C to copy selected IP address
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
+                                Right-click a row for more options
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,2">
                                 Ctrl+= / Ctrl+- to zoom in/out
@@ -188,12 +196,73 @@
                     </Border>
                 </Popup>
 
-                <Button Grid.Column="6" Content="START" Command="{Binding StartCommand}"
+                <ToggleButton Grid.Column="6"
+                              IsChecked="{Binding ShowAliveOnly}"
+                              VerticalAlignment="Center" Margin="0,0,12,0"
+                              Padding="8,4" FontSize="11" Cursor="Hand">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="Bd" Background="Transparent"
+                                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                                            <TextBlock x:Name="Txt" Text="ALIVE ONLY"
+                                                       FontSize="11" FontFamily="{StaticResource MonoFont}"
+                                                       Foreground="{StaticResource TextDimBrush}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                                <Setter TargetName="Txt" Property="Foreground" Value="{StaticResource AccentBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#22ffffff" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <Button Grid.Column="7" Content="EXPORT" Command="{Binding ExportCommand}"
+                        Visibility="{Binding CanExport, Converter={StaticResource BoolToVis}}"
+                        VerticalAlignment="Center" Margin="0,0,8,0"
+                        Padding="8,4" FontSize="11" FontFamily="{StaticResource MonoFont}" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" Background="Transparent"
+                                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                                            <TextBlock x:Name="Txt" Text="EXPORT"
+                                                       FontSize="11" FontFamily="{StaticResource MonoFont}"
+                                                       Foreground="{StaticResource TextDimBrush}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#22ffffff" />
+                                                <Setter TargetName="Txt" Property="Foreground" Value="{StaticResource TextBrush}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Grid.Column="8" Content="START" Command="{Binding StartCommand}"
                         Style="{StaticResource StartButton}"
                         Visibility="{Binding IsNotScanning, Converter={StaticResource BoolToVis}}"
                         VerticalAlignment="Center" Margin="0,0,4,0" />
 
-                <Button Grid.Column="7" Content="STOP" Command="{Binding StopCommand}"
+                <Button Grid.Column="9" Content="STOP" Command="{Binding StopCommand}"
                         Style="{StaticResource StopButton}"
                         Visibility="{Binding IsScanning, Converter={StaticResource BoolToVis}}"
                         VerticalAlignment="Center" />
@@ -205,8 +274,8 @@
                      Maximum="100" Height="3" />
 
         <!-- Results DataGrid -->
-        <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding Results}"
+        <DataGrid x:Name="ResultsGrid" Grid.Row="2"
+                  ItemsSource="{Binding ResultsView}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   CanUserAddRows="False"
@@ -214,7 +283,12 @@
                   CanUserSortColumns="True"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
-                  EnableRowVirtualization="True">
+                  EnableRowVirtualization="True"
+                  Sorting="ResultsGrid_Sorting"
+                  ContextMenuOpening="ResultsGrid_ContextMenuOpening">
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="RowContextMenu" />
+            </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="IP ADDRESS" Binding="{Binding IpAddress}" Width="150" />
@@ -279,6 +353,25 @@
             <StatusBarItem>
                 <TextBlock Text="{Binding ProgressText}" FontFamily="{StaticResource MonoFont}"
                            Foreground="{StaticResource TextDimBrush}" FontSize="11" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right"
+                           Visibility="{Binding HasUpdate, Converter={StaticResource BoolToVis}}">
+                <TextBlock FontSize="11" FontFamily="{StaticResource MonoFont}" Cursor="Hand"
+                           MouseLeftButtonUp="UpdateLink_Click">
+                    <TextBlock.Text>
+                        <Binding Path="UpdateText" />
+                    </TextBlock.Text>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StatusBarItem>
         </StatusBar>
     </Grid>

@@ -29,6 +29,7 @@ Requires Windows 10/11.
 - **AI Service Detection** - 45 probe definitions identifying 25+ AI/ML services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
+- **Export Results** - Save scan results to CSV or TXT via the toolbar EXPORT button
 - **Real-time Results** - Live-updating UI as scan progresses
 - **MCP Server** - Expose scanning tools to AI agents via Model Context Protocol
 - **Agent Skills** - Works with Claude Code, OpenClaw, Cursor, and other AgentSkills-compatible tools
@@ -58,6 +59,7 @@ Detection goes beyond port scanning - the prober queries service-specific API en
    - **AI Scan** - 28 AI/ML-specific ports with service probing
    - **No port scan** - Ping sweep only
 3. Click **START**
+4. After scanning, click **EXPORT** to save results as CSV or TXT
 
 AI Scan results show detected services with extracted details:
 ```
@@ -73,6 +75,8 @@ AgrusScanner.exe --mcp-only
 ```
 
 This starts a Streamable HTTP MCP server on `http://localhost:8999/mcp` (port configurable in settings). AI agents can then call the scanning tools directly.
+
+> **Security note:** The MCP server binds to `localhost` only — it is not accessible from the network. This is the standard security model for local MCP servers (same as Claude Code, Cursor, etc.), where the OS process boundary provides isolation. No additional authentication is needed because only processes on your own machine can connect. Do not expose this server to the network via reverse proxy or tunnel without adding your own auth layer.
 
 **MCP Tools:**
 
@@ -133,10 +137,12 @@ The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkil
 
 | Key | Action |
 |-----|--------|
+| Ctrl + C | Copy selected IP address |
 | Ctrl + = | Zoom in |
 | Ctrl + - | Zoom out |
 | Ctrl + 0 | Reset zoom |
 | Ctrl + Scroll | Zoom |
+| Right-click | Context menu (copy, open services) |
 
 ## License
 

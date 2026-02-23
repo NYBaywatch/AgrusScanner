@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrus Scanner - User Guide</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #e8863a;
+    --accent-dim: #e8863a22;
+    --accent-glow: #e8863a44;
+    --link: #58a6ff;
+    --green: #3fb950;
+    --green-dim: #3fb95022;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --purple-dim: #bc8cff22;
+    --cyan: #79c0ff;
+    --cyan-dim: #79c0ff22;
+    --yellow: #d29922;
+    --yellow-dim: #d2992222;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,17,23,0.92);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(16px);
+  }
+  .topbar-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+  .topbar-sep { color: var(--border); font-size: 20px; font-weight: 300; }
+  .topbar-title { color: var(--text-muted); font-size: 14px; }
+  .topbar-spacer { flex: 1; }
+  .topbar-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    transition: all .2s;
+  }
+  .topbar-link:hover { color: var(--text); background: var(--bg-tertiary); }
+  .topbar-link-primary {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .topbar-link-primary:hover { background: var(--accent-dim); }
+
+  /* ── Layout ── */
+  .layout {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: sticky;
+    top: 49px;
+    width: 240px;
+    min-width: 240px;
+    height: calc(100vh - 49px);
+    overflow-y: auto;
+    padding: 24px 0 24px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .sidebar-section {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+  }
+  .sidebar-section:first-child { margin-top: 0; }
+  .sidebar a {
+    display: block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all .15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg-tertiary);
+    border-left-color: var(--accent);
+  }
+
+  /* ── Main Content ── */
+  .content {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 48px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--accent), #f0a060, #ffd080);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-tagline {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .hero-features {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .hero-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--link); }
+  .dot-orange { background: var(--accent); }
+  .dot-purple { background: var(--purple); }
+
+  /* ── Section headers ── */
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 48px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+    color: var(--text);
+  }
+
+  p { margin-bottom: 14px; }
+  strong { color: var(--text); font-weight: 600; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  ul, ol { padding-left: 24px; margin-bottom: 14px; }
+  li { margin-bottom: 5px; }
+
+  code {
+    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    background: var(--bg-tertiary);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+  }
+  pre {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 14px 0 20px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--bg-tertiary);
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:hover td { background: var(--bg-secondary); }
+  td code { font-size: 12px; }
+
+  /* ── Steps ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 24px;
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step-num {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 1;
+    border: 2px solid var(--accent);
+  }
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 38px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .step-body { flex: 1; padding-top: 6px; }
+  .step-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .step-desc { color: var(--text-muted); font-size: 14px; }
+
+  /* ── Getting Started cards ── */
+  .quick-start {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .quick-start ol {
+    padding-left: 20px;
+  }
+  .quick-start li {
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+
+  /* ── Category cards ── */
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 16px;
+  }
+  .category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .badge-llm { background: var(--purple-dim); color: var(--purple); }
+  .badge-image { background: var(--green-dim); color: var(--green); }
+  .badge-ml { background: var(--cyan-dim); color: var(--cyan); }
+  .badge-platform { background: var(--accent-dim); color: var(--accent); }
+  .badge-gpu { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-container { background: #58a6ff22; color: var(--link); }
+  .badge-fallback { background: #8b949e22; color: var(--text-muted); }
+  .category-count {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* ── Info boxes ── */
+  .info-box {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-dim);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .info-box.blue {
+    border-left-color: var(--link);
+    background: #58a6ff11;
+  }
+
+  /* ── Preset cards ── */
+  .preset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .preset-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color .2s;
+  }
+  .preset-card:hover { border-color: var(--accent); }
+  .preset-name {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .preset-count {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .preset-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── Result example ── */
+  .result-example {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 14px 0 20px;
+    overflow-x: auto;
+  }
+  .result-example .cat { color: var(--text-muted); }
+  .result-example .service { color: var(--accent); font-weight: 600; }
+  .result-example .port { color: var(--cyan); }
+  .result-example .detail { color: var(--green); }
+
+  /* ── Shortcut table ── */
+  kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px;
+    color: var(--text);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .footer a { color: var(--link); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 24px 20px; }
+    .hero h1 { font-size: 28px; }
+    .preset-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Top Bar ═══ -->
+<div class="topbar">
+  <a href="https://github.com/NYBaywatch/AgrusScanner" class="topbar-logo">Agrus Scanner</a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">User Guide</span>
+  <span class="topbar-spacer"></span>
+  <a href="developer.html" class="topbar-link">Developer Docs</a>
+  <a href="https://github.com/NYBaywatch/AgrusScanner" class="topbar-link-primary">GitHub</a>
+</div>
+
+<div class="layout">
+
+<!-- ═══ Sidebar ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-section">Getting Started</div>
+  <a href="#what-is">What is Agrus Scanner?</a>
+  <a href="#getting-started">Quick Start</a>
+  <a href="#how-it-works">How Scanning Works</a>
+
+  <div class="sidebar-section">Scan Configuration</div>
+  <a href="#presets">Scan Presets</a>
+  <a href="#quick-preset">Quick (6 ports)</a>
+  <a href="#common-preset">Common (22 ports)</a>
+  <a href="#extended-preset">Extended (58 ports)</a>
+  <a href="#ai-preset">AI (28 ports)</a>
+
+  <div class="sidebar-section">AI Detection</div>
+  <a href="#ai-detection">Overview</a>
+  <a href="#llm-services">LLM Services</a>
+  <a href="#image-gen">Image Generation</a>
+  <a href="#ml-platforms">ML Platforms</a>
+  <a href="#ai-platforms">AI Chat Platforms</a>
+  <a href="#gpu-infra">GPU Infrastructure</a>
+  <a href="#containers">Container Detection</a>
+  <a href="#fallbacks">Generic Fallbacks</a>
+
+  <div class="sidebar-section">Reference</div>
+  <a href="#results">Reading Results</a>
+  <a href="#export">Exporting Results</a>
+  <a href="#settings">Settings</a>
+  <a href="#mcp">MCP Server</a>
+  <a href="#shortcuts">Keyboard Shortcuts</a>
+</nav>
+
+<!-- ═══ Content ═══ -->
+<main class="content">
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <h1>User Guide</h1>
+  <p class="hero-tagline">Discover hosts, open ports, and AI/ML services on your network.</p>
+  <div class="hero-features">
+    <span class="hero-chip"><span class="hero-chip-dot dot-green"></span> Ping Sweep</span>
+    <span class="hero-chip"><span class="hero-chip-dot dot-blue"></span> Port Scanning</span>
+    <span class="hero-chip"><span class="hero-chip-dot dot-purple"></span> DNS Resolution</span>
+    <span class="hero-chip"><span class="hero-chip-dot dot-orange"></span> 45+ AI Signatures</span>
+  </div>
+</div>
+
+<!-- ── What is Agrus Scanner ── -->
+<h2 id="what-is">What is Agrus Scanner?</h2>
+<p>Agrus Scanner is a Windows desktop application that scans your local network to find:</p>
+<ul>
+  <li><strong>Live hosts</strong> via ICMP ping sweep</li>
+  <li><strong>Open ports</strong> via TCP connect scanning</li>
+  <li><strong>Hostnames</strong> via reverse DNS lookup</li>
+  <li><strong>AI/ML services</strong> via HTTP endpoint probing (45+ detection signatures)</li>
+</ul>
+<p>It was built to help discover "shadow AI" &mdash; unauthorized AI services running on corporate or home networks &mdash; but works as a general-purpose network scanner too.</p>
+
+<!-- ── Getting Started ── -->
+<h2 id="getting-started">Getting Started</h2>
+<div class="quick-start">
+  <ol>
+    <li><strong>Launch</strong> AgrusScanner.exe</li>
+    <li><strong>Enter an IP range</strong> in the input field:
+      <ul>
+        <li>CIDR notation: <code>192.168.1.0/24</code> (scans 254 hosts)</li>
+        <li>Range notation: <code>192.168.1.1-254</code> (scans .1 to .254)</li>
+        <li>Single IP: <code>192.168.1.100</code></li>
+      </ul>
+    </li>
+    <li><strong>Choose a scan preset</strong> (Quick, Common, Extended, or AI)</li>
+    <li><strong>Click Scan</strong></li>
+  </ol>
+</div>
+<div class="info-box">The auto-detect button will fill in your local subnet automatically.</div>
+
+<!-- ── How Scanning Works ── -->
+<h2 id="how-it-works">How Scanning Works</h2>
+<p>Each scan runs through up to 5 phases:</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Ping Sweep</div>
+      <div class="step-desc">Sends ICMP ping packets to every IP in the range simultaneously (up to 256 at once). Hosts that respond are marked "Alive" with their round-trip time in milliseconds. Hosts that don't respond within 1 second are marked "Dead" and skipped (unless "Skip Ping" is enabled).</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">DNS Resolution</div>
+      <div class="step-desc">For every alive host, the scanner performs a reverse DNS lookup to find its hostname (e.g., <code>myserver.local</code>). This runs in parallel with port scanning.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Port Scanning</div>
+      <div class="step-desc">For each alive host, the scanner attempts TCP connections to every port in the selected preset (up to 64 ports at once per host). If a connection succeeds within 2 seconds, the port is "open." Each open port is labeled with its well-known service name (e.g., port 80 = "http").</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">AI Service Probing <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI preset only)</span></div>
+      <div class="step-desc">When using the AI scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services, and extracts details like model names, versions, and GPU information.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">Docker Container Detection <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI preset only)</span></div>
+      <div class="step-desc">If the Docker API is accessible (port 2375), the scanner queries running containers and flags any with AI-related images (Ollama, vLLM, Stable Diffusion, etc.).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Scan Presets ── -->
+<h2 id="presets">Scan Presets &amp; Ports</h2>
+
+<div class="preset-grid">
+  <div class="preset-card">
+    <div class="preset-name">Quick</div>
+    <div class="preset-count">6 ports</div>
+    <div class="preset-desc">Fastest scan. Covers the most common services: HTTP, HTTPS, SSH, FTP, RDP.</div>
+  </div>
+  <div class="preset-card">
+    <div class="preset-name">Common</div>
+    <div class="preset-count">22 ports</div>
+    <div class="preset-desc">Broader coverage with mail, databases, file shares, and management interfaces.</div>
+  </div>
+  <div class="preset-card">
+    <div class="preset-name">Extended</div>
+    <div class="preset-count">58 ports</div>
+    <div class="preset-desc">Comprehensive scan. DHCP, SNMP, LDAP, all databases, NoSQL, and more.</div>
+  </div>
+  <div class="preset-card">
+    <div class="preset-name">AI</div>
+    <div class="preset-count">28 ports</div>
+    <div class="preset-desc">Specialized for AI/ML services. Includes HTTP probing to identify exact services.</div>
+  </div>
+</div>
+
+<!-- Quick Preset -->
+<h3 id="quick-preset">Quick (6 ports)</h3>
+<table>
+  <thead><tr><th>Port</th><th>Service</th></tr></thead>
+  <tbody>
+    <tr><td><code>21</code></td><td>FTP</td></tr>
+    <tr><td><code>22</code></td><td>SSH</td></tr>
+    <tr><td><code>80</code></td><td>HTTP</td></tr>
+    <tr><td><code>443</code></td><td>HTTPS</td></tr>
+    <tr><td><code>3389</code></td><td>RDP (Remote Desktop)</td></tr>
+    <tr><td><code>8080</code></td><td>HTTP Alt</td></tr>
+  </tbody>
+</table>
+
+<!-- Common Preset -->
+<h3 id="common-preset">Common (22 ports)</h3>
+<table>
+  <thead><tr><th>Port</th><th>Service</th><th>Port</th><th>Service</th></tr></thead>
+  <tbody>
+    <tr><td><code>20</code></td><td>FTP Data</td><td><code>443</code></td><td>HTTPS</td></tr>
+    <tr><td><code>21</code></td><td>FTP</td><td><code>445</code></td><td>SMB</td></tr>
+    <tr><td><code>22</code></td><td>SSH</td><td><code>993</code></td><td>IMAPS</td></tr>
+    <tr><td><code>23</code></td><td>Telnet</td><td><code>995</code></td><td>POP3S</td></tr>
+    <tr><td><code>25</code></td><td>SMTP</td><td><code>1723</code></td><td>PPTP VPN</td></tr>
+    <tr><td><code>53</code></td><td>DNS</td><td><code>3306</code></td><td>MySQL</td></tr>
+    <tr><td><code>80</code></td><td>HTTP</td><td><code>3389</code></td><td>RDP</td></tr>
+    <tr><td><code>110</code></td><td>POP3</td><td><code>5900</code></td><td>VNC</td></tr>
+    <tr><td><code>111</code></td><td>RPCBind</td><td><code>8080</code></td><td>HTTP Alt</td></tr>
+    <tr><td><code>135</code></td><td>MS-RPC</td><td><code>8443</code></td><td>HTTPS Alt</td></tr>
+    <tr><td><code>139</code></td><td>NetBIOS</td><td></td><td></td></tr>
+    <tr><td><code>143</code></td><td>IMAP</td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<!-- Extended Preset -->
+<h3 id="extended-preset">Extended (58 ports)</h3>
+<table>
+  <thead><tr><th>Port</th><th>Service</th><th>Port</th><th>Service</th><th>Port</th><th>Service</th></tr></thead>
+  <tbody>
+    <tr><td><code>20</code></td><td>FTP Data</td><td><code>179</code></td><td>BGP</td><td><code>1521</code></td><td>Oracle</td></tr>
+    <tr><td><code>21</code></td><td>FTP</td><td><code>389</code></td><td>LDAP</td><td><code>1723</code></td><td>PPTP</td></tr>
+    <tr><td><code>22</code></td><td>SSH</td><td><code>443</code></td><td>HTTPS</td><td><code>2049</code></td><td>NFS</td></tr>
+    <tr><td><code>23</code></td><td>Telnet</td><td><code>445</code></td><td>SMB</td><td><code>2082</code></td><td>cPanel</td></tr>
+    <tr><td><code>25</code></td><td>SMTP</td><td><code>465</code></td><td>SMTPS</td><td><code>2083</code></td><td>cPanel SSL</td></tr>
+    <tr><td><code>53</code></td><td>DNS</td><td><code>500</code></td><td>ISAKMP</td><td><code>2086</code></td><td>WHM</td></tr>
+    <tr><td><code>67</code></td><td>DHCP</td><td><code>514</code></td><td>Syslog</td><td><code>2087</code></td><td>WHM SSL</td></tr>
+    <tr><td><code>68</code></td><td>DHCP</td><td><code>515</code></td><td>Printer</td><td><code>3306</code></td><td>MySQL</td></tr>
+    <tr><td><code>69</code></td><td>TFTP</td><td><code>520</code></td><td>RIP</td><td><code>3389</code></td><td>RDP</td></tr>
+    <tr><td><code>80</code></td><td>HTTP</td><td><code>587</code></td><td>Mail Submit</td><td><code>5432</code></td><td>PostgreSQL</td></tr>
+    <tr><td><code>110</code></td><td>POP3</td><td><code>631</code></td><td>IPP/CUPS</td><td><code>5900</code></td><td>VNC</td></tr>
+    <tr><td><code>111</code></td><td>RPCBind</td><td><code>636</code></td><td>LDAPS</td><td><code>5901</code></td><td>VNC :1</td></tr>
+    <tr><td><code>119</code></td><td>NNTP</td><td><code>993</code></td><td>IMAPS</td><td><code>6379</code></td><td>Redis</td></tr>
+    <tr><td><code>123</code></td><td>NTP</td><td><code>995</code></td><td>POP3S</td><td><code>8080</code></td><td>HTTP Alt</td></tr>
+    <tr><td><code>135</code></td><td>MS-RPC</td><td><code>1080</code></td><td>SOCKS</td><td><code>8443</code></td><td>HTTPS Alt</td></tr>
+    <tr><td><code>137</code></td><td>NetBIOS NS</td><td><code>1433</code></td><td>MSSQL</td><td><code>8888</code></td><td>HTTP Alt 2</td></tr>
+    <tr><td><code>138</code></td><td>NetBIOS DGM</td><td><code>1434</code></td><td>MSSQL Monitor</td><td><code>9090</code></td><td>Admin</td></tr>
+    <tr><td><code>139</code></td><td>NetBIOS SSN</td><td></td><td></td><td><code>9200</code></td><td>Elasticsearch</td></tr>
+    <tr><td><code>143</code></td><td>IMAP</td><td></td><td></td><td><code>27017</code></td><td>MongoDB</td></tr>
+    <tr><td><code>161</code></td><td>SNMP</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><code>162</code></td><td>SNMP Trap</td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<!-- AI Preset -->
+<h3 id="ai-preset">AI (28 ports)</h3>
+<table>
+  <thead><tr><th>Port</th><th>Target Service(s)</th><th>Category</th></tr></thead>
+  <tbody>
+    <tr><td><code>11434</code></td><td>Ollama</td><td>LLM</td></tr>
+    <tr><td><code>8000</code></td><td>vLLM, NVIDIA Triton</td><td>LLM / ML Platform</td></tr>
+    <tr><td><code>8080</code></td><td>HF TGI, llama.cpp, TorchServe, KServe, Tabby</td><td>LLM / ML Platform</td></tr>
+    <tr><td><code>1234</code></td><td>LM Studio</td><td>LLM</td></tr>
+    <tr><td><code>1337</code></td><td>Jan.ai</td><td>LLM</td></tr>
+    <tr><td><code>4891</code></td><td>GPT4All</td><td>LLM</td></tr>
+    <tr><td><code>5001</code></td><td>KoboldCpp</td><td>LLM</td></tr>
+    <tr><td><code>3000</code></td><td>BentoML, Open WebUI, Flowise</td><td>ML Platform / AI Platform</td></tr>
+    <tr><td><code>4000</code></td><td>LiteLLM</td><td>LLM</td></tr>
+    <tr><td><code>7860</code></td><td>Stable Diffusion (A1111)</td><td>Image Generation</td></tr>
+    <tr><td><code>8188</code></td><td>ComfyUI</td><td>Image Generation</td></tr>
+    <tr><td><code>8081</code></td><td>TorchServe Management</td><td>ML Platform</td></tr>
+    <tr><td><code>8082</code></td><td>TorchServe Metrics</td><td>GPU Infrastructure</td></tr>
+    <tr><td><code>8265</code></td><td>Ray Serve</td><td>ML Platform</td></tr>
+    <tr><td><code>8501</code></td><td>TensorFlow Serving</td><td>ML Platform</td></tr>
+    <tr><td><code>47334</code></td><td>MindsDB</td><td>ML Platform</td></tr>
+    <tr><td><code>3001</code></td><td>AnythingLLM</td><td>AI Platform</td></tr>
+    <tr><td><code>3080</code></td><td>LibreChat</td><td>AI Platform</td></tr>
+    <tr><td><code>5000</code></td><td>MLflow, Dify</td><td>ML Platform / AI Platform</td></tr>
+    <tr><td><code>8002</code></td><td>Triton Metrics</td><td>GPU Infrastructure</td></tr>
+    <tr><td><code>9400</code></td><td>NVIDIA DCGM Exporter</td><td>GPU Infrastructure</td></tr>
+    <tr><td><code>2375</code></td><td>Docker API (container scan)</td><td>Container Detection</td></tr>
+    <tr><td><code>8443</code></td><td>HTTPS Alt</td><td>Multi-use</td></tr>
+    <tr><td><code>21001</code></td><td>FastChat Controller</td><td>LLM</td></tr>
+    <tr><td><code>21002</code></td><td>FastChat Worker</td><td>LLM</td></tr>
+  </tbody>
+</table>
+
+<!-- ── AI/ML Service Detection ── -->
+<h2 id="ai-detection">AI/ML Service Detection</h2>
+<p>When using the AI preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:</p>
+
+<!-- LLM Services -->
+<div class="category-header" id="llm-services">
+  <span class="category-badge badge-llm">LLM Services</span>
+  <span class="category-count">12 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://ollama.ai">Ollama</a></td><td><code>11434</code></td><td>Root returns "Ollama is running"; <code>/api/tags</code> lists models</td></tr>
+    <tr><td><a href="https://github.com/vllm-project/vllm">vLLM</a></td><td><code>8000</code></td><td><code>/version</code> returns version info</td></tr>
+    <tr><td><a href="https://github.com/huggingface/text-generation-inference">Hugging Face TGI</a></td><td><code>8080</code></td><td><code>/info</code> contains <code>model_id</code></td></tr>
+    <tr><td><a href="https://github.com/ggerganov/llama.cpp">llama.cpp</a></td><td><code>8080</code></td><td><code>/props</code> has <code>default_generation_settings</code></td></tr>
+    <tr><td><a href="https://github.com/LostRuins/koboldcpp">KoboldCpp</a></td><td><code>5001</code></td><td><code>/api/v1/info/version</code> and <code>/api/v1/model</code></td></tr>
+    <tr><td><a href="https://lmstudio.ai">LM Studio</a></td><td><code>1234</code></td><td><code>/api/v0/models</code> (unique v0 API path)</td></tr>
+    <tr><td><a href="https://github.com/BerriAI/litellm">LiteLLM</a></td><td><code>4000</code></td><td><code>/model/info</code> and <code>/health/liveliness</code></td></tr>
+    <tr><td><a href="https://jan.ai">Jan.ai</a></td><td><code>1337</code></td><td><code>/v1/models</code> on port 1337</td></tr>
+    <tr><td><a href="https://gpt4all.io">GPT4All</a></td><td><code>4891</code></td><td><code>/v1/models</code> on port 4891</td></tr>
+    <tr><td><a href="https://github.com/mudler/LocalAI">LocalAI</a></td><td><code>8080</code></td><td><code>/readyz</code> health endpoint</td></tr>
+    <tr><td><a href="https://github.com/lm-sys/FastChat">FastChat</a></td><td><code>21001/21002</code></td><td>Controller on 21001, worker on 21002</td></tr>
+    <tr><td><a href="https://github.com/TabbyML/tabby">Tabby</a></td><td><code>8080</code></td><td><code>/v1/health</code> returns model info</td></tr>
+  </tbody>
+</table>
+
+<!-- Image Generation -->
+<div class="category-header" id="image-gen">
+  <span class="category-badge badge-image">Image Generation</span>
+  <span class="category-count">2 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui">Stable Diffusion (A1111)</a></td><td><code>7860</code></td><td><code>/sdapi/v1/sd-models</code> and <code>/sdapi/v1/options</code></td></tr>
+    <tr><td><a href="https://github.com/comfyanonymous/ComfyUI">ComfyUI</a></td><td><code>8188</code></td><td><code>/system_stats</code> and <code>/object_info</code></td></tr>
+  </tbody>
+</table>
+
+<!-- ML Platforms -->
+<div class="category-header" id="ml-platforms">
+  <span class="category-badge badge-ml">ML Platforms</span>
+  <span class="category-count">8 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://developer.nvidia.com/triton-inference-server">NVIDIA Triton</a></td><td><code>8000</code></td><td><code>/v2/health/ready</code> (V2 inference protocol)</td></tr>
+    <tr><td><a href="https://pytorch.org/serve/">TorchServe</a></td><td><code>8080/8081</code></td><td><code>/ping</code> returns "Healthy"; <code>/models</code> on 8081</td></tr>
+    <tr><td><a href="https://www.tensorflow.org/tfx/guide/serving">TensorFlow Serving</a></td><td><code>8501</code></td><td><code>/v1/models</code> with <code>model_version_status</code></td></tr>
+    <tr><td><a href="https://mlflow.org">MLflow</a></td><td><code>5000</code></td><td><code>/version</code> and <code>/api/2.0/mlflow/experiments/search</code></td></tr>
+    <tr><td><a href="https://docs.ray.io/en/latest/serve/">Ray Serve</a></td><td><code>8265</code></td><td><code>/api/serve/deployments/</code></td></tr>
+    <tr><td><a href="https://www.bentoml.com">BentoML</a></td><td><code>3000</code></td><td><code>/readyz</code> on port 3000</td></tr>
+    <tr><td><a href="https://kserve.github.io/website/">KServe</a></td><td><code>8080</code></td><td><code>/v2/health/ready</code></td></tr>
+    <tr><td><a href="https://mindsdb.com">MindsDB</a></td><td><code>47334</code></td><td>Root page on port 47334</td></tr>
+  </tbody>
+</table>
+
+<!-- AI Chat Platforms -->
+<div class="category-header" id="ai-platforms">
+  <span class="category-badge badge-platform">AI Chat Platforms</span>
+  <span class="category-count">5 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/open-webui/open-webui">Open WebUI</a></td><td><code>3000</code></td><td>HTML contains "Open WebUI"</td></tr>
+    <tr><td><a href="https://github.com/Mintplex-Labs/anything-llm">AnythingLLM</a></td><td><code>3001</code></td><td><code>/api/health</code> returns <code>{online: true}</code></td></tr>
+    <tr><td><a href="https://github.com/danny-avila/LibreChat">LibreChat</a></td><td><code>3080</code></td><td>HTML contains "LibreChat"</td></tr>
+    <tr><td><a href="https://github.com/FlowiseAI/Flowise">Flowise</a></td><td><code>3000</code></td><td><code>/api-docs</code> (Swagger UI)</td></tr>
+    <tr><td><a href="https://github.com/langgenius/dify">Dify</a></td><td><code>5000</code></td><td><code>/console/api/setup</code></td></tr>
+  </tbody>
+</table>
+
+<!-- GPU Infrastructure -->
+<div class="category-header" id="gpu-infra">
+  <span class="category-badge badge-gpu">GPU Infrastructure</span>
+  <span class="category-count">3 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/NVIDIA/dcgm-exporter">NVIDIA DCGM Exporter</a></td><td><code>9400</code></td><td><code>/metrics</code> with <code>DCGM_FI_</code> prefix (extracts GPU model names)</td></tr>
+    <tr><td>Triton Metrics</td><td><code>8002</code></td><td><code>/metrics</code> with <code>nv_inference_</code> prefix</td></tr>
+    <tr><td>TorchServe Metrics</td><td><code>8082</code></td><td><code>/metrics</code> with <code>ts_inference_</code> prefix</td></tr>
+  </tbody>
+</table>
+
+<!-- Container Detection -->
+<div class="category-header" id="containers">
+  <span class="category-badge badge-container">Container Detection</span>
+  <span class="category-count">33 image patterns</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
+  <tbody>
+    <tr><td>Docker API</td><td><code>2375</code></td><td><code>/containers/json</code> &mdash; filters running containers by AI image patterns</td></tr>
+  </tbody>
+</table>
+<p><strong>Docker AI image patterns matched:</strong></p>
+<pre><code>ollama, localai, vllm, text-generation-inference, tritonserver,
+torchserve, tensorflow/serving, stable-diffusion, comfyui,
+open-webui, anythingllm, librechat, flowise, dify, litellm,
+koboldcpp, tabbyml, whisper, llama, mistral, deepseek, qdrant,
+chromadb, weaviate, milvus, bentoml, langchain, langserve,
+ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
+
+<!-- Generic Fallbacks -->
+<div class="category-header" id="fallbacks">
+  <span class="category-badge badge-fallback">Generic Fallbacks</span>
+  <span class="category-count">Lower confidence</span>
+</div>
+<p>If no specific service is matched, the scanner tries these lower-confidence detections:</p>
+<table>
+  <thead><tr><th>Detection</th><th>Endpoint</th><th>Confidence</th></tr></thead>
+  <tbody>
+    <tr><td>OpenAI-compatible API</td><td><code>/v1/models</code></td><td>Medium</td></tr>
+    <tr><td>LM Studio / Text-Gen-WebUI</td><td><code>/api/v1/models</code></td><td>Medium</td></tr>
+    <tr><td>Gradio AI App</td><td>Root page contains "gradio"</td><td>Medium</td></tr>
+    <tr><td>Generic LLM Service</td><td><code>/health</code> returns 200</td><td>Low</td></tr>
+  </tbody>
+</table>
+
+<!-- ── Reading Results ── -->
+<h2 id="results">Reading Your Results</h2>
+<p>The scan results table shows one row per discovered host:</p>
+<table>
+  <thead><tr><th>Column</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><strong>IP Address</strong></td><td>The host's IP</td></tr>
+    <tr><td><strong>Hostname</strong></td><td>Reverse DNS name (if available)</td></tr>
+    <tr><td><strong>Ping</strong></td><td>Round-trip time in ms</td></tr>
+    <tr><td><strong>Status</strong></td><td>Alive or Dead</td></tr>
+    <tr><td><strong>AI Service</strong></td><td>Detected AI/ML services with details (AI preset only)</td></tr>
+    <tr><td><strong>Ports</strong></td><td>All open ports with service names</td></tr>
+  </tbody>
+</table>
+
+<h3>AI Service Column Format</h3>
+<div class="result-example">
+<span class="cat">[LLM]</span> <span class="service">Ollama</span> <span class="port">:11434</span> <span class="detail">(llama3, mistral)</span>
+<span class="cat">[Image Gen]</span> <span class="service">ComfyUI</span> <span class="port">:8188</span> <span class="detail">(NVIDIA GeForce RTX 4090, 24.0GB VRAM)</span>
+<span class="cat">[GPU Infra]</span> <span class="service">NVIDIA DCGM</span> <span class="port">:9400</span> <span class="detail">(RTX 4090)</span>
+<span class="cat">[Container]</span> <span class="service">Docker API</span> <span class="port">:2375</span> <span class="detail">(ollama (ollama/ollama:latest) [running])</span>
+</div>
+
+<!-- ── Exporting Results ── -->
+<h2 id="export">Exporting Results</h2>
+<p>After a scan completes, the <strong>EXPORT</strong> button appears in the toolbar (between ALIVE ONLY and START). Click it to save results to a file.</p>
+<table>
+  <thead><tr><th>Format</th><th>Extension</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CSV</strong></td><td><code>.csv</code></td><td>Comma-separated values. Opens in Excel, Google Sheets, etc.</td></tr>
+    <tr><td><strong>TXT</strong></td><td><code>.txt</code></td><td>Tab-delimited text. Easy to paste into other tools.</td></tr>
+  </tbody>
+</table>
+<p>Both formats include the same columns: IP address, hostname, alive status, ping time, open ports, and AI services. The file format is determined by the extension you choose in the Save File dialog.</p>
+
+<!-- ── Settings ── -->
+<h2 id="settings">Settings</h2>
+<p>Access settings from the gear icon in the toolbar.</p>
+<table>
+  <thead><tr><th>Setting</th><th>Description</th><th>Default</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Skip Ping</strong></td><td>Scan all IPs even if they don't respond to ping. Useful when ICMP is blocked by firewalls.</td><td>Off</td></tr>
+    <tr><td><strong>MCP Server Port</strong></td><td>TCP port for the MCP server (agent integration)</td><td>8999</td></tr>
+    <tr><td><strong>Extra Ports</strong></td><td>Additional ports to add to any preset (comma-separated)</td><td>Empty</td></tr>
+    <tr><td><strong>Removed Ports</strong></td><td>Ports to exclude from a preset (comma-separated, not available for AI preset)</td><td>Empty</td></tr>
+  </tbody>
+</table>
+<p>Settings are saved automatically to <code>%LOCALAPPDATA%\AgrusScanner\settings.json</code>.</p>
+
+<!-- ── MCP Server ── -->
+<h2 id="mcp">MCP Server (Agent Mode)</h2>
+<p>Agrus Scanner includes a built-in <a href="https://modelcontextprotocol.io">MCP</a> server that lets AI assistants (Claude Code, OpenClaw, etc.) run scans programmatically.</p>
+
+<h3>Headless Mode</h3>
+<p>Run without the GUI, just the MCP server:</p>
+<pre><code>AgrusScanner.exe --mcp-only</code></pre>
+<p>A system tray icon appears with options to exit. The MCP server listens on the configured port (default 8999).</p>
+
+<h3>Available Tools</h3>
+<table>
+  <thead><tr><th>Tool</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>scan_network</code></td><td>Full network scan with ping, port scan, DNS, and optional AI probing</td></tr>
+    <tr><td><code>probe_host</code></td><td>Deep-scan a single IP for open ports and AI services</td></tr>
+    <tr><td><code>export_results</code></td><td>Export last scan results to JSON or CSV file</td></tr>
+    <tr><td><code>list_presets</code></td><td>List all scan presets with their port numbers</td></tr>
+  </tbody>
+</table>
+
+<h3>Connecting Claude Code</h3>
+<p>The project includes a <a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/.mcp.json">.mcp.json</a> configuration that connects automatically when working in the project directory.</p>
+
+<!-- ── Keyboard Shortcuts ── -->
+<h2 id="shortcuts">Keyboard Shortcuts</h2>
+<table>
+  <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td><kbd>Ctrl</kbd> + <kbd>=</kbd></td><td>Zoom in</td></tr>
+    <tr><td><kbd>Ctrl</kbd> + <kbd>-</kbd></td><td>Zoom out</td></tr>
+    <tr><td><kbd>Ctrl</kbd> + <kbd>0</kbd></td><td>Reset zoom</td></tr>
+    <tr><td><kbd>Ctrl</kbd> + Mouse Wheel</td><td>Zoom in/out</td></tr>
+  </tbody>
+</table>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  <span>MIT License &mdash; Copyright 2026 Joseph Fago</span>
+  <a href="https://github.com/NYBaywatch/AgrusScanner">github.com/NYBaywatch/AgrusScanner</a>
+</div>
+
+</main>
+</div>
+
+</body>
+</html>

@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 using System.Windows.Input;
 using AgrusScanner.Models;
 using AgrusScanner.Services;
@@ -28,13 +30,38 @@ public class MainViewModel : INotifyPropertyChanged
     private CancellationTokenSource? _cts;
     private string _extraPortsText = "";
     private string _removedPortsText = "";
+    private string? _updateText;
+    private string? _updateUrl;
+    private bool _showAliveOnly;
 
     public MainViewModel()
     {
         _settings = _settingsService.Load();
         StartCommand = new RelayCommand(async _ => await StartScanAsync(), _ => !IsScanning);
         StopCommand = new RelayCommand(_ => StopScan(), _ => IsScanning);
+        ToggleAliveFilterCommand = new RelayCommand(_ => ShowAliveOnly = !ShowAliveOnly);
+        ExportCommand = new RelayCommand(_ => ExportResults(), _ => CanExport);
+        OpenUpdateCommand = new RelayCommand(_ =>
+        {
+            if (_updateUrl is not null)
+                Process.Start(new ProcessStartInfo(_updateUrl) { UseShellExecute = true });
+        });
         RefreshSettingsFlyout();
+
+        ResultsView = CollectionViewSource.GetDefaultView(Results);
+
+        // Fire-and-forget update check
+        _ = CheckForUpdateAsync();
+    }
+
+    private async Task CheckForUpdateAsync()
+    {
+        var info = await UpdateChecker.CheckAsync();
+        if (info is not null)
+        {
+            _updateUrl = info.HtmlUrl;
+            UpdateText = $"Update {info.TagName} available";
+        }
     }
 
     private static string DetectLocalSubnet()
@@ -106,6 +133,7 @@ public class MainViewModel : INotifyPropertyChanged
             _isScanning = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsNotScanning));
+            OnPropertyChanged(nameof(CanExport));
             CommandManager.InvalidateRequerySuggested();
         }
     }
@@ -150,6 +178,41 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
+    public ICommand ExportCommand { get; }
+    public ICommand ToggleAliveFilterCommand { get; }
+    public ICommand OpenUpdateCommand { get; }
+
+    public bool CanExport => !IsScanning && Results.Count > 0;
+    public ICollectionView ResultsView { get; }
+
+    public string? UpdateText
+    {
+        get => _updateText;
+        set { _updateText = value; OnPropertyChanged(); OnPropertyChanged(nameof(HasUpdate)); }
+    }
+
+    public bool HasUpdate => !string.IsNullOrEmpty(_updateText);
+
+    public bool ShowAliveOnly
+    {
+        get => _showAliveOnly;
+        set
+        {
+            _showAliveOnly = value;
+            OnPropertyChanged();
+            ApplyFilter();
+        }
+    }
+
+    private void ApplyFilter()
+    {
+        if (ResultsView is ICollectionView view)
+        {
+            view.Filter = ShowAliveOnly
+                ? obj => obj is HostResult h && (h.IsAlive || h.OpenPorts.Count > 0)
+                : null;
+        }
+    }
 
     // --- Settings properties ---
 
@@ -457,6 +520,45 @@ public class MainViewModel : INotifyPropertyChanged
             }
         }
     }
+
+    private void ExportResults()
+    {
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = "CSV files|*.csv|Text files|*.txt|All files|*.*",
+            DefaultExt = ".csv",
+            FileName = "scan-results"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var path = dlg.FileName;
+        var isCsv = path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase);
+        var lines = new List<string>
+        {
+            isCsv
+                ? "ip,hostname,alive,ping_ms,open_ports,ai_services"
+                : "ip\thostname\talive\tping_ms\topen_ports\tai_services"
+        };
+
+        foreach (var host in Results)
+        {
+            var ports = host.OpenPorts.Count > 0
+                ? string.Join(";", host.OpenPorts.Select(p => $"{p.Port}/{p.ServiceName}"))
+                : "";
+            var ai = host.AiResults.Count > 0
+                ? string.Join(";", host.AiResults.Select(a => $"{a.ServiceName}:{a.Port}"))
+                : "";
+
+            lines.Add(isCsv
+                ? $"{host.IpAddress},{CsvEscape(host.Hostname)},{host.IsAlive},{host.PingMs?.ToString() ?? ""},{CsvEscape(ports)},{CsvEscape(ai)}"
+                : $"{host.IpAddress}\t{host.Hostname}\t{host.IsAlive}\t{host.PingMs?.ToString() ?? ""}\t{ports}\t{ai}");
+        }
+
+        File.WriteAllLines(path, lines);
+    }
+
+    private static string CsvEscape(string value) =>
+        value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
 
     private void StopScan()
     {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using AgrusScanner.Models;
@@ -26,7 +27,11 @@ public class SettingsService
                 return JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new AppSettings();
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            // Corrupted settings file — fall back to defaults
+            Trace.TraceWarning($"Failed to load settings: {ex.Message}");
+        }
         return new AppSettings();
     }
 
@@ -38,6 +43,9 @@ public class SettingsService
             var json = JsonSerializer.Serialize(settings, JsonOptions);
             File.WriteAllText(SettingsPath, json);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Trace.TraceError($"Failed to save settings: {ex.Message}");
+        }
     }
 }
