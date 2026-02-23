@@ -163,6 +163,7 @@ public class ScannerMcpTools
             new { name = "common", port_count = ScanConfig.CommonPorts.Length, ports = ScanConfig.CommonPorts },
             new { name = "extended", port_count = ScanConfig.ExtendedPorts.Length, ports = ScanConfig.ExtendedPorts },
             new { name = "ai", port_count = ScanConfig.AiPorts.Length, ports = ScanConfig.AiPorts },
+            new { name = "deep-ai", port_count = 65535, ports = Array.Empty<int>() },
             new { name = "none", port_count = 0, ports = Array.Empty<int>() }
         };
         return JsonSerializer.Serialize(presets, _json);

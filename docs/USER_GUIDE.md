@@ -37,7 +37,7 @@ It was built to help discover "shadow AI" - unauthorized AI services running on 
    - CIDR notation: `192.168.1.0/24` (scans 254 hosts)
    - Range notation: `192.168.1.1-254` (scans from .1 to .254)
    - Single IP: `192.168.1.100`
-3. **Choose a scan preset** (Quick, Common, Extended, or AI)
+3. **Choose a scan preset** (Quick, Common, Extended, AI, Deep AI, or No port scan)
 4. **Click Scan**
 
 The auto-detect button will fill in your local subnet automatically.
@@ -55,10 +55,12 @@ For every alive host, the scanner performs a reverse DNS lookup to find its host
 ### 3. Port Scanning
 For each alive host, the scanner attempts TCP connections to every port in the selected preset (up to 64 ports at once per host). If a connection succeeds within 2 seconds, the port is "open." Each open port is labeled with its well-known service name (e.g., port 80 = "http").
 
-### 4. AI Service Probing (AI preset only)
-When using the **AI** scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services. The scanner extracts details like model names, versions, and GPU information where available.
+### 4. AI Service Probing (AI and Deep AI presets)
+When using the **AI** or **Deep AI** scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services. The scanner extracts details like model names, versions, and GPU information where available.
 
-### 5. Docker Container Detection (AI preset only)
+In **Deep AI Scan** mode, the scanner ignores port hints — every probe runs against every open port. This catches AI services running on non-standard ports at the cost of longer scan times.
+
+### 5. Docker Container Detection (AI and Deep AI presets)
 If the Docker API is accessible (port 2375), the scanner queries running containers and flags any with AI-related images (Ollama, vLLM, Stable Diffusion, etc.).
 
 ## Scan Presets & Ports
@@ -121,7 +123,7 @@ Comprehensive scan covering nearly everything - DHCP, SNMP, LDAP, databases, NoS
 | 162 | SNMP Trap | | | | |
 
 ### AI (28 ports)
-Specialized for discovering AI/ML services. Includes all LLM, image generation, ML platform, and GPU infrastructure ports, plus HTTP probing to identify the exact service.
+Specialized for discovering AI/ML services. Includes all LLM, image generation, ML platform, and GPU infrastructure ports, plus HTTP probing to identify the exact service. Probes are filtered by port hint — each probe only runs on ports where its service is expected.
 
 | Port | Target Service(s) | Category |
 |------|--------------------|----------|
@@ -153,9 +155,18 @@ Specialized for discovering AI/ML services. Includes all LLM, image generation, 
 | 21001 | FastChat Controller | LLM |
 | 21002 | FastChat Worker | LLM |
 
+### Deep AI Scan (all 65535 ports)
+The most thorough scan mode. Scans every port from 1 to 65535, then runs all AI probes against every open port — regardless of port hints. This catches AI services running on non-standard ports that the regular AI preset would miss.
+
+**Trade-offs:**
+- Much slower than the regular AI preset (scanning all ports takes time)
+- Best used on small ranges or single IPs
+- No port customization (extra/removed ports) — it already scans everything
+- All 59 probe definitions run against every open port (ignores PortHint filtering)
+
 ## AI/ML Service Detection
 
-When using the AI preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:
+When using the AI or Deep AI preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:
 
 ### LLM Services (Large Language Models)
 

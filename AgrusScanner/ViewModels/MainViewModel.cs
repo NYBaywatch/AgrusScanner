@@ -121,7 +121,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public string[] Presets => ["Quick (6 ports)", "Common (22 ports)", "Extended (58 ports)", "AI Scan", "No port scan"];
+    public string[] Presets => ["Quick (6 ports)", "Common (22 ports)", "Extended (58 ports)", "AI Scan", "Deep AI Scan (all ports)", "No port scan"];
 
     public bool IsScanning
     {
@@ -217,7 +217,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public bool IsAiPresetSelected => SelectedPreset == "AI Scan";
+    public bool IsAiPresetSelected => SelectedPreset is "AI Scan" or "Deep AI Scan (all ports)";
 
     public bool IsNotAiPresetSelected => !IsAiPresetSelected;
 
@@ -227,6 +227,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         get
         {
+            if (IsDeepScan) return "1\u201365535 (all ports)";
             var basePorts = GetBasePortsForPreset();
             if (basePorts.Length == 0) return "None";
             return string.Join(", ", basePorts);
@@ -270,6 +271,7 @@ public class MainViewModel : INotifyPropertyChanged
         "Common (22 ports)" => "Common",
         "Extended (58 ports)" => "Extended",
         "AI Scan" => "AI Scan",
+        "Deep AI Scan (all ports)" => "Deep AI Scan",
         "No port scan" => "No port scan",
         _ => SelectedPreset
     };
@@ -282,6 +284,7 @@ public class MainViewModel : INotifyPropertyChanged
         "Common (22 ports)" => ScanConfig.CommonPorts,
         "Extended (58 ports)" => ScanConfig.ExtendedPorts,
         "AI Scan" => ScanConfig.AiPorts,
+        "Deep AI Scan (all ports)" => ScanConfig.AllPorts,
         _ => []
     };
 
@@ -291,7 +294,7 @@ public class MainViewModel : INotifyPropertyChanged
         "Common (22 ports)" => _settings.CommonExtraPorts,
         "Extended (58 ports)" => _settings.ExtendedExtraPorts,
         "AI Scan" => _settings.AiExtraPorts,
-        _ => []
+        _ => [] // Deep AI Scan and No port scan have no customization
     };
 
     private int[] GetRemovedPortsForPreset() => SelectedPreset switch
@@ -318,7 +321,8 @@ public class MainViewModel : INotifyPropertyChanged
         return result;
     }
 
-    private bool IsAiScan => SelectedPreset == "AI Scan";
+    private bool IsAiScan => SelectedPreset is "AI Scan" or "Deep AI Scan (all ports)";
+    private bool IsDeepScan => SelectedPreset == "Deep AI Scan (all ports)";
 
     private void ApplyExtraPorts(string text)
     {
@@ -443,7 +447,7 @@ public class MainViewModel : INotifyPropertyChanged
                     // Queue port scan + DNS for alive hosts (or all hosts if skip ping)
                     if (alive || skipPing)
                     {
-                        _ = ScanHostDetailsAsync(host, ip, ports, ct);
+                        _ = ScanHostDetailsAsync(host, ip, ports, ct, ignorePortHints: IsDeepScan);
                     }
                 });
             }, ct);
@@ -459,7 +463,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private async Task ScanHostDetailsAsync(HostResult host, IPAddress ip, int[] ports, CancellationToken ct)
+    private async Task ScanHostDetailsAsync(HostResult host, IPAddress ip, int[] ports, CancellationToken ct, bool ignorePortHints = false)
     {
         var dispatcher = System.Windows.Application.Current.Dispatcher;
         var runAiProbe = IsAiScan;
@@ -486,7 +490,7 @@ public class MainViewModel : INotifyPropertyChanged
                 if (runAiProbe)
                 {
                     var aiResults = await _aiProber.ProbeAllAsync(
-                        ip.ToString(), openPorts.Select(p => p.Port).ToArray(), ct);
+                        ip.ToString(), openPorts.Select(p => p.Port).ToArray(), ct, ignorePortHints);
 
                     if (aiResults.Count > 0)
                     {

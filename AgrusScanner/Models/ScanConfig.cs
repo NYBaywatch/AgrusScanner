@@ -32,6 +32,8 @@ public class ScanConfig
         8443, 21001, 21002
     ];
 
+    public static int[] AllPorts => Enumerable.Range(1, 65535).ToArray();
+
     public static readonly int[] ExtendedPorts = [
         20, 21, 22, 23, 25, 53, 67, 68, 69, 80, 110, 111, 119, 123,
         135, 137, 138, 139, 143, 161, 162, 179, 389, 443, 445, 465,

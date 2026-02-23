@@ -299,12 +299,19 @@ public class AiServiceProber
             Confidence = "high", Specificity = 88,
             BodyContains = "LibreChat"
         },
-        // Flowise — root contains "Flowise"
+        // Flowise — /api/v1/chatflows is unique to Flowise
         new()
         {
-            Path = "/", ServiceName = "Flowise", Category = "AI Platform",
-            Confidence = "high", Specificity = 85,
-            BodyContains = "Flowise"
+            Path = "/api/v1/chatflows", ServiceName = "Flowise", Category = "AI Platform",
+            Confidence = "high", Specificity = 90,
+            StatusCode = 200
+        },
+        // Flowise — auth-protected instance returns 401
+        new()
+        {
+            Path = "/api/v1/chatflows", ServiceName = "Flowise", Category = "AI Platform",
+            Confidence = "medium", Specificity = 85,
+            StatusCode = 401
         },
         // Dify — /console/api/
         new()
@@ -312,6 +319,114 @@ public class AiServiceProber
             Path = "/console/api/setup", ServiceName = "Dify", Category = "AI Platform",
             Confidence = "high", Specificity = 88,
             StatusCode = 200
+        },
+        // SillyTavern — root contains "SillyTavern"
+        new()
+        {
+            Path = "/", ServiceName = "SillyTavern", Category = "AI Platform",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "SillyTavern",
+            PortHint = 8000
+        },
+        // n8n — root contains "n8n"
+        new()
+        {
+            Path = "/", ServiceName = "n8n", Category = "AI Platform",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "n8n",
+            PortHint = 5678
+        },
+        // PrivateGPT — /v1/health
+        new()
+        {
+            Path = "/v1/health", ServiceName = "PrivateGPT", Category = "AI Platform",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "private_gpt",
+            PortHint = 8001
+        },
+
+        // ═══════════════════════════════════════════
+        // LLM SERVING (additional)
+        // ═══════════════════════════════════════════
+
+        // Xinference — /v1/cluster/info is unique
+        new()
+        {
+            Path = "/v1/cluster/info", ServiceName = "Xinference", Category = "LLM",
+            Confidence = "high", Specificity = 92,
+            StatusCode = 200
+        },
+        // SGLang — /get_model_info is unique to SGLang
+        new()
+        {
+            Path = "/get_model_info", ServiceName = "SGLang", Category = "LLM",
+            Confidence = "high", Specificity = 90,
+            StatusCode = 200
+        },
+        // text-generation-webui (Oobabooga) — /api/v1/model returns single model
+        new()
+        {
+            Path = "/api/v1/model", ServiceName = "text-generation-webui", Category = "LLM",
+            Confidence = "high", Specificity = 82,
+            BodyContains = "result",
+            PortHint = 5000
+        },
+        // InvokeAI — /api/v1/app/version
+        new()
+        {
+            Path = "/api/v1/app/version", ServiceName = "InvokeAI", Category = "Image Gen",
+            Confidence = "high", Specificity = 92,
+            StatusCode = 200,
+            PortHint = 9090
+        },
+
+        // ═══════════════════════════════════════════
+        // VECTOR DATABASES
+        // ═══════════════════════════════════════════
+
+        // Qdrant — /collections
+        new()
+        {
+            Path = "/collections", ServiceName = "Qdrant", Category = "Vector DB",
+            Confidence = "high", Specificity = 90,
+            BodyContains = "\"collections\"",
+            PortHint = 6333
+        },
+        // ChromaDB — /api/v1/heartbeat
+        new()
+        {
+            Path = "/api/v1/heartbeat", ServiceName = "ChromaDB", Category = "Vector DB",
+            Confidence = "high", Specificity = 92,
+            StatusCode = 200,
+            PortHint = 8000
+        },
+        // Weaviate — /v1/meta
+        new()
+        {
+            Path = "/v1/meta", ServiceName = "Weaviate", Category = "Vector DB",
+            Confidence = "high", Specificity = 90,
+            BodyContains = "\"version\"",
+            PortHint = 8080
+        },
+        // Milvus — /healthz on management port
+        new()
+        {
+            Path = "/healthz", ServiceName = "Milvus", Category = "Vector DB",
+            Confidence = "high", Specificity = 85,
+            StatusCode = 200,
+            PortHint = 9091
+        },
+
+        // ═══════════════════════════════════════════
+        // MCP SERVERS
+        // ═══════════════════════════════════════════
+
+        // Agrus Scanner MCP — /mcp endpoint with SSE transport
+        new()
+        {
+            Path = "/mcp", ServiceName = "Agrus Scanner MCP", Category = "MCP Server",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "agrus-scanner"
         },
 
         // ═══════════════════════════════════════════
@@ -394,13 +509,15 @@ public class AiServiceProber
         "tabbyml", "whisper", "llama", "mistral", "deepseek",
         "qdrant", "chromadb", "weaviate", "milvus", "bentoml",
         "langchain", "langserve", "ray", "mlflow", "mindsdb",
-        "privategpt", "gpt4all"
+        "privategpt", "gpt4all", "xinference", "sglang",
+        "text-generation-webui", "oobabooga", "invokeai",
+        "sillytavern", "n8n", "llamafile", "agrus"
     ];
 
     /// <summary>
     /// Probe a single port — returns the best matching AI service or null.
     /// </summary>
-    public async Task<AiServiceResult?> ProbeAsync(string ip, int port, CancellationToken ct)
+    public async Task<AiServiceResult?> ProbeAsync(string ip, int port, CancellationToken ct, bool ignorePortHints = false)
     {
         await _semaphore.WaitAsync(ct);
         try
@@ -411,8 +528,8 @@ public class AiServiceProber
             {
                 ct.ThrowIfCancellationRequested();
 
-                // If probe has a port hint, only run it on that specific port
-                if (probe.PortHint.HasValue && probe.PortHint.Value != port)
+                // If probe has a port hint, only run it on that specific port (unless ignoring hints)
+                if (!ignorePortHints && probe.PortHint.HasValue && probe.PortHint.Value != port)
                     continue;
 
                 try
@@ -519,14 +636,14 @@ public class AiServiceProber
     /// <summary>
     /// Probe all open ports on a host and return ALL detected AI services (not just best).
     /// </summary>
-    public async Task<List<AiServiceResult>> ProbeAllAsync(string ip, int[] openPorts, CancellationToken ct)
+    public async Task<List<AiServiceResult>> ProbeAllAsync(string ip, int[] openPorts, CancellationToken ct, bool ignorePortHints = false)
     {
         var results = new List<AiServiceResult>();
         var seen = new HashSet<string>(); // avoid duplicate service names
 
         var tasks = openPorts.Select(async port =>
         {
-            var result = await ProbeAsync(ip, port, ct);
+            var result = await ProbeAsync(ip, port, ct, ignorePortHints);
             return result;
         });
 

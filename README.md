@@ -25,7 +25,7 @@ Requires Windows 10/11.
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
-- **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI)
+- **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
 - **AI Service Detection** - 45 probe definitions identifying 25+ AI/ML services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -57,6 +57,7 @@ Detection goes beyond port scanning - the prober queries service-specific API en
    - **Common** - 22 well-known ports
    - **Extended** - 58 service ports
    - **AI Scan** - 28 AI/ML-specific ports with service probing
+   - **Deep AI Scan** - All 65535 ports with full AI probing (slow but complete)
    - **No port scan** - Ping sweep only
 3. Click **START**
 4. After scanning, click **EXPORT** to save results as CSV or TXT

@@ -30,7 +30,7 @@ Full network scan: ping sweep, port scan, DNS resolution, optional AI service de
 
 Parameters:
 - `ip_range` (required) — CIDR notation like `192.168.1.0/24` or range like `10.0.0.1-254`
-- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (28 AI/ML ports), `none` (ping only). Default: `quick`
+- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (28 AI/ML ports), `deep-ai` (all 65535 ports, full AI probing), `none` (ping only). Default: `quick`
 - `skip_ping` — Scan all IPs regardless of ping response. Default: `false`
 
 Returns JSON array of host objects.
@@ -55,6 +55,7 @@ List all available scan presets with port counts and port numbers. Takes no para
 2. Use `scan_network` with an IP range and appropriate preset for broad discovery
 3. Use `probe_host` on interesting IPs for deeper investigation
 4. The `ai` preset is best for finding AI/ML services (Ollama, vLLM, Stable Diffusion, ComfyUI, etc.)
+5. Use `deep-ai` preset to scan all 65535 ports with full AI probing — catches services on non-standard ports (slow, best for single IPs)
 
 ## Example
 

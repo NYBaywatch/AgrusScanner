@@ -91,7 +91,7 @@ Scanner/
 
 | File | Purpose |
 |------|---------|
-| [ScanConfig.cs](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Models/ScanConfig.cs) | Port presets (Quick/Common/Extended/AI) |
+| [ScanConfig.cs](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Models/ScanConfig.cs) | Port presets (Quick/Common/Extended/AI/Deep AI) |
 | [AiServiceProber.cs](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs) | 45 AI probe definitions + detail extraction |
 | [PingScanner.cs](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PingScanner.cs) | ICMP ping sweep |
 | [PortScanner.cs](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PortScanner.cs) | TCP connect scan |
@@ -152,7 +152,7 @@ The scan runs through 5 phases, orchestrated by `MainViewModel.RunScanAsync()`:
 - 2000ms timeout (configurable)
 - Service name resolved via [`ServiceNameMap.cs`](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/ServiceNameMap.cs)
 
-### Phase 5: AI Service Probing (AI preset only)
+### Phase 5: AI Service Probing (AI and Deep AI presets)
 **File:** [`AiServiceProber.cs`](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs)
 
 - 32 concurrent HTTP probes
@@ -161,6 +161,7 @@ The scan runs through 5 phases, orchestrated by `MainViewModel.RunScanAsync()`:
 - Keeps best match per port (highest specificity wins)
 - Special Docker API handling: enumerates containers, filters by 33 AI image patterns
 - Detail extraction: model names, versions, GPU info, VRAM, metrics counts
+- **Deep AI mode:** `ignorePortHints=true` skips PortHint filtering, running all probes on every open port
 
 ## Concurrency Model
 
@@ -195,7 +196,7 @@ class ProbeDefinition
 
 **Matching logic:**
 1. Iterate probes from highest to lowest specificity
-2. Skip probes where `PortHint` doesn't match current port
+2. Skip probes where `PortHint` doesn't match current port (unless `ignorePortHints` is true)
 3. Send HTTP GET with `User-Agent: AgrusScanner/1.0`
 4. HTTPS for ports 8443, 2376; HTTP otherwise
 5. Match against `StatusCode`, `BodyContains`, `HeaderContains`
@@ -257,7 +258,7 @@ Four tools decorated with `[McpServerTool]`:
 
 | Tool | Parameters | Returns |
 |------|-----------|---------|
-| `scan_network` | `ip_range` (required), `preset` (optional: quick/common/extended/ai/none), `skip_ping` (optional) | JSON array of host objects |
+| `scan_network` | `ip_range` (required), `preset` (optional: quick/common/extended/ai/deep-ai/none), `skip_ping` (optional) | JSON array of host objects |
 | `probe_host` | `ip` (required), `ports` (optional: csv or preset name) | JSON host object |
 | `export_results` | `file_path` (required), `format` (optional: json/csv/auto) | JSON confirmation with path and count |
 | `list_presets` | none | JSON array of preset definitions |
@@ -303,7 +304,7 @@ Simple record: `Port` (int), `ServiceName` (string)
 **Properties:** `ServiceName`, `Category`, `Port`, `Confidence`, `Specificity`, `Details`
 
 ### ScanConfig
-Holds scan parameters and defines the 4 static port presets (Quick/Common/Extended/AI).
+Holds scan parameters and defines the 5 static port presets (Quick/Common/Extended/AI/AllPorts).
 
 ### AppSettings
 Persisted user preferences: `McpPort`, `ExtraPorts` dict, `RemovedPorts` dict, `SkipPing`
@@ -317,7 +318,7 @@ All scanning services are **stateless** - they can be reused across scans withou
 | `PingScanner` | ICMP ping sweep | `ScanAsync(IEnumerable<IPAddress>, callback, ct)` |
 | `PortScanner` | TCP port scanning | `ScanAsync(string ip, int[] ports, ct)` |
 | `DnsResolver` | Reverse DNS | `ResolveAsync(string ip, ct)` |
-| `AiServiceProber` | AI service HTTP probing | `ProbeAllAsync(string ip, int[] openPorts, ct)` |
+| `AiServiceProber` | AI service HTTP probing | `ProbeAllAsync(string ip, int[] openPorts, ct, ignorePortHints)` |
 | `IpRangeParser` | IP range parsing | `Parse(string input)` (static) |
 | `ServiceNameMap` | Port → name lookup | `GetServiceName(int port)` (static) |
 | `SettingsService` | JSON settings I/O | `Load()`, `Save(settings)` |
