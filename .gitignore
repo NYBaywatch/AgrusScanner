@@ -77,3 +77,4 @@ Installer/publish/
 
 # Windows reserved names (accidental creation in Git Bash/WSL)
 nul
+CLAUDE.md
