@@ -247,7 +247,7 @@ ray, mlflow, mindsdb, privategpt, gpt4all
 
 - Embedded ASP.NET Core `WebApplication`
 - Endpoint: `http://localhost:{port}/mcp` (default port: 8999)
-- Server info: `name: "agrus-scanner", version: "0.2.0"`
+- Server info: `name: "agrus-scanner", version: "0.2.1"`
 - Started automatically in GUI mode, or via `--mcp-only` flag for headless
 
 ### Tool Definitions

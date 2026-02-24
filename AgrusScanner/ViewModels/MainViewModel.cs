@@ -190,6 +190,15 @@ public class MainViewModel : INotifyPropertyChanged
 
     public bool HasUpdate => !string.IsNullOrEmpty(_updateText);
 
+    public string VersionText
+    {
+        get
+        {
+            var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            return v is not null ? $"v{v.Major}.{v.Minor}.{v.Build}" : "v0.0.0";
+        }
+    }
+
     // --- Settings properties ---
 
     public bool SkipPing

@@ -50,17 +50,26 @@ if ($signTool) {
     $tsEndpoint = "https://eus.codesigning.azure.net/"
     $tsAccount  = "agrussigning"
     $tsProfile  = "agrus-public"
+    $tsSubscription = "b687aa36-9f41-4e77-8701-6e7fa3369f71"  # Subscription containing the signing resource
 
+    # Switch to the subscription that owns the Trusted Signing resource
     Write-Host "`n[4/4] Signing MSI with Azure Trusted Signing..." -ForegroundColor Yellow
+    $previousSub = (az account show --query id -o tsv 2>$null)
+    az account set --subscription $tsSubscription 2>$null
+
     sign code trusted-signing $msi.FullName `
         --trusted-signing-endpoint $tsEndpoint `
         --trusted-signing-account $tsAccount `
-        --trusted-signing-certificate-profile $tsProfile
+        --trusted-signing-certificate-profile $tsProfile `
+        --azure-credential-type azure-cli
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Warning: Signing failed. MSI built but unsigned." -ForegroundColor Red
     } else {
         Write-Host "MSI signed successfully." -ForegroundColor Green
     }
+
+    # Restore previous subscription context
+    if ($previousSub) { az account set --subscription $previousSub 2>$null }
 } else {
     Write-Host "`nNote: 'sign' tool not found - MSI will be unsigned." -ForegroundColor DarkYellow
     Write-Host "  Install with: dotnet tool install --global sign --prerelease" -ForegroundColor DarkYellow

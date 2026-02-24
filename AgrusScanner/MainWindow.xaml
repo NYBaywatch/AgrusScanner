@@ -117,6 +117,11 @@
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11">
                                 Ctrl+0 to reset zoom
                             </TextBlock>
+
+                            <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,8,0,6" />
+                            <TextBlock FontSize="10" Foreground="{StaticResource TextDimBrush}"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       Text="{Binding VersionText}" />
                         </StackPanel>
                     </Border>
                 </Popup>

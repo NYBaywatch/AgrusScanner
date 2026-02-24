@@ -18,7 +18,7 @@ It also runs as an MCP server, so AI agents like Claude Code and OpenClaw can us
 
 Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases):
 
-**[AgrusScanner-Setup.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/AgrusScanner-Setup.msi)** — self-contained, no .NET runtime needed.
+**[Agrus_Installer.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/Agrus_Installer.msi)** — self-contained, no .NET runtime needed.
 
 Requires Windows 10/11.
 

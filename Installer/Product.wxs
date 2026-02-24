@@ -3,7 +3,7 @@
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <Package Name="Agrus Scanner"
-           Version="0.2.0"
+           Version="0.2.1"
            Manufacturer="Agrus"
            Language="1033"
            UpgradeCode="8F2B4A6E-3C7D-4E9F-A1B5-D6E8F0C2A4B7">
@@ -64,6 +64,8 @@
     <!-- Standard installer UI wizard with EULA -->
     <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
     <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
 
   </Package>
 </Wix>

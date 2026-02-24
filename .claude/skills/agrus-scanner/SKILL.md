@@ -3,7 +3,7 @@ name: agrus-scanner
 description: Network reconnaissance and AI/ML service detection. Scan IP ranges with ping sweeps, port scanning, DNS resolution, and AI service probing across 45 detection signatures. Use when the user wants to discover hosts, open ports, or AI/ML services on a network.
 metadata:
   author: agrus
-  version: "0.2.0"
+  version: "0.2.1"
 compatibility: Requires the Agrus Scanner MCP server running (AgrusScanner.exe --mcp-only). Windows only.
 allowed-tools: mcp__agrus-scanner__scan_network mcp__agrus-scanner__probe_host mcp__agrus-scanner__list_presets
 ---
