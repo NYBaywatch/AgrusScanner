@@ -1,7 +1,7 @@
 <Project Sdk="WixToolset.Sdk/5.0.2">
 
   <PropertyGroup>
-    <OutputName>Agrus_Installer</OutputName>
+    <OutputName>AgrusScanner-Setup</OutputName>
     <InstallerPlatform>x64</InstallerPlatform>
   </PropertyGroup>
 
