@@ -553,7 +553,7 @@
   <div class="pipeline-step">
     <div class="pipeline-num">5</div>
     <div class="pipeline-body">
-      <div class="pipeline-title">AI Service Probing <span class="tag tag-orange">AI preset only</span></div>
+      <div class="pipeline-title">AI Service Probing <span class="tag tag-orange">AI &amp; Deep AI presets</span></div>
       <div class="pipeline-file"><a href="https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs">AiServiceProber.cs</a></div>
       <div class="pipeline-desc">
         <ul>
@@ -563,6 +563,7 @@
           <li>Keeps best match per port (highest specificity wins)</li>
           <li>Special Docker API handling: enumerates containers, filters by 33 AI image patterns</li>
           <li>Detail extraction: model names, versions, GPU info, VRAM, metrics</li>
+          <li><strong>Deep AI mode:</strong> <code>ignorePortHints=true</code> skips PortHint filtering, running all probes on every open port</li>
         </ul>
       </div>
     </div>
@@ -603,7 +604,7 @@
 <h3>Matching Logic</h3>
 <ol>
   <li>Iterate probes from highest to lowest specificity</li>
-  <li>Skip probes where <code>PortHint</code> doesn't match current port</li>
+  <li>Skip probes where <code>PortHint</code> doesn't match current port (unless <code>ignorePortHints</code> is true)</li>
   <li>Send HTTP GET with <code>User-Agent: AgrusScanner/1.0</code></li>
   <li>HTTPS for ports 8443, 2376; HTTP otherwise</li>
   <li>Match against <code>StatusCode</code>, <code>BodyContains</code>, <code>HeaderContains</code></li>
@@ -652,7 +653,7 @@ ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
 <table>
   <thead><tr><th>Tool</th><th>Parameters</th><th>Returns</th></tr></thead>
   <tbody>
-    <tr><td><code>scan_network</code></td><td><code>ip_range</code> (required), <code>preset</code> (optional: quick/common/extended/ai/none), <code>skip_ping</code> (optional)</td><td>JSON array of host objects</td></tr>
+    <tr><td><code>scan_network</code></td><td><code>ip_range</code> (required), <code>preset</code> (optional: quick/common/extended/ai/deep-ai/none), <code>skip_ping</code> (optional)</td><td>JSON array of host objects</td></tr>
     <tr><td><code>probe_host</code></td><td><code>ip</code> (required), <code>ports</code> (optional: csv or preset name)</td><td>JSON host object</td></tr>
     <tr><td><code>export_results</code></td><td><code>file_path</code> (required), <code>format</code> (optional: json/csv/auto)</td><td>JSON confirmation with path and count</td></tr>
     <tr><td><code>list_presets</code></td><td>none</td><td>JSON array of preset definitions</td></tr>
@@ -693,7 +694,7 @@ ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
 <p><strong>Properties:</strong> <code>ServiceName</code>, <code>Category</code>, <code>Port</code>, <code>Confidence</code>, <code>Specificity</code>, <code>Details</code></p>
 
 <h3>ScanConfig</h3>
-<p>Holds scan parameters and defines the 4 static port presets (Quick / Common / Extended / AI).</p>
+<p>Holds scan parameters and defines the 5 static port presets (Quick / Common / Extended / AI / Deep AI).</p>
 
 <h3>AppSettings</h3>
 <p>Persisted user preferences: <code>McpPort</code>, <code>ExtraPorts</code> dict, <code>RemovedPorts</code> dict, <code>SkipPing</code></p>
@@ -707,7 +708,7 @@ ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
     <tr><td><code>PingScanner</code></td><td>ICMP ping sweep</td><td><code>ScanAsync(IEnumerable&lt;IPAddress&gt;, callback, ct)</code></td></tr>
     <tr><td><code>PortScanner</code></td><td>TCP port scanning</td><td><code>ScanAsync(string ip, int[] ports, ct)</code></td></tr>
     <tr><td><code>DnsResolver</code></td><td>Reverse DNS</td><td><code>ResolveAsync(string ip, ct)</code></td></tr>
-    <tr><td><code>AiServiceProber</code></td><td>AI service HTTP probing</td><td><code>ProbeAllAsync(string ip, int[] openPorts, ct)</code></td></tr>
+    <tr><td><code>AiServiceProber</code></td><td>AI service HTTP probing</td><td><code>ProbeAllAsync(string ip, int[] openPorts, ct, ignorePortHints)</code></td></tr>
     <tr><td><code>IpRangeParser</code></td><td>IP range parsing</td><td><code>Parse(string input)</code> (static)</td></tr>
     <tr><td><code>ServiceNameMap</code></td><td>Port &rarr; name lookup</td><td><code>GetServiceName(int port)</code> (static)</td></tr>
     <tr><td><code>SettingsService</code></td><td>JSON settings I/O</td><td><code>Load()</code>, <code>Save(settings)</code></td></tr>

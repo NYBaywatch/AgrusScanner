@@ -467,6 +467,8 @@
   <a href="#common-preset">Common (22 ports)</a>
   <a href="#extended-preset">Extended (58 ports)</a>
   <a href="#ai-preset">AI (28 ports)</a>
+  <a href="#deep-ai-preset">Deep AI (65535 ports)</a>
+  <a href="#no-port-preset">No Port Scan</a>
 
   <div class="sidebar-section">AI Detection</div>
   <a href="#ai-detection">Overview</a>
@@ -524,7 +526,7 @@
         <li>Single IP: <code>192.168.1.100</code></li>
       </ul>
     </li>
-    <li><strong>Choose a scan preset</strong> (Quick, Common, Extended, or AI)</li>
+    <li><strong>Choose a scan preset</strong> (Quick, Common, Extended, AI, Deep AI, or No port scan)</li>
     <li><strong>Click Scan</strong></li>
   </ol>
 </div>
@@ -559,14 +561,14 @@
   <div class="step">
     <div class="step-num">4</div>
     <div class="step-body">
-      <div class="step-title">AI Service Probing <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI preset only)</span></div>
-      <div class="step-desc">When using the AI scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services, and extracts details like model names, versions, and GPU information.</div>
+      <div class="step-title">AI Service Probing <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI &amp; Deep AI presets)</span></div>
+      <div class="step-desc">When using the <strong>AI</strong> or <strong>Deep AI</strong> scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services, and extracts details like model names, versions, and GPU information. In <strong>Deep AI</strong> mode, the scanner ignores port hints &mdash; every probe runs against every open port, catching AI services on non-standard ports.</div>
     </div>
   </div>
   <div class="step">
     <div class="step-num">5</div>
     <div class="step-body">
-      <div class="step-title">Docker Container Detection <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI preset only)</span></div>
+      <div class="step-title">Docker Container Detection <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI &amp; Deep AI presets)</span></div>
       <div class="step-desc">If the Docker API is accessible (port 2375), the scanner queries running containers and flags any with AI-related images (Ollama, vLLM, Stable Diffusion, etc.).</div>
     </div>
   </div>
@@ -595,6 +597,16 @@
     <div class="preset-name">AI</div>
     <div class="preset-count">28 ports</div>
     <div class="preset-desc">Specialized for AI/ML services. Includes HTTP probing to identify exact services.</div>
+  </div>
+  <div class="preset-card">
+    <div class="preset-name">Deep AI</div>
+    <div class="preset-count">65535 ports</div>
+    <div class="preset-desc">All ports with full AI probing on every open port. Catches services on non-standard ports. Slow but complete.</div>
+  </div>
+  <div class="preset-card">
+    <div class="preset-name">No Port Scan</div>
+    <div class="preset-count">0 ports</div>
+    <div class="preset-desc">Ping sweep only. Discovers live hosts without port scanning.</div>
   </div>
 </div>
 
@@ -694,9 +706,18 @@
   </tbody>
 </table>
 
+<!-- Deep AI Preset -->
+<h3 id="deep-ai-preset">Deep AI Scan (all 65535 ports)</h3>
+<p>The most thorough scan mode. Scans every port from 1 to 65535, then runs all AI probes against every open port &mdash; regardless of port hints. This catches AI services running on non-standard ports that the regular AI preset would miss.</p>
+<div class="info-box"><strong>Trade-offs:</strong> Much slower than the regular AI preset (scanning all ports takes time). Best used on small ranges or single IPs. No port customization (extra/removed ports) &mdash; it already scans everything. All probe definitions run against every open port (ignores PortHint filtering).</div>
+
+<!-- No Port Scan -->
+<h3 id="no-port-preset">No Port Scan</h3>
+<p>Ping sweep only. Discovers which hosts are alive on the network without performing any port scanning or AI service detection.</p>
+
 <!-- ── AI/ML Service Detection ── -->
 <h2 id="ai-detection">AI/ML Service Detection</h2>
-<p>When using the AI preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:</p>
+<p>When using the <strong>AI</strong> or <strong>Deep AI</strong> preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:</p>
 
 <!-- LLM Services -->
 <div class="category-header" id="llm-services">
