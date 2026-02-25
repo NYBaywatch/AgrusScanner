@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
@@ -28,6 +29,20 @@ public class McpHostManager
         .WithTools<ScannerMcpTools>();
 
         _app = builder.Build();
+
+        // Block DNS rebinding attacks — only allow localhost Host headers
+        _app.Use(async (context, next) =>
+        {
+            var host = context.Request.Host.Host;
+            if (host != "localhost" && host != "127.0.0.1" && host != "::1")
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync("Forbidden: invalid Host header");
+                return;
+            }
+            await next();
+        });
+
         _app.MapMcp("/mcp");
 
         await _app.StartAsync();

@@ -32,11 +32,14 @@ public static class IpRangeParser
         if (prefixLen < 0 || prefixLen > 32)
             throw new ArgumentException($"Invalid prefix length: {prefixLen}");
 
-        var networkBytes = network.GetAddressBytes();
-        var networkUint = BytesToUint(networkBytes);
-
         var hostBits = 32 - prefixLen;
         var hostCount = 1u << hostBits;
+
+        if (hostCount > 65536)
+            throw new ArgumentException($"CIDR /{prefixLen} produces {hostCount} addresses (max 65536)");
+
+        var networkBytes = network.GetAddressBytes();
+        var networkUint = BytesToUint(networkBytes);
 
         var results = new List<IPAddress>();
         // Skip network address (first) and broadcast (last) for /31 and larger

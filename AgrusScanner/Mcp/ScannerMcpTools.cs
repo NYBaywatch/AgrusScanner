@@ -111,7 +111,17 @@ public class ScannerMcpTools
         if (fmt == "auto")
             fmt = file_path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ? "csv" : "json";
 
+        // Restrict exports to user's Documents folder to prevent path traversal
+        var safeDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var fullPath = Path.GetFullPath(file_path);
+        if (!fullPath.StartsWith(safeDir, StringComparison.OrdinalIgnoreCase))
+        {
+            // If caller passed a bare filename, place it in Documents
+            if (!Path.IsPathRooted(file_path))
+                fullPath = Path.Combine(safeDir, Path.GetFileName(file_path));
+            else
+                return JsonSerializer.Serialize(new { error = $"Export path must be under {safeDir}" }, _json);
+        }
 
         if (fmt == "csv")
         {
@@ -151,8 +161,13 @@ public class ScannerMcpTools
         return JsonSerializer.Serialize(new { exported = _lastResults.Count, path = fullPath, format = fmt }, _json);
     }
 
-    private static string Csv(string value) =>
-        value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
+    private static string Csv(string value)
+    {
+        // Escape CSV formula injection (Excel DDE attacks) and standard CSV quoting
+        if (value.Length > 0 && value[0] is '=' or '+' or '-' or '@')
+            value = "'" + value;
+        return value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
+    }
 
     [McpServerTool(Name = "list_presets"), Description("List available scan presets with their port counts and port numbers.")]
     public static string ListPresets()

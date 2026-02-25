@@ -546,8 +546,13 @@ public class MainViewModel : INotifyPropertyChanged
         File.WriteAllLines(path, lines);
     }
 
-    private static string CsvEscape(string value) =>
-        value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
+    private static string CsvEscape(string value)
+    {
+        // Escape CSV formula injection (Excel DDE attacks) and standard CSV quoting
+        if (value.Length > 0 && value[0] is '=' or '+' or '-' or '@')
+            value = "'" + value;
+        return value.Contains(',') || value.Contains('"') ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
+    }
 
     private void StopScan()
     {

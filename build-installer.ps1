@@ -47,10 +47,16 @@ if (-not $msi) {
 # See: https://learn.microsoft.com/en-us/azure/artifact-signing/
 $signTool = Get-Command sign -ErrorAction SilentlyContinue
 if ($signTool) {
-    $tsEndpoint = "https://eus.codesigning.azure.net/"
-    $tsAccount  = "agrussigning"
-    $tsProfile  = "agrus-public"
-    $tsSubscription = "b687aa36-9f41-4e77-8701-6e7fa3369f71"  # Subscription containing the signing resource
+    $tsEndpoint = $env:AGRUS_SIGNING_ENDPOINT ?? "https://eus.codesigning.azure.net/"
+    $tsAccount  = $env:AGRUS_SIGNING_ACCOUNT ?? "agrussigning"
+    $tsProfile  = $env:AGRUS_SIGNING_PROFILE ?? "agrus-public"
+    $tsSubscription = $env:AGRUS_SIGNING_SUBSCRIPTION
+
+    if (-not $tsSubscription) {
+        Write-Host "Warning: AGRUS_SIGNING_SUBSCRIPTION env var not set - skipping signing." -ForegroundColor DarkYellow
+        Write-Host "  Set env vars: AGRUS_SIGNING_SUBSCRIPTION, AGRUS_SIGNING_ENDPOINT, AGRUS_SIGNING_ACCOUNT, AGRUS_SIGNING_PROFILE" -ForegroundColor DarkYellow
+        return
+    }
 
     # Switch to the subscription that owns the Trusted Signing resource
     Write-Host "`n[4/4] Signing MSI with Azure Trusted Signing..." -ForegroundColor Yellow

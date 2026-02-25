@@ -8,7 +8,8 @@ public class AiServiceProber
 {
     private static readonly HttpClient _http = new()
     {
-        Timeout = TimeSpan.FromSeconds(3)
+        Timeout = TimeSpan.FromSeconds(3),
+        MaxResponseContentBufferSize = 1_048_576 // 1 MB — prevent memory bombs from malicious servers
     };
 
     private readonly SemaphoreSlim _semaphore = new(32);
@@ -619,9 +620,10 @@ public class AiServiceProber
                 {
                     throw;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Probe failed (timeout, connection refused, etc.) — skip
+                    System.Diagnostics.Trace.TraceWarning(
+                        $"Probe {probe.ServiceName} on {ip}:{port}{probe.Path} failed: {ex.GetType().Name}");
                 }
             }
 
@@ -716,7 +718,10 @@ public class AiServiceProber
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceWarning($"Docker enumeration on {ip}:{port} failed: {ex.GetType().Name}");
+        }
         return aiContainers;
     }
 

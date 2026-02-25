@@ -155,7 +155,6 @@ public partial class MainWindow : Window
             3389 => () => ShellOpen("mstsc", $"/v:{ip}"),
             22 => () => ShellOpen("ssh", ip),
             5900 or 5901 => () => ShellOpen($"vnc://{ip}:{port}"),
-            445 => () => ShellOpen($"\\\\{ip}"),
             21 => () => ShellOpen($"ftp://{ip}"),
             _ => () => ShellOpen($"http://{ip}:{port}")
         };
@@ -168,7 +167,6 @@ public partial class MainWindow : Window
             3389 => "Open RDP",
             22 => "Open SSH",
             5900 or 5901 => $"Open VNC (:{port})",
-            445 => "Open SMB Share",
             21 => "Open FTP",
             _ => $"Open :{port} in Browser"
         };
