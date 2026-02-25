@@ -47,9 +47,9 @@ if (-not $msi) {
 # See: https://learn.microsoft.com/en-us/azure/artifact-signing/
 $signTool = Get-Command sign -ErrorAction SilentlyContinue
 if ($signTool) {
-    $tsEndpoint = $env:AGRUS_SIGNING_ENDPOINT ?? "https://eus.codesigning.azure.net/"
-    $tsAccount  = $env:AGRUS_SIGNING_ACCOUNT ?? "agrussigning"
-    $tsProfile  = $env:AGRUS_SIGNING_PROFILE ?? "agrus-public"
+    $tsEndpoint = if ($env:AGRUS_SIGNING_ENDPOINT) { $env:AGRUS_SIGNING_ENDPOINT } else { "https://eus.codesigning.azure.net/" }
+    $tsAccount  = if ($env:AGRUS_SIGNING_ACCOUNT) { $env:AGRUS_SIGNING_ACCOUNT } else { "agrussigning" }
+    $tsProfile  = if ($env:AGRUS_SIGNING_PROFILE) { $env:AGRUS_SIGNING_PROFILE } else { "agrus-public" }
     $tsSubscription = $env:AGRUS_SIGNING_SUBSCRIPTION
 
     if (-not $tsSubscription) {

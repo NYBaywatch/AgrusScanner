@@ -22,7 +22,7 @@ public class McpHostManager
             options.ServerInfo = new()
             {
                 Name = "agrus-scanner",
-                Version = "0.2.1"
+                Version = "0.2.2"
             };
         })
         .WithHttpTransport()

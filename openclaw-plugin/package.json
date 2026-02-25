@@ -1,6 +1,6 @@
 {
   "name": "@agrus/openclaw-scanner",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "OpenClaw plugin for Agrus Scanner — network recon and AI/ML service detection",
   "main": "index.ts",
   "openclaw": {
