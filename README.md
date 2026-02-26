@@ -77,7 +77,7 @@ AgrusScanner.exe --mcp-only
 
 This starts a Streamable HTTP MCP server on `http://localhost:8999/mcp` (port configurable in settings). AI agents can then call the scanning tools directly.
 
-> **Security note:** The MCP server binds to `localhost` only — it is not accessible from the network. This is the standard security model for local MCP servers (same as Claude Code, Cursor, etc.), where the OS process boundary provides isolation. No additional authentication is needed because only processes on your own machine can connect. Do not expose this server to the network via reverse proxy or tunnel without adding your own auth layer.
+> **Security note:** The MCP server binds to `localhost` only and validates Host headers to block DNS rebinding attacks. Only processes on your own machine can connect. Do not expose this server to the network via reverse proxy or tunnel without adding your own auth layer.
 
 **MCP Tools:**
 
@@ -133,6 +133,19 @@ Configure in OpenClaw settings:
 ### Other AgentSkills-Compatible Tools
 
 The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkills](https://agentskills.io) format and works with any compatible agent (Cursor, Gemini CLI, OpenClaw, etc.). Point your tool at the MCP endpoint and the skill provides usage instructions.
+
+## Security
+
+v0.2.2 includes hardening across the codebase:
+
+- **Input limits** — CIDR and range parsing capped at 65,536 addresses to prevent memory exhaustion
+- **Path traversal protection** — MCP `export_results` restricted to the user's Documents folder
+- **DNS rebinding defense** — MCP server validates Host headers, rejecting non-localhost requests
+- **Response size cap** — HTTP probe responses capped at 1 MB to block memory bombs from malicious servers
+- **CSV injection prevention** — Export escapes formula-injection characters (`=`, `+`, `-`, `@`)
+- **NTLM protection** — Removed SMB shell-open to prevent credential disclosure to untrusted hosts
+- **Diagnostic logging** — Suppressed exceptions now log to `System.Diagnostics.Trace` for visibility
+- **No hardcoded secrets** — Build signing credentials moved to environment variables
 
 ## Keyboard Shortcuts
 
