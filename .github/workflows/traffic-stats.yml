@@ -1,0 +1,76 @@
+name: Persist GitHub Traffic Stats
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 06:00 UTC
+  workflow_dispatch:       # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  persist-traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and persist traffic data
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'docs/traffic-stats.json';
+
+            // Load existing data
+            let data = { clones: [], views: [], referrers: [], paths: [] };
+            try {
+              data = JSON.parse(fs.readFileSync(path, 'utf8'));
+            } catch (e) {}
+
+            // Fetch current traffic
+            const [clones, views, referrers, paths] = await Promise.all([
+              github.rest.repos.getClones({ owner: context.repo.owner, repo: context.repo.repo, per: 'day' }),
+              github.rest.repos.getViews({ owner: context.repo.owner, repo: context.repo.repo, per: 'day' }),
+              github.rest.repos.getTopReferrers({ owner: context.repo.owner, repo: context.repo.repo }),
+              github.rest.repos.getTopPaths({ owner: context.repo.owner, repo: context.repo.repo }),
+            ]);
+
+            // Merge clones (deduplicate by date)
+            const existingCloneDates = new Set(data.clones.map(c => c.timestamp));
+            for (const c of clones.data.clones) {
+              if (!existingCloneDates.has(c.timestamp)) {
+                data.clones.push(c);
+              }
+            }
+
+            // Merge views (deduplicate by date)
+            const existingViewDates = new Set(data.views.map(v => v.timestamp));
+            for (const v of views.data.views) {
+              if (!existingViewDates.has(v.timestamp)) {
+                data.views.push(v);
+              }
+            }
+
+            // Snapshot referrers and paths with date
+            const today = new Date().toISOString().split('T')[0];
+            const existingRefDates = new Set(data.referrers.map(r => r.date));
+            if (!existingRefDates.has(today)) {
+              data.referrers.push({ date: today, sources: referrers.data });
+            }
+            const existingPathDates = new Set(data.paths.map(p => p.date));
+            if (!existingPathDates.has(today)) {
+              data.paths.push({ date: today, pages: paths.data });
+            }
+
+            // Sort by date
+            data.clones.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+            data.views.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+            fs.writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/traffic-stats.json
+          git diff --staged --quiet || git commit -m "chore: update traffic stats [skip ci]" && git push

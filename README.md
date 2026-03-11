@@ -1,5 +1,8 @@
 # Agrus Scanner
 
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NYBaywatch/AgrusScanner/total?style=flat&logo=github&label=Downloads)](https://github.com/NYBaywatch/AgrusScanner/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/NYBaywatch/AgrusScanner?style=flat&logo=github)](https://github.com/NYBaywatch/AgrusScanner)
+
 Network reconnaissance tool with deep AI/ML service detection. Scans your network to discover hosts, open ports, and identifies AI services running across your infrastructure.
 
 Built for security teams, IT admins, and researchers who need visibility into shadow AI, rogue LLM deployments, and GPU infrastructure on their networks.
@@ -133,6 +136,10 @@ Configure in OpenClaw settings:
 ### Other AgentSkills-Compatible Tools
 
 The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkills](https://agentskills.io) format and works with any compatible agent (Cursor, Gemini CLI, OpenClaw, etc.). Point your tool at the MCP endpoint and the skill provides usage instructions.
+
+## Privacy & Updates
+
+Agrus Scanner checks for updates on startup by contacting `api.jpftech.com`. This sends the app version and OS version — no personal data, no machine IDs, no IP addresses are stored. You can disable this in Settings by setting `CheckForUpdates` to `false` in `%LOCALAPPDATA%\AgrusScanner\settings.json`.
 
 ## Security
 

@@ -48,8 +48,9 @@ public class MainViewModel : INotifyPropertyChanged
         ResultsView = CollectionViewSource.GetDefaultView(Results);
         ResultsView.Filter = obj => obj is HostResult h && (h.IsAlive || h.OpenPorts.Count > 0);
 
-        // Fire-and-forget update check
-        _ = CheckForUpdateAsync();
+        // Fire-and-forget update check (respects user setting)
+        if (_settings.CheckForUpdates)
+            _ = CheckForUpdateAsync();
     }
 
     private async Task CheckForUpdateAsync()

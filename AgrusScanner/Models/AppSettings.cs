@@ -17,4 +17,7 @@ public class AppSettings
 
     // MCP server port
     public int McpPort { get; set; } = 8999;
+
+    // Update checking (set false to disable update check pings)
+    public bool CheckForUpdates { get; set; } = true;
 }

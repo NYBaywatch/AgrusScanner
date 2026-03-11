@@ -486,6 +486,7 @@
   <a href="#settings">Settings</a>
   <a href="#mcp">MCP Server</a>
   <a href="#shortcuts">Keyboard Shortcuts</a>
+  <a href="#privacy">Privacy</a>
 </nav>
 
 <!-- ═══ Content ═══ -->
@@ -884,6 +885,7 @@ ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
     <tr><td><strong>MCP Server Port</strong></td><td>TCP port for the MCP server (agent integration)</td><td>8999</td></tr>
     <tr><td><strong>Extra Ports</strong></td><td>Additional ports to add to any preset (comma-separated)</td><td>Empty</td></tr>
     <tr><td><strong>Removed Ports</strong></td><td>Ports to exclude from a preset (comma-separated, not available for AI preset)</td><td>Empty</td></tr>
+    <tr><td><strong>Check For Updates</strong></td><td>On startup, check for new versions via <code>api.jpftech.com</code>. Sends app version and OS version only &mdash; no personal data.</td><td>On</td></tr>
   </tbody>
 </table>
 <p>Settings are saved automatically to <code>%LOCALAPPDATA%\AgrusScanner\settings.json</code>.</p>
@@ -922,6 +924,16 @@ ray, mlflow, mindsdb, privategpt, gpt4all</code></pre>
     <tr><td><kbd>Ctrl</kbd> + Mouse Wheel</td><td>Zoom in/out</td></tr>
   </tbody>
 </table>
+
+<!-- ── Privacy ── -->
+<h2 id="privacy">Privacy &amp; Updates</h2>
+<p>Agrus Scanner checks for updates on startup by contacting <code>api.jpftech.com</code>. This request includes:</p>
+<ul>
+  <li>App version (e.g. <code>0.2.2</code>)</li>
+  <li>OS version (e.g. <code>win10.0.26200</code>)</li>
+</ul>
+<p><strong>No personal data, machine identifiers, or IP addresses are stored.</strong> This helps the developer understand how many people use the app and which versions are active.</p>
+<p>To disable update checks, set <code>"CheckForUpdates": false</code> in <code>%LOCALAPPDATA%\AgrusScanner\settings.json</code>.</p>
 
 <!-- ── Footer ── -->
 <div class="footer">
