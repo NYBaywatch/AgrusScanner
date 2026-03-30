@@ -69,6 +69,16 @@
       "timestamp": "2026-03-27T00:00:00Z",
       "count": 1,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-03-28T00:00:00Z",
+      "count": 21,
+      "uniques": 13
+    },
+    {
+      "timestamp": "2026-03-29T00:00:00Z",
+      "count": 9,
+      "uniques": 9
     }
   ],
   "views": [
@@ -141,6 +151,16 @@
       "timestamp": "2026-03-27T00:00:00Z",
       "count": 0,
       "uniques": 0
+    },
+    {
+      "timestamp": "2026-03-28T00:00:00Z",
+      "count": 3,
+      "uniques": 1
+    },
+    {
+      "timestamp": "2026-03-29T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -156,6 +176,16 @@
     },
     {
       "date": "2026-03-29",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 2,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-03-30",
       "sources": [
         {
           "referrer": "github.com",
@@ -214,6 +244,53 @@
           "path": "/NYBaywatch/AgrusScanner/releases",
           "title": "Releases · NYBaywatch/AgrusScanner",
           "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tags",
+          "title": "Tags · NYBaywatch/AgrusScanner",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/infra/agrus-update-lambda",
+          "title": "AgrusScanner/infra/agrus-update-lambda at master · NYBaywatch/AgrusScanner · ...",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/nybaywatch/agrusscanner",
+          "title": "GitHub - NYBaywatch/AgrusScanner · GitHub",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-03-30",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "NYBaywatch/AgrusScanner",
+          "count": 4,
+          "uniques": 3
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724",
+          "title": "Persist GitHub Traffic Stats · NYBaywatch/AgrusScanner@8cb6a4a",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "Releases · NYBaywatch/AgrusScanner",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724/job/68988563287",
+          "title": "Persist GitHub Traffic Stats · NYBaywatch/AgrusScanner@8cb6a4a",
+          "count": 1,
           "uniques": 1
         },
         {
