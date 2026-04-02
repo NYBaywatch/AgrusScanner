@@ -89,6 +89,11 @@
       "timestamp": "2026-03-31T00:00:00Z",
       "count": 17,
       "uniques": 10
+    },
+    {
+      "timestamp": "2026-04-01T00:00:00Z",
+      "count": 11,
+      "uniques": 6
     }
   ],
   "views": [
@@ -181,6 +186,11 @@
       "timestamp": "2026-03-31T00:00:00Z",
       "count": 0,
       "uniques": 0
+    },
+    {
+      "timestamp": "2026-04-01T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -226,6 +236,16 @@
     },
     {
       "date": "2026-04-01",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-02",
       "sources": [
         {
           "referrer": "github.com",
@@ -436,6 +456,41 @@
         {
           "path": "/NYBaywatch/AgrusScanner/tree/master/infra/agrus-update-lambda",
           "title": "AgrusScanner/infra/agrus-update-lambda at master · NYBaywatch/AgrusScanner · ...",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-02",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724",
+          "title": "/actions/runs/23679359724",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724/job/68988563287",
+          "title": "/actions/runs/23679359724/job/68988563287",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tags",
+          "title": "/tags",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/infra/agrus-update-lambda",
+          "title": "/tree/master/infra/agrus-update-lambda",
           "count": 1,
           "uniques": 1
         }
