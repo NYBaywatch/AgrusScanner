@@ -104,6 +104,11 @@
       "timestamp": "2026-04-03T00:00:00Z",
       "count": 10,
       "uniques": 5
+    },
+    {
+      "timestamp": "2026-04-04T00:00:00Z",
+      "count": 9,
+      "uniques": 8
     }
   ],
   "views": [
@@ -211,6 +216,11 @@
       "timestamp": "2026-04-03T00:00:00Z",
       "count": 0,
       "uniques": 0
+    },
+    {
+      "timestamp": "2026-04-04T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -301,6 +311,21 @@
     },
     {
       "date": "2026-04-05",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-06",
       "sources": [
         {
           "referrer": "github.com",
@@ -628,6 +653,41 @@
     },
     {
       "date": "2026-04-05",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 6,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724",
+          "title": "/actions/runs/23679359724",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724/job/68988563287",
+          "title": "/actions/runs/23679359724/job/68988563287",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/fork",
+          "title": "/fork",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tags",
+          "title": "/tags",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-06",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
