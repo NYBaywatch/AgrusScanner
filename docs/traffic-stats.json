@@ -114,6 +114,16 @@
       "timestamp": "2026-04-05T00:00:00Z",
       "count": 8,
       "uniques": 7
+    },
+    {
+      "timestamp": "2026-04-06T00:00:00Z",
+      "count": 9,
+      "uniques": 6
+    },
+    {
+      "timestamp": "2026-04-07T00:00:00Z",
+      "count": 16,
+      "uniques": 9
     }
   ],
   "views": [
@@ -231,6 +241,16 @@
       "timestamp": "2026-04-05T00:00:00Z",
       "count": 0,
       "uniques": 0
+    },
+    {
+      "timestamp": "2026-04-06T00:00:00Z",
+      "count": 0,
+      "uniques": 0
+    },
+    {
+      "timestamp": "2026-04-07T00:00:00Z",
+      "count": 4,
+      "uniques": 1
     }
   ],
   "referrers": [
@@ -361,6 +381,21 @@
           "referrer": "reddit.com",
           "count": 1,
           "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-08",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 5,
+          "uniques": 3
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 4,
+          "uniques": 2
         }
       ]
     }
@@ -770,6 +805,53 @@
         {
           "path": "/NYBaywatch/AgrusScanner/fork",
           "title": "/fork",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tags",
+          "title": "/tags",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-08",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 7,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724",
+          "title": "/actions/runs/23679359724",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/actions/runs/23679359724/job/68988563287",
+          "title": "/actions/runs/23679359724/job/68988563287",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/fork",
+          "title": "/fork",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/issues",
+          "title": "/issues",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v0.2.2",
+          "title": "/releases/tag/v0.2.2",
           "count": 1,
           "uniques": 1
         },
