@@ -63,10 +63,10 @@ if ($signTool) {
     $previousSub = (az account show --query id -o tsv 2>$null)
     az account set --subscription $tsSubscription 2>$null
 
-    sign code trusted-signing $msi.FullName `
-        --trusted-signing-endpoint $tsEndpoint `
-        --trusted-signing-account $tsAccount `
-        --trusted-signing-certificate-profile $tsProfile `
+    sign code artifact-signing $msi.FullName `
+        --artifact-signing-endpoint $tsEndpoint `
+        --artifact-signing-account $tsAccount `
+        --artifact-signing-certificate-profile $tsProfile `
         --azure-credential-type azure-cli
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Warning: Signing failed. MSI built but unsigned." -ForegroundColor Red
