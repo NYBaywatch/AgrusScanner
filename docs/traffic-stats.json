@@ -523,6 +523,21 @@
           "uniques": 3
         }
       ]
+    },
+    {
+      "date": "2026-04-14",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 5,
+          "uniques": 3
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 5,
+          "uniques": 3
+        }
+      ]
     }
   ],
   "paths": [
@@ -1178,6 +1193,41 @@
     },
     {
       "date": "2026-04-13",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 8,
+          "uniques": 5
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/fork",
+          "title": "/fork",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/issues",
+          "title": "/issues",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v0.2.2",
+          "title": "/releases/tag/v0.2.2",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/agrusscanner",
+          "title": "Overview",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-14",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
