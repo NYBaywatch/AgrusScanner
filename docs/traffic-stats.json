@@ -748,6 +748,21 @@
           "uniques": 1
         }
       ]
+    },
+    {
+      "date": "2026-04-23",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
     }
   ],
   "paths": [
@@ -1694,6 +1709,23 @@
     },
     {
       "date": "2026-04-22",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/agrusscanner",
+          "title": "Overview",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-23",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
