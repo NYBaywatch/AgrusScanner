@@ -793,6 +793,16 @@
           "uniques": 1
         }
       ]
+    },
+    {
+      "date": "2026-04-25",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
     }
   ],
   "paths": [
@@ -1773,6 +1783,17 @@
     },
     {
       "date": "2026-04-24",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-25",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
