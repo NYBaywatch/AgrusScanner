@@ -209,6 +209,16 @@
       "timestamp": "2026-04-24T00:00:00Z",
       "count": 31,
       "uniques": 13
+    },
+    {
+      "timestamp": "2026-04-25T00:00:00Z",
+      "count": 27,
+      "uniques": 16
+    },
+    {
+      "timestamp": "2026-04-26T00:00:00Z",
+      "count": 17,
+      "uniques": 8
     }
   ],
   "views": [
@@ -421,6 +431,16 @@
       "timestamp": "2026-04-24T00:00:00Z",
       "count": 3,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-04-25T00:00:00Z",
+      "count": 2,
+      "uniques": 2
+    },
+    {
+      "timestamp": "2026-04-26T00:00:00Z",
+      "count": 3,
+      "uniques": 2
     }
   ],
   "referrers": [
@@ -821,6 +841,21 @@
           "referrer": "Google",
           "count": 3,
           "uniques": 1
+        },
+        {
+          "referrer": "github.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-27",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 8,
+          "uniques": 3
         },
         {
           "referrer": "github.com",
@@ -1841,6 +1876,23 @@
           "path": "/NYBaywatch/AgrusScanner/releases",
           "title": "/releases",
           "count": 2,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-27",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 5,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 4,
           "uniques": 1
         }
       ]
