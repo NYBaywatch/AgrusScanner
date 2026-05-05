@@ -36,12 +36,26 @@ public class AiServiceProber
             Confidence = "high", Specificity = 95,
             BodyContains = "\"models\""
         },
+        // Ollama — /api/version fallback (catches hosts with zero models pulled)
+        new()
+        {
+            Path = "/api/version", ServiceName = "Ollama", Category = "LLM",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "version"
+        },
         // vLLM — /version endpoint
         new()
         {
             Path = "/version", ServiceName = "vLLM", Category = "LLM",
             Confidence = "high", Specificity = 90,
             BodyContains = "version"
+        },
+        // vLLM — /metrics with vllm: prefix (stable signal even when /health regresses)
+        new()
+        {
+            Path = "/metrics", ServiceName = "vLLM", Category = "LLM",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "vllm:"
         },
         // Hugging Face TGI — /info returns model_id
         new()
@@ -129,6 +143,13 @@ public class AiServiceProber
             Confidence = "medium", Specificity = 65,
             BodyContains = "\"object\"",
             PortHint = 8080
+        },
+        // LocalAI v3 — /p2p/token returns plaintext token (unique to v3+)
+        new()
+        {
+            Path = "/p2p/token", ServiceName = "LocalAI", Category = "LLM",
+            Confidence = "high", Specificity = 85,
+            StatusCode = 200
         },
         // FastChat controller — distinctive port 21001
         new()
@@ -286,6 +307,21 @@ public class AiServiceProber
             Confidence = "high", Specificity = 90,
             BodyContains = "Open WebUI"
         },
+        // Open WebUI — /manifest.json (works even when SSO gates root)
+        new()
+        {
+            Path = "/manifest.json", ServiceName = "Open WebUI", Category = "AI Platform",
+            Confidence = "high", Specificity = 92,
+            BodyContains = "Open WebUI"
+        },
+        // Open WebUI — /health (200 fallback when manifest is gated)
+        new()
+        {
+            Path = "/health", ServiceName = "Open WebUI", Category = "AI Platform",
+            Confidence = "medium", Specificity = 60,
+            StatusCode = 200,
+            PortHint = 8080
+        },
         // AnythingLLM — /api/health returns { online: true }
         new()
         {
@@ -319,6 +355,13 @@ public class AiServiceProber
         {
             Path = "/console/api/setup", ServiceName = "Dify", Category = "AI Platform",
             Confidence = "high", Specificity = 88,
+            StatusCode = 200
+        },
+        // Dify — /console/api/version fallback (reverse-proxy compatibility)
+        new()
+        {
+            Path = "/console/api/version", ServiceName = "Dify", Category = "AI Platform",
+            Confidence = "high", Specificity = 85,
             StatusCode = 200
         },
         // SillyTavern — root contains "SillyTavern"
