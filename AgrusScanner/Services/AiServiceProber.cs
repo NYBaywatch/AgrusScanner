@@ -658,6 +658,27 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // IMAGE GENERATION — v0.3.0 ADDITIONS
+        // ═══════════════════════════════════════════
+
+        // SD WebUI Forge — /sdapi/v1/options has forge_-prefixed keys (A1111 lacks these)
+        new()
+        {
+            Path = "/sdapi/v1/options", ServiceName = "SD WebUI Forge", Category = "Image Gen",
+            Confidence = "high", Specificity = 92,
+            BodyContains = "forge_unet_storage_dtype",
+            PortHint = 7861
+        },
+        // Fooocus-API — /ping returns "pong"
+        new()
+        {
+            Path = "/ping", ServiceName = "Fooocus-API", Category = "Image Gen",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "pong",
+            PortHint = 8888
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
