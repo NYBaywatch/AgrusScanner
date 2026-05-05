@@ -844,7 +844,15 @@ public class AiServiceProber
         "langchain", "langserve", "ray", "mlflow", "mindsdb",
         "privategpt", "gpt4all", "xinference", "sglang",
         "text-generation-webui", "oobabooga", "invokeai",
-        "sillytavern", "n8n", "llamafile", "agrus"
+        "sillytavern", "n8n", "llamafile", "agrus",
+        // v0.3.0 additions
+        "speaches", "whisper-cpp", "openedai-speech", "xtts",
+        "gpt-sovits", "f5-tts", "swarmui", "forge", "fooocus",
+        "autogen-studio", "letta", "openhands", "crewai", "langflow",
+        "onyx", "r2r", "kotaemon", "ragflow", "quivr", "verba", "khoj",
+        "text-embeddings-inference", "tei", "infinity",
+        "nim", "dynamo", "openllm", "mlx", "aphrodite",
+        "hunyuanvideo", "wan2", "cogvideo"
     ];
 
     /// <summary>
