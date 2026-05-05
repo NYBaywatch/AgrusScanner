@@ -432,7 +432,7 @@
 &#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">PortScanner.cs</span>                 <span class="comment"># TCP connect scan (64 concurrent/host)</span>
 &#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">DnsResolver.cs</span>                 <span class="comment"># Reverse DNS (PTR) resolution</span>
 &#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">IpRangeParser.cs</span>               <span class="comment"># CIDR/range/single IP parsing</span>
-&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">AiServiceProber.cs</span>             <span class="comment"># HTTP probing, 45 probe definitions</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">AiServiceProber.cs</span>             <span class="comment"># HTTP probing, 96 probe definitions</span>
 &#9474;   &#9474;   &#9500;&#9472;&#9472; <span class="file">ServiceNameMap.cs</span>              <span class="comment"># Port &#8594; service name lookup (70+ entries)</span>
 &#9474;   &#9474;   &#9492;&#9472;&#9472; <span class="file">SettingsService.cs</span>             <span class="comment"># JSON persistence to %LOCALAPPDATA%</span>
 &#9474;   &#9500;&#9472;&#9472; <span class="dir">ViewModels/</span>
@@ -560,7 +560,7 @@
       <div class="pipeline-desc">
         <ul>
           <li>32 concurrent HTTP probes</li>
-          <li>Iterates 45 probe definitions ordered by specificity</li>
+          <li>Iterates 96 probe definitions ordered by specificity</li>
           <li>Each probe: GET request &rarr; match status code / body / headers</li>
           <li>Keeps best match per port (highest specificity wins)</li>
           <li>Special Docker API handling: enumerates containers, filters by 33 AI image patterns</li>

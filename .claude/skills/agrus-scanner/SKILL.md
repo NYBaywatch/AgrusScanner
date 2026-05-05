@@ -1,6 +1,6 @@
 ---
 name: agrus-scanner
-description: Network reconnaissance and AI/ML service detection. Scan IP ranges with ping sweeps, port scanning, DNS resolution, and AI service probing across 45 detection signatures. Use when the user wants to discover hosts, open ports, or AI/ML services on a network.
+description: Network reconnaissance and AI/ML service detection. Scan IP ranges with ping sweeps, port scanning, DNS resolution, and AI service probing across 90+ detection signatures. Use when the user wants to discover hosts, open ports, or AI/ML services on a network.
 metadata:
   author: agrus
   version: "0.2.2"

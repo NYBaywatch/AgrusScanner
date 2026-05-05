@@ -58,7 +58,7 @@ Scanner/
 │   │   ├── PortScanner.cs                 # TCP connect scan (64 concurrent/host)
 │   │   ├── DnsResolver.cs                 # Reverse DNS (PTR) resolution
 │   │   ├── IpRangeParser.cs               # CIDR/range/single IP parsing
-│   │   ├── AiServiceProber.cs             # HTTP probing, 45 probe definitions
+│   │   ├── AiServiceProber.cs             # HTTP probing, 96 probe definitions
 │   │   ├── ServiceNameMap.cs              # Port → service name lookup (70+ entries)
 │   │   └── SettingsService.cs             # JSON persistence to %LOCALAPPDATA%
 │   ├── ViewModels/
@@ -156,7 +156,7 @@ The scan runs through 5 phases, orchestrated by `MainViewModel.RunScanAsync()`:
 **File:** [`AiServiceProber.cs`](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs)
 
 - 32 concurrent HTTP probes
-- Iterates 45 probe definitions ordered by specificity
+- Iterates 96 probe definitions ordered by specificity
 - Each probe: GET request → match status code / body / headers
 - Keeps best match per port (highest specificity wins)
 - Special Docker API handling: enumerates containers, filters by 33 AI image patterns
