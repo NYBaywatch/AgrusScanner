@@ -577,6 +577,26 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // EMBEDDINGS / RERANKER — v0.3.0
+        // ═══════════════════════════════════════════
+
+        // HuggingFace Text Embeddings Inference — /info has auto_truncate (TGI lacks this key)
+        new()
+        {
+            Path = "/info", ServiceName = "HF TEI", Category = "Embeddings",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "auto_truncate"
+        },
+        // Infinity (michaelfeil) — /health returns {"unix": <ts>}
+        new()
+        {
+            Path = "/health", ServiceName = "Infinity", Category = "Embeddings",
+            Confidence = "high", Specificity = 92,
+            BodyContains = "unix",
+            PortHint = 7997
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
