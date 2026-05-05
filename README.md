@@ -41,12 +41,19 @@ Requires Windows 10/11.
 
 | Category | Services Detected |
 |----------|-------------------|
-| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby |
-| **Image Gen** | Stable Diffusion (A1111), ComfyUI |
+| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine |
+| **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
+| **Video Gen** | SwarmUI, HunyuanVideo |
+| **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
-| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, Gradio apps |
+| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
+| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow |
+| **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj |
+| **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
+| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus |
+| **MCP Server** | Agrus Scanner MCP |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
-| **Container** | Docker API with 33 AI image pattern matches |
+| **Container** | Docker API with 70+ AI image pattern matches |
 
 Detection goes beyond port scanning - the prober queries service-specific API endpoints, extracts model names, versions, GPU info, and container details.
 
@@ -59,7 +66,7 @@ Detection goes beyond port scanning - the prober queries service-specific API en
    - **Quick** - 6 common ports
    - **Common** - 22 well-known ports
    - **Extended** - 58 service ports
-   - **AI Scan** - 28 AI/ML-specific ports with service probing
+   - **AI Scan** - 38 AI/ML-specific ports with service probing
    - **Deep AI Scan** - All 65535 ports with full AI probing (slow but complete)
    - **No port scan** - Ping sweep only
 3. Click **START**
