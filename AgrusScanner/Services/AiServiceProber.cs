@@ -516,6 +516,67 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // LLM SERVING — v0.3.0 ADDITIONS
+        // ═══════════════════════════════════════════
+
+        // NVIDIA NIM — /v1/metadata returns NIM-specific JSON
+        new()
+        {
+            Path = "/v1/metadata", ServiceName = "NVIDIA NIM", Category = "LLM",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "version",
+            PortHint = 8000
+        },
+        // NVIDIA Dynamo — /openapi.json contains "dynamo"
+        new()
+        {
+            Path = "/openapi.json", ServiceName = "NVIDIA Dynamo", Category = "LLM",
+            Confidence = "high", Specificity = 82,
+            BodyContains = "dynamo",
+            PortHint = 8000
+        },
+        // OpenLLM (BentoML) — /readyz primary
+        new()
+        {
+            Path = "/readyz", ServiceName = "OpenLLM", Category = "LLM",
+            Confidence = "medium", Specificity = 70,
+            StatusCode = 200,
+            PortHint = 3000
+        },
+        // OpenLLM (BentoML) — root HTML title (higher specificity disambiguator)
+        new()
+        {
+            Path = "/", ServiceName = "OpenLLM", Category = "LLM",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "OpenLLM",
+            PortHint = 3000
+        },
+        // MLX-LM server (Apple) — /v1/models returns mlx-community model IDs
+        new()
+        {
+            Path = "/v1/models", ServiceName = "MLX-LM", Category = "LLM",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "mlx-community",
+            PortHint = 8080
+        },
+        // llamafile — root HTML contains "llamafile"
+        new()
+        {
+            Path = "/", ServiceName = "llamafile", Category = "LLM",
+            Confidence = "high", Specificity = 85,
+            BodyContains = "llamafile",
+            PortHint = 8080
+        },
+        // Aphrodite Engine — port 2242 + /health
+        new()
+        {
+            Path = "/health", ServiceName = "Aphrodite Engine", Category = "LLM",
+            Confidence = "high", Specificity = 90,
+            StatusCode = 200,
+            PortHint = 2242
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
