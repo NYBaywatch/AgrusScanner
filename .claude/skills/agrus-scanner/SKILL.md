@@ -30,7 +30,7 @@ Full network scan: ping sweep, port scan, DNS resolution, optional AI service de
 
 Parameters:
 - `ip_range` (required) — CIDR notation like `192.168.1.0/24` or range like `10.0.0.1-254`
-- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (28 AI/ML ports), `deep-ai` (all 65535 ports, full AI probing), `none` (ping only). Default: `quick`
+- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (38 AI/ML ports), `deep-ai` (all 65535 ports, full AI probing), `none` (ping only). Default: `quick`
 - `skip_ping` — Scan all IPs regardless of ping response. Default: `false`
 
 Returns JSON array of host objects.
@@ -73,9 +73,15 @@ probe_host(ip="192.168.1.50", ports="ai")
 
 ## AI Services Detected
 
-The scanner detects 45+ AI/ML services across these categories:
-- **LLM**: Ollama, vLLM, HuggingFace TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby
-- **Image Gen**: Stable Diffusion (A1111), ComfyUI
+The scanner detects 60+ AI/ML services across these categories:
+- **LLM**: Ollama, vLLM, HuggingFace TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine
+- **Image Gen**: Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API
+- **Video Gen**: SwarmUI, HunyuanVideo
+- **Voice / STT / TTS**: Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming
 - **ML Platforms**: NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB
-- **AI UIs**: Open WebUI, AnythingLLM, LibreChat, Flowise, Dify
-- **GPU/Infra**: NVIDIA DCGM, Docker API with AI container detection
+- **AI UIs**: Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT
+- **Agent Platforms**: AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow
+- **RAG Platforms**: Onyx, R2R, kotaemo, RAGFlow, Quivr, Verba, Khoj
+- **Embeddings**: HF Text Embeddings Inference (TEI), Infinity
+- **Vector DB**: Qdrant, ChromaDB, Weaviate, Milvus
+- **GPU/Infra**: NVIDIA DCGM, Docker API with 70+ AI image pattern matches
