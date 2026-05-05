@@ -745,6 +745,66 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // RAG PLATFORMS — v0.3.0
+        // ═══════════════════════════════════════════
+
+        // Onyx (formerly Danswer) — root HTML title contains "Onyx"
+        new()
+        {
+            Path = "/", ServiceName = "Onyx", Category = "RAG Platform",
+            Confidence = "medium", Specificity = 75,
+            BodyContains = "Onyx",
+            PortHint = 3000
+        },
+        // R2R (SciPhi) — port 7272 + /v3/health
+        new()
+        {
+            Path = "/v3/health", ServiceName = "R2R", Category = "RAG Platform",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "ok",
+            PortHint = 7272
+        },
+        // kotaemon — Gradio app with "kotaemon" in HTML
+        new()
+        {
+            Path = "/", ServiceName = "kotaemon", Category = "RAG Platform",
+            Confidence = "high", Specificity = 82,
+            BodyContains = "kotaemon",
+            PortHint = 7860
+        },
+        // RAGFlow — /v1/system/version returns build info containing "RAGFlow"
+        new()
+        {
+            Path = "/v1/system/version", ServiceName = "RAGFlow", Category = "RAG Platform",
+            Confidence = "high", Specificity = 90,
+            BodyContains = "RAGFlow"
+        },
+        // Quivr — backend port 5050 + /healthz
+        new()
+        {
+            Path = "/healthz", ServiceName = "Quivr", Category = "RAG Platform",
+            Confidence = "high", Specificity = 80,
+            StatusCode = 200,
+            PortHint = 5050
+        },
+        // Verba (Weaviate's RAG) — /api/health returns deployments key
+        new()
+        {
+            Path = "/api/health", ServiceName = "Verba", Category = "RAG Platform",
+            Confidence = "high", Specificity = 82,
+            BodyContains = "deployments",
+            PortHint = 8000
+        },
+        // Khoj — port 42110 distinctive + /api/health
+        new()
+        {
+            Path = "/api/health", ServiceName = "Khoj", Category = "RAG Platform",
+            Confidence = "high", Specificity = 90,
+            StatusCode = 200,
+            PortHint = 42110
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
