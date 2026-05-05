@@ -203,9 +203,9 @@ class ProbeDefinition
 6. Track best match (highest specificity) per port
 7. Extract details (models, versions, GPU info) from response body
 
-### All 95 Probe Definitions
+### All 96 Probe Definitions
 
-**LLM Services (32 probes, 23 services):**
+**LLM Services (33 probes, 23 services):**
 Ollama (3), vLLM (2), HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI (3), FastChat (2), Tabby, Xinference, SGLang, text-generation-webui, NIM, Dynamo, OpenLLM (2), MLX-LM, llamafile, Aphrodite Engine, OpenAI-compatible, LM Studio/TGW
 
 **Image Generation (7 probes, 5 services):**
