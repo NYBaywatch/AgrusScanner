@@ -679,6 +679,27 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // VIDEO GENERATION — v0.3.0
+        // ═══════════════════════════════════════════
+
+        // SwarmUI — root HTML title check (POST-only API endpoints not GET-able)
+        new()
+        {
+            Path = "/", ServiceName = "SwarmUI", Category = "Video Gen",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "SwarmUI",
+            PortHint = 7801
+        },
+        // HunyuanVideo — Gradio app with HunyuanVideo in title (port 8081)
+        new()
+        {
+            Path = "/", ServiceName = "HunyuanVideo", Category = "Video Gen",
+            Confidence = "high", Specificity = 80,
+            BodyContains = "HunyuanVideo",
+            PortHint = 8081
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
