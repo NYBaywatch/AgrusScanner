@@ -297,6 +297,8 @@
   .tag-green { background: var(--green-dim); color: var(--green); }
   .tag-blue { background: #58a6ff22; color: var(--link); }
   .tag-purple { background: #bc8cff22; color: var(--purple); }
+  .tag-teal { background: #2dd4bf22; color: #2dd4bf; }
+  .tag-pink { background: #f472b622; color: #f472b6; }
 
   /* ── Pipeline steps ── */
   .pipeline {
@@ -612,17 +614,23 @@
   <li>Extract details (models, versions, GPU info) from response body</li>
 </ol>
 
-<h3>All 45 Probe Definitions</h3>
+<h3>All 95 Probe Definitions</h3>
 <table>
   <thead><tr><th>Category</th><th>Probes</th><th>Services</th><th>Details</th></tr></thead>
   <tbody>
-    <tr><td><span class="tag tag-purple">LLM</span></td><td>16</td><td>12</td><td>Ollama (2), vLLM, HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI, FastChat (2)</td></tr>
-    <tr><td><span class="tag tag-green">Image Gen</span></td><td>4</td><td>2</td><td>Stable Diffusion A1111 (2), ComfyUI (2)</td></tr>
-    <tr><td><span class="tag tag-blue">ML Platform</span></td><td>10</td><td>9</td><td>NVIDIA Triton (2), TorchServe (2), TensorFlow Serving, MLflow (2), Ray Serve, BentoML, KServe, MindsDB, Tabby</td></tr>
-    <tr><td><span class="tag tag-orange">AI Platform</span></td><td>5</td><td>5</td><td>Open WebUI, AnythingLLM, LibreChat, Flowise, Dify</td></tr>
+    <tr><td><span class="tag tag-purple">LLM</span></td><td>32</td><td>23</td><td>Ollama (3), vLLM (2), HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI (3), FastChat (2), Tabby, Xinference, SGLang, text-generation-webui, NIM, Dynamo, OpenLLM (2), MLX-LM, llamafile, Aphrodite Engine, OpenAI-compatible, LM Studio/TGW</td></tr>
+    <tr><td><span class="tag tag-green">Image Gen</span></td><td>7</td><td>5</td><td>Stable Diffusion A1111 (2), ComfyUI (2), InvokeAI, SD WebUI Forge, Fooocus-API</td></tr>
+    <tr><td><span class="tag tag-blue">ML Platform</span></td><td>11</td><td>8</td><td>NVIDIA Triton (2), TorchServe (2), TensorFlow Serving, MLflow (2), Ray Serve, BentoML, KServe, MindsDB</td></tr>
+    <tr><td><span class="tag tag-orange">AI Platform</span></td><td>13</td><td>9</td><td>Open WebUI (3), AnythingLLM, LibreChat, Flowise (2), Dify (2), SillyTavern, n8n, PrivateGPT, Gradio AI App</td></tr>
+    <tr><td><span class="tag tag-teal">Embeddings</span></td><td>2</td><td>2</td><td>HF TEI, Infinity</td></tr>
+    <tr><td><span class="tag tag-pink">Voice / STT / TTS</span></td><td>7</td><td>7</td><td>Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming</td></tr>
+    <tr><td><span class="tag tag-green">Video Gen</span></td><td>2</td><td>2</td><td>SwarmUI, HunyuanVideo</td></tr>
+    <tr><td><span class="tag tag-purple">Agent Platform</span></td><td>5</td><td>5</td><td>AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow</td></tr>
+    <tr><td><span class="tag tag-blue">RAG Platform</span></td><td>7</td><td>7</td><td>Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj</td></tr>
+    <tr><td><span class="tag tag-blue">Vector DB</span></td><td>4</td><td>4</td><td>Qdrant, ChromaDB, Weaviate, Milvus</td></tr>
+    <tr><td><span class="tag tag-orange">MCP Server</span></td><td>1</td><td>1</td><td>Agrus Scanner MCP</td></tr>
     <tr><td><span class="tag tag-orange">GPU Infra</span></td><td>3</td><td>3</td><td>NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics</td></tr>
-    <tr><td><span class="tag tag-blue">Container</span></td><td>1</td><td>1</td><td>Docker API (with 33 AI image patterns)</td></tr>
-    <tr><td><span class="tag tag-purple">Fallback</span></td><td>4</td><td>4</td><td>OpenAI-compatible, LM Studio/TGW, Gradio AI App, Generic LLM</td></tr>
+    <tr><td><span class="tag tag-blue">Container</span></td><td>1</td><td>1</td><td>Docker API (with AI image patterns)</td></tr>
   </tbody>
 </table>
 

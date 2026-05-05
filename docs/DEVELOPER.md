@@ -203,28 +203,46 @@ class ProbeDefinition
 6. Track best match (highest specificity) per port
 7. Extract details (models, versions, GPU info) from response body
 
-### All 45 Probe Definitions
+### All 95 Probe Definitions
 
-**LLM Services (16 probes, 12 services):**
-Ollama (2), vLLM, HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI, FastChat (2)
+**LLM Services (32 probes, 23 services):**
+Ollama (3), vLLM (2), HF TGI, llama.cpp (2), KoboldCpp (2), LM Studio, LiteLLM (2), Jan.ai, GPT4All, LocalAI (3), FastChat (2), Tabby, Xinference, SGLang, text-generation-webui, NIM, Dynamo, OpenLLM (2), MLX-LM, llamafile, Aphrodite Engine, OpenAI-compatible, LM Studio/TGW
 
-**Image Generation (4 probes, 2 services):**
-Stable Diffusion A1111 (2), ComfyUI (2)
+**Image Generation (7 probes, 5 services):**
+Stable Diffusion A1111 (2), ComfyUI (2), InvokeAI, SD WebUI Forge, Fooocus-API
 
-**ML Platforms (10 probes, 9 services):**
-NVIDIA Triton (2), TorchServe (2), TensorFlow Serving, MLflow (2), Ray Serve, BentoML, KServe, MindsDB, Tabby
+**ML Platforms (11 probes, 8 services):**
+NVIDIA Triton (2), TorchServe (2), TensorFlow Serving, MLflow (2), Ray Serve, BentoML, KServe, MindsDB
 
-**AI Platforms (5 probes, 5 services):**
-Open WebUI, AnythingLLM, LibreChat, Flowise, Dify
+**AI Platforms (13 probes, 9 services):**
+Open WebUI (3), AnythingLLM, LibreChat, Flowise (2), Dify (2), SillyTavern, n8n, PrivateGPT, Gradio AI App
+
+**Embeddings (2 probes, 2 services):**
+HF TEI, Infinity
+
+**Voice / STT / TTS (7 probes, 7 services):**
+Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming
+
+**Video Generation (2 probes, 2 services):**
+SwarmUI, HunyuanVideo
+
+**Agent Platforms (5 probes, 5 services):**
+AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow
+
+**RAG Platforms (7 probes, 7 services):**
+Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj
+
+**Vector Databases (4 probes, 4 services):**
+Qdrant, ChromaDB, Weaviate, Milvus
+
+**MCP Server (1 probe, 1 service):**
+Agrus Scanner MCP
 
 **GPU Infrastructure (3 probes, 3 services):**
 NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics
 
 **Container Detection (1 probe):**
-Docker API (with 33 AI image patterns)
-
-**Generic Fallbacks (4 probes):**
-OpenAI-compatible, LM Studio/TGW, Gradio AI App, Generic LLM Service
+Docker API (with AI image patterns)
 
 ### Docker AI Container Patterns
 
