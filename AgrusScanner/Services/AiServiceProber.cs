@@ -1109,6 +1109,38 @@ public class AiServiceProber
                 "LocalAI" when root.TryGetProperty("data", out var localData) =>
                     FormatModelNames(localData),
 
+                // v0.3.0 LLM serving
+                "MLX-LM" when root.TryGetProperty("data", out var mlxData) =>
+                    FormatModelNames(mlxData),
+
+                // v0.3.0 voice
+                "Speaches" when root.TryGetProperty("data", out var spData) =>
+                    FormatModelNames(spData),
+
+                // v0.3.0 embeddings
+                "HF TEI" when root.TryGetProperty("model_id", out var teiModel) =>
+                    FormatTgiInfo(root, teiModel),
+
+                // v0.3.0 agent platforms
+                "AutoGen Studio" when root.TryGetProperty("data", out var asData) && asData.TryGetProperty("version", out var asVer) =>
+                    $"v{asVer.GetString()}",
+                "Letta" when root.TryGetProperty("version", out var lVer) =>
+                    $"v{lVer.GetString()}",
+                "Langflow" when root.TryGetProperty("status", out var lfStatus) =>
+                    lfStatus.GetString() ?? "ok",
+
+                // v0.3.0 RAG
+                "R2R" when root.TryGetProperty("results", out var r2rRes) && r2rRes.TryGetProperty("response", out var r2rResp) =>
+                    r2rResp.GetString() ?? "ok",
+                "Verba" when root.TryGetProperty("deployments", out var vbDep) && vbDep.ValueKind == JsonValueKind.Object =>
+                    $"{vbDep.EnumerateObject().Count()} deployment(s)",
+                "RAGFlow" when root.TryGetProperty("data", out var rfData) && rfData.TryGetProperty("version", out var rfVer) =>
+                    $"v{rfVer.GetString()}",
+
+                // v0.3.0 image gen
+                "SD WebUI Forge" when root.TryGetProperty("sd_model_checkpoint", out var fckpt) =>
+                    fckpt.GetString() ?? "",
+
                 // Image generation
                 "Stable Diffusion (A1111)" when path.Contains("sd-models") =>
                     FormatSdModels(root),
