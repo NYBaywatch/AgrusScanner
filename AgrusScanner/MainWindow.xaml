@@ -85,7 +85,7 @@
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,4">
                                 <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">AI Scan</Run>
-                                <Run Foreground="{StaticResource TextBrush}"> - 28 ports for AI/ML services, GPU infra, and Docker</Run>
+                                <Run Foreground="{StaticResource TextBrush}"> - 38 ports for AI/ML services, GPU infra, and Docker</Run>
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" FontSize="11" Margin="0,0,0,8">
                                 <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">No port scan</Run>

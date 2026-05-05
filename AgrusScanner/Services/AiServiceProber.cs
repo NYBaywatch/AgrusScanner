@@ -584,7 +584,7 @@ public class AiServiceProber
         new()
         {
             Path = "/info", ServiceName = "HF TEI", Category = "Embeddings",
-            Confidence = "high", Specificity = 88,
+            Confidence = "high", Specificity = 90,
             BodyContains = "auto_truncate"
         },
         // Infinity (michaelfeil) — /health returns {"unix": <ts>}
