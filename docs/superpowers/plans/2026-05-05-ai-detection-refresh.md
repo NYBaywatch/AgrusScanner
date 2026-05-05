@@ -290,7 +290,7 @@ Expected: `Build succeeded.` with 0 errors.
 
 ```bash
 git add AgrusScanner/Models/ScanConfig.cs
-git commit -m "feat: extend AiPorts to 39 ports for v0.3.0 service coverage"
+git commit -m "feat: extend AiPorts to 38 ports for v0.3.0 service coverage"
 ```
 
 ---
@@ -1048,7 +1048,7 @@ Use Edit with this `old_string`:
 Replace with:
 
 ```markdown
-   - **AI Scan** - 39 AI/ML-specific ports with service probing
+   - **AI Scan** - 38 AI/ML-specific ports with service probing
 ```
 
 - [ ] **Step 3: Commit**
@@ -1083,7 +1083,7 @@ Use Edit (replace_all = false, fix one at a time):
 
 - [ ] **Step 3: Update USER_GUIDE.md AI Ports table — append new rows**
 
-Find the AI Ports table (currently 28 rows starting near line 130). Use Edit to insert new rows before the table's closing newline. Use this `old_string` (last existing row + table terminator — adapt to actual file content):
+Find the AI Ports table (currently 27 rows starting near line 130). Use Edit to insert new rows before the table's closing newline. Use this `old_string` (last existing row + table terminator — adapt to actual file content):
 
 After locating the table, add these rows in port-numeric order — ports already present skip. New rows to insert:
 
@@ -1318,7 +1318,7 @@ Use Edit with this `old_string`:
 Replace with:
 
 ```markdown
-- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (39 AI/ML ports), `deep-ai` (all 65535 ports, full AI probing), `none` (ping only). Default: `quick`
+- `preset` — Port preset: `quick` (6 ports), `common` (22 ports), `extended` (58 ports), `ai` (38 AI/ML ports), `deep-ai` (all 65535 ports, full AI probing), `none` (ping only). Default: `quick`
 ```
 
 - [ ] **Step 3: Commit**
@@ -1350,10 +1350,10 @@ Expected: completes successfully, `Installer\bin\Release\AgrusScanner-Setup.msi`
 
 Start the MCP server: launch `AgrusScanner.exe --mcp-only` (or use the GUI; either path serves the MCP). With the MCP available, invoke the `list_presets` tool from any MCP client (e.g. Claude Desktop pointed at the running scanner). Verify the response contains:
 
-- `ai` preset with `port_count: 39`
+- `ai` preset with `port_count: 38`
 - The port list contains `2242, 5050, 7272, 7801, 7861, 7865, 7997, 8020, 8283, 9880, 42110`
 
-If the user has no MCP client handy, alternative verification: open the GUI, click the AI preset radio, look at the rendered port count chip in the header. It should display `39` (or whatever UI label matches the preset port count).
+If the user has no MCP client handy, alternative verification: open the GUI, click the AI preset radio, look at the rendered port count chip in the header. It should display `38` (or whatever UI label matches the preset port count).
 
 - [ ] **Step 4: Smoke-test against a known service (optional but strongly recommended)**
 

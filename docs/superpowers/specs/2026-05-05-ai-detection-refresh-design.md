@@ -40,7 +40,7 @@ Rejected alternatives:
 - *Refactor + expand* — split `Probes[]` into per-category files. Doesn't earn its weight at this size; mixes feature work with refactor noise.
 - *Per-category presets (`voice`, `video`, `agent`, `rag`)* — adds UX surface for marginal benefit; the existing `ai` preset already covers everything since the engine fires port-hinted probes only on their hint port.
 
-**Port-list strategy: 1a — expand `AiPorts[]` from 28 to 39.** Only 11 of the new services use ports not already in `AiPorts`. Wall-clock impact per host is sub-linear because `PortScanner` runs at concurrency=64 and 39 ports still fit one parallel wave. Rejected: keeping `ai` narrow and adding `ai-extended` — the 11-port delta doesn't justify a new preset.
+**Port-list strategy: 1a — expand `AiPorts[]` from 27 to 38.** Only 11 of the new services use ports not already in `AiPorts`. Wall-clock impact per host is sub-linear because `PortScanner` runs at concurrency=64 and 38 ports still fit one parallel wave. Rejected: keeping `ai` narrow and adding `ai-extended` — the 11-port delta doesn't justify a new preset.
 
 ## New probes — 31 entries
 
@@ -125,7 +125,7 @@ No-change items confirmed: TabbyML (`/v1/health` still canonical), NVIDIA Triton
 
 ## Port additions
 
-`AiPorts[]` grows from 28 → 39. New entries: `2242, 5050, 7272, 7801, 7861, 7865, 7997, 8020, 8283, 9880, 42110`.
+`AiPorts[]` grows from 27 → 38. New entries: `2242, 5050, 7272, 7801, 7861, 7865, 7997, 8020, 8283, 9880, 42110`.
 
 The remaining new services live on ports already in `AiPorts`: 8000, 8080, 7860, 3000, 8081, 8888.
 
@@ -178,7 +178,7 @@ These ports host multiple candidate services. Resolution relies on body markers 
 
 - `dotnet build` clean compile, no warnings introduced
 - `.\build-installer.ps1` rebuilds the MSI per project release process (CLAUDE.md)
-- `list_presets` MCP tool reports `ai` with `port_count: 39`
+- `list_presets` MCP tool reports `ai` with `port_count: 38`
 - Manual smoke test on a host running at least one of: Ollama, A1111, ComfyUI, Open WebUI — verify category labels, detail strings, no regressions
 - Optional: stand up Speaches or whisper.cpp in a container and confirm new probe fires
 
@@ -197,7 +197,7 @@ These ports host multiple candidate services. Resolution relies on body markers 
 - kotaemon and Langflow share port 7860 with each other and with several Gradio apps — body markers are unique strings, but defensive ordering by specificity is required.
 
 **Performance impact:**
-- 39-port `ai` preset adds ~11 TCP probes per host vs. 28. At concurrency=64 and 2000 ms timeout, all 39 fit one wave; per-host wall-clock change is below the noise floor of a typical LAN scan.
+- 38-port `ai` preset adds 11 TCP probes per host vs. 27. At concurrency=64 and 2000 ms timeout, all 38 fit one wave; per-host wall-clock change is below the noise floor of a typical LAN scan.
 
 ## Out-of-scope follow-ups (not addressed here)
 
