@@ -338,6 +338,11 @@
   .badge-gpu { background: var(--yellow-dim); color: var(--yellow); }
   .badge-container { background: #58a6ff22; color: var(--link); }
   .badge-fallback { background: #8b949e22; color: var(--text-muted); }
+  .badge-voice { background: #f0883e22; color: #f0883e; }
+  .badge-video { background: #f8514922; color: var(--red); }
+  .badge-agent { background: #79c0ff22; color: var(--cyan); }
+  .badge-rag { background: #3fb95022; color: var(--green); }
+  .badge-embeddings { background: #bc8cff22; color: var(--purple); }
   .category-count {
     color: var(--text-muted);
     font-size: 13px;
@@ -466,7 +471,7 @@
   <a href="#quick-preset">Quick (6 ports)</a>
   <a href="#common-preset">Common (22 ports)</a>
   <a href="#extended-preset">Extended (58 ports)</a>
-  <a href="#ai-preset">AI (28 ports)</a>
+  <a href="#ai-preset">AI (38 ports)</a>
   <a href="#deep-ai-preset">Deep AI (65535 ports)</a>
   <a href="#no-port-preset">No Port Scan</a>
 
@@ -474,6 +479,11 @@
   <a href="#ai-detection">Overview</a>
   <a href="#llm-services">LLM Services</a>
   <a href="#image-gen">Image Generation</a>
+  <a href="#voice-stt-tts">Voice / STT / TTS</a>
+  <a href="#video-gen">Video Gen</a>
+  <a href="#agent-platform">Agent Platform</a>
+  <a href="#rag-platform">RAG Platform</a>
+  <a href="#embeddings">Embeddings</a>
   <a href="#ml-platforms">ML Platforms</a>
   <a href="#ai-platforms">AI Chat Platforms</a>
   <a href="#gpu-infra">GPU Infrastructure</a>
@@ -500,7 +510,7 @@
     <span class="hero-chip"><span class="hero-chip-dot dot-green"></span> Ping Sweep</span>
     <span class="hero-chip"><span class="hero-chip-dot dot-blue"></span> Port Scanning</span>
     <span class="hero-chip"><span class="hero-chip-dot dot-purple"></span> DNS Resolution</span>
-    <span class="hero-chip"><span class="hero-chip-dot dot-orange"></span> 45+ AI Signatures</span>
+    <span class="hero-chip"><span class="hero-chip-dot dot-orange"></span> 90+ AI Signatures</span>
   </div>
 </div>
 
@@ -511,7 +521,7 @@
   <li><strong>Live hosts</strong> via ICMP ping sweep</li>
   <li><strong>Open ports</strong> via TCP connect scanning</li>
   <li><strong>Hostnames</strong> via reverse DNS lookup</li>
-  <li><strong>AI/ML services</strong> via HTTP endpoint probing (45+ detection signatures)</li>
+  <li><strong>AI/ML services</strong> via HTTP endpoint probing (90+ detection signatures across 12 categories)</li>
 </ul>
 <p>It was built to help discover "shadow AI" &mdash; unauthorized AI services running on corporate or home networks &mdash; but works as a general-purpose network scanner too.</p>
 
@@ -563,7 +573,7 @@
     <div class="step-num">4</div>
     <div class="step-body">
       <div class="step-title">AI Service Probing <span style="font-weight: 400; font-size: 12px; color: var(--accent);">(AI &amp; Deep AI presets)</span></div>
-      <div class="step-desc">When using the <strong>AI</strong> or <strong>Deep AI</strong> scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services, and extracts details like model names, versions, and GPU information. In <strong>Deep AI</strong> mode, the scanner ignores port hints &mdash; every probe runs against every open port, catching AI services on non-standard ports.</div>
+      <div class="step-desc">When using the <strong>AI</strong> or <strong>Deep AI</strong> scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 90+ detection signatures spanning 12 categories to identify AI/ML services, and extracts details like model names, versions, and GPU information. In <strong>Deep AI</strong> mode, the scanner ignores port hints &mdash; every probe runs against every open port, catching AI services on non-standard ports.</div>
     </div>
   </div>
   <div class="step">
@@ -596,7 +606,7 @@
   </div>
   <div class="preset-card">
     <div class="preset-name">AI</div>
-    <div class="preset-count">28 ports</div>
+    <div class="preset-count">38 ports</div>
     <div class="preset-desc">Specialized for AI/ML services. Includes HTTP probing to identify exact services.</div>
   </div>
   <div class="preset-card">
@@ -675,7 +685,7 @@
 </table>
 
 <!-- AI Preset -->
-<h3 id="ai-preset">AI (28 ports)</h3>
+<h3 id="ai-preset">AI (38 ports)</h3>
 <table>
   <thead><tr><th>Port</th><th>Target Service(s)</th><th>Category</th></tr></thead>
   <tbody>
@@ -704,6 +714,17 @@
     <tr><td><code>8443</code></td><td>HTTPS Alt</td><td>Multi-use</td></tr>
     <tr><td><code>21001</code></td><td>FastChat Controller</td><td>LLM</td></tr>
     <tr><td><code>21002</code></td><td>FastChat Worker</td><td>LLM</td></tr>
+    <tr><td><code>2242</code></td><td>Aphrodite Engine</td><td>LLM</td></tr>
+    <tr><td><code>5050</code></td><td>Quivr</td><td>RAG Platform</td></tr>
+    <tr><td><code>7272</code></td><td>R2R</td><td>RAG Platform</td></tr>
+    <tr><td><code>7801</code></td><td>SwarmUI</td><td>Video Gen</td></tr>
+    <tr><td><code>7861</code></td><td>SD WebUI Forge</td><td>Image Gen</td></tr>
+    <tr><td><code>7865</code></td><td>Fooocus</td><td>Image Gen</td></tr>
+    <tr><td><code>7997</code></td><td>Infinity</td><td>Embeddings</td></tr>
+    <tr><td><code>8020</code></td><td>XTTS-API-Server</td><td>Voice / STT / TTS</td></tr>
+    <tr><td><code>8283</code></td><td>Letta</td><td>Agent Platform</td></tr>
+    <tr><td><code>9880</code></td><td>GPT-SoVITS</td><td>Voice / STT / TTS</td></tr>
+    <tr><td><code>42110</code></td><td>Khoj</td><td>RAG Platform</td></tr>
   </tbody>
 </table>
 
@@ -723,7 +744,7 @@
 <!-- LLM Services -->
 <div class="category-header" id="llm-services">
   <span class="category-badge badge-llm">LLM Services</span>
-  <span class="category-count">12 services detected</span>
+  <span class="category-count">18 services detected</span>
 </div>
 <table>
   <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
@@ -740,19 +761,105 @@
     <tr><td><a href="https://github.com/mudler/LocalAI">LocalAI</a></td><td><code>8080</code></td><td><code>/readyz</code> health endpoint</td></tr>
     <tr><td><a href="https://github.com/lm-sys/FastChat">FastChat</a></td><td><code>21001/21002</code></td><td>Controller on 21001, worker on 21002</td></tr>
     <tr><td><a href="https://github.com/TabbyML/tabby">Tabby</a></td><td><code>8080</code></td><td><code>/v1/health</code> returns model info</td></tr>
+    <tr><td><a href="https://docs.nvidia.com/nim/">NVIDIA NIM</a></td><td><code>8000</code></td><td><code>/v1/metadata</code> returns NIM-specific JSON</td></tr>
+    <tr><td><a href="https://github.com/ai-dynamo/dynamo">NVIDIA Dynamo</a></td><td><code>8000</code></td><td><code>/openapi.json</code> contains <code>dynamo</code></td></tr>
+    <tr><td><a href="https://github.com/bentoml/OpenLLM">OpenLLM</a></td><td><code>3000</code></td><td><code>/readyz</code> + root HTML containing <code>OpenLLM</code></td></tr>
+    <tr><td><a href="https://github.com/ml-explore/mlx-lm">MLX-LM</a></td><td><code>8080</code></td><td><code>/v1/models</code> lists <code>mlx-community/...</code> models</td></tr>
+    <tr><td><a href="https://github.com/Mozilla-Ocho/llamafile">llamafile</a></td><td><code>8080</code></td><td>Root HTML contains <code>llamafile</code></td></tr>
+    <tr><td><a href="https://github.com/aphrodite-engine/aphrodite-engine">Aphrodite Engine</a></td><td><code>2242</code></td><td><code>/health</code> on port 2242</td></tr>
   </tbody>
 </table>
 
 <!-- Image Generation -->
 <div class="category-header" id="image-gen">
   <span class="category-badge badge-image">Image Generation</span>
-  <span class="category-count">2 services detected</span>
+  <span class="category-count">4 services detected</span>
 </div>
 <table>
   <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>
   <tbody>
     <tr><td><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui">Stable Diffusion (A1111)</a></td><td><code>7860</code></td><td><code>/sdapi/v1/sd-models</code> and <code>/sdapi/v1/options</code></td></tr>
     <tr><td><a href="https://github.com/comfyanonymous/ComfyUI">ComfyUI</a></td><td><code>8188</code></td><td><code>/system_stats</code> and <code>/object_info</code></td></tr>
+    <tr><td><a href="https://github.com/lllyasviel/stable-diffusion-webui-forge">SD WebUI Forge</a></td><td><code>7861</code></td><td><code>/sdapi/v1/options</code> has <code>forge_*</code> keys</td></tr>
+    <tr><td><a href="https://github.com/mrhan1993/Fooocus-API">Fooocus-API</a></td><td><code>8888</code></td><td><code>/ping</code> returns <code>pong</code></td></tr>
+  </tbody>
+</table>
+
+<!-- Voice / STT / TTS -->
+<div class="category-header" id="voice-stt-tts">
+  <span class="category-badge badge-voice">Voice / STT / TTS</span>
+  <span class="category-count">7 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Port</th><th>Detection</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/speaches-ai/speaches">Speaches</a></td><td><code>8000</code></td><td><code>/v1/models</code> lists <code>Systran/faster-whisper-*</code></td></tr>
+    <tr><td><a href="https://github.com/ggml-org/whisper.cpp">whisper.cpp server</a></td><td><code>8080</code></td><td><code>/inference</code> returns 400 with distinctive error</td></tr>
+    <tr><td><a href="https://github.com/matatonic/openedai-speech">OpenedAI-Speech</a></td><td><code>8000</code></td><td><code>/v1/audio/voices</code> returns canonical voice list</td></tr>
+    <tr><td><a href="https://github.com/SWivid/F5-TTS">F5-TTS</a></td><td><code>8000</code></td><td><code>/tts-status/{id}</code> returns JSON with <code>task_id</code></td></tr>
+    <tr><td><a href="https://github.com/RVC-Boss/GPT-SoVITS">GPT-SoVITS</a></td><td><code>9880</code></td><td>Port 9880 + <code>/control</code> returns 400</td></tr>
+    <tr><td><a href="https://github.com/daswer123/xtts-api-server">XTTS-API-Server</a></td><td><code>8020</code></td><td><code>/speakers</code> on port 8020</td></tr>
+    <tr><td><a href="https://github.com/coqui-ai/xtts-streaming-server">Coqui XTTS Streaming</a></td><td><code>8000</code></td><td><code>/studio_speakers</code> returns 200</td></tr>
+  </tbody>
+</table>
+
+<!-- Video Gen -->
+<div class="category-header" id="video-gen">
+  <span class="category-badge badge-video">Video Gen</span>
+  <span class="category-count">2 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Port</th><th>Detection</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/mcmonkeyprojects/SwarmUI">SwarmUI</a></td><td><code>7801</code></td><td>Root HTML title contains <code>SwarmUI</code></td></tr>
+    <tr><td><a href="https://github.com/Tencent-Hunyuan/HunyuanVideo">HunyuanVideo</a></td><td><code>8081</code></td><td>Gradio app with <code>HunyuanVideo</code> in HTML</td></tr>
+  </tbody>
+</table>
+
+<!-- Agent Platform -->
+<div class="category-header" id="agent-platform">
+  <span class="category-badge badge-agent">Agent Platform</span>
+  <span class="category-count">5 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Port</th><th>Detection</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://microsoft.github.io/autogen/">AutoGen Studio</a></td><td><code>8081</code></td><td><code>/api/version</code> contains <code>autogenstudio</code></td></tr>
+    <tr><td><a href="https://github.com/letta-ai/letta">Letta</a></td><td><code>8283</code></td><td><code>/v1/health/</code> returns version</td></tr>
+    <tr><td><a href="https://github.com/All-Hands-AI/OpenHands">OpenHands</a></td><td><code>3000</code></td><td><code>/api/options/config</code> contains <code>FEATURE_FLAGS</code></td></tr>
+    <tr><td><a href="https://github.com/strnad/CrewAI-Studio">CrewAI Studio</a></td><td><code>8501</code></td><td>Root HTML contains <code>CrewAI Studio</code></td></tr>
+    <tr><td><a href="https://github.com/langflow-ai/langflow">Langflow</a></td><td><code>7860</code></td><td><code>/health_check</code> contains <code>chat_ready</code></td></tr>
+  </tbody>
+</table>
+
+<!-- RAG Platform -->
+<div class="category-header" id="rag-platform">
+  <span class="category-badge badge-rag">RAG Platform</span>
+  <span class="category-count">7 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Port</th><th>Detection</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/onyx-dot-app/onyx">Onyx (formerly Danswer)</a></td><td><code>3000</code></td><td>Root HTML title contains <code>Onyx</code></td></tr>
+    <tr><td><a href="https://github.com/SciPhi-AI/R2R">R2R</a></td><td><code>7272</code></td><td><code>/v3/health</code> on port 7272</td></tr>
+    <tr><td><a href="https://github.com/Cinnamon/kotaemon">kotaemon</a></td><td><code>7860</code></td><td>Root HTML contains <code>kotaemon</code></td></tr>
+    <tr><td><a href="https://github.com/infiniflow/ragflow">RAGFlow</a></td><td><code>80</code></td><td><code>/v1/system/version</code> contains <code>RAGFlow</code></td></tr>
+    <tr><td><a href="https://github.com/QuivrHQ/quivr">Quivr</a></td><td><code>5050</code></td><td>Backend <code>/healthz</code> on port 5050</td></tr>
+    <tr><td><a href="https://github.com/weaviate/Verba">Verba</a></td><td><code>8000</code></td><td><code>/api/health</code> returns <code>deployments</code> key</td></tr>
+    <tr><td><a href="https://github.com/khoj-ai/khoj">Khoj</a></td><td><code>42110</code></td><td><code>/api/health</code> on port 42110</td></tr>
+  </tbody>
+</table>
+
+<!-- Embeddings -->
+<div class="category-header" id="embeddings">
+  <span class="category-badge badge-embeddings">Embeddings</span>
+  <span class="category-count">2 services detected</span>
+</div>
+<table>
+  <thead><tr><th>Service</th><th>Port</th><th>Detection</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/huggingface/text-embeddings-inference">HF Text Embeddings Inference</a></td><td><code>8080</code></td><td><code>/info</code> has <code>auto_truncate</code> key</td></tr>
+    <tr><td><a href="https://github.com/michaelfeil/infinity">Infinity</a></td><td><code>7997</code></td><td><code>/health</code> returns <code>unix</code> timestamp</td></tr>
   </tbody>
 </table>
 
@@ -808,7 +915,7 @@
 <!-- Container Detection -->
 <div class="category-header" id="containers">
   <span class="category-badge badge-container">Container Detection</span>
-  <span class="category-count">33 image patterns</span>
+  <span class="category-count">70+ image patterns</span>
 </div>
 <table>
   <thead><tr><th>Service</th><th>Default Port</th><th>How It's Detected</th></tr></thead>

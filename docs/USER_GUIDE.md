@@ -26,7 +26,7 @@ Agrus Scanner is a Windows desktop application that scans your local network to 
 - **Live hosts** via ICMP ping sweep
 - **Open ports** via TCP connect scanning
 - **Hostnames** via reverse DNS lookup
-- **AI/ML services** via HTTP endpoint probing (45+ detection signatures)
+- **AI/ML services** via HTTP endpoint probing (90+ detection signatures across 12 categories)
 
 It was built to help discover "shadow AI" - unauthorized AI services running on corporate or home networks - but works as a general-purpose network scanner too.
 
@@ -56,7 +56,7 @@ For every alive host, the scanner performs a reverse DNS lookup to find its host
 For each alive host, the scanner attempts TCP connections to every port in the selected preset (up to 64 ports at once per host). If a connection succeeds within 2 seconds, the port is "open." Each open port is labeled with its well-known service name (e.g., port 80 = "http").
 
 ### 4. AI Service Probing (AI and Deep AI presets)
-When using the **AI** or **Deep AI** scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 45 detection signatures to identify AI/ML services. The scanner extracts details like model names, versions, and GPU information where available.
+When using the **AI** or **Deep AI** scan preset, the scanner sends HTTP requests to specific endpoints on each open port. It matches responses against 90+ detection signatures spanning 12 categories to identify AI/ML services. The scanner extracts details like model names, versions, and GPU information where available.
 
 In **Deep AI Scan** mode, the scanner ignores port hints — every probe runs against every open port. This catches AI services running on non-standard ports at the cost of longer scan times.
 
@@ -122,7 +122,7 @@ Comprehensive scan covering nearly everything - DHCP, SNMP, LDAP, databases, NoS
 | 161 | SNMP | | | | |
 | 162 | SNMP Trap | | | | |
 
-### AI (28 ports)
+### AI (38 ports)
 Specialized for discovering AI/ML services. Includes all LLM, image generation, ML platform, and GPU infrastructure ports, plus HTTP probing to identify the exact service. Probes are filtered by port hint — each probe only runs on ports where its service is expected.
 
 | Port | Target Service(s) | Category |
@@ -154,6 +154,17 @@ Specialized for discovering AI/ML services. Includes all LLM, image generation, 
 | 8443 | HTTPS Alt | Multi-use |
 | 21001 | FastChat Controller | LLM |
 | 21002 | FastChat Worker | LLM |
+| 2242 | Aphrodite Engine | LLM |
+| 5050 | Quivr | RAG Platform |
+| 7272 | R2R | RAG Platform |
+| 7801 | SwarmUI | Video Gen |
+| 7861 | SD WebUI Forge | Image Gen |
+| 7865 | Fooocus | Image Gen |
+| 7997 | Infinity | Embeddings |
+| 8020 | XTTS-API-Server | Voice / STT / TTS |
+| 8283 | Letta | Agent Platform |
+| 9880 | GPT-SoVITS | Voice / STT / TTS |
+| 42110 | Khoj | RAG Platform |
 
 ### Deep AI Scan (all 65535 ports)
 The most thorough scan mode. Scans every port from 1 to 65535, then runs all AI probes against every open port — regardless of port hints. This catches AI services running on non-standard ports that the regular AI preset would miss.
@@ -168,7 +179,7 @@ The most thorough scan mode. Scans every port from 1 to 65535, then runs all AI 
 
 When using the AI or Deep AI preset, the scanner identifies services by sending HTTP requests to known API endpoints and matching the response. Here is every service the scanner can detect:
 
-### LLM Services (Large Language Models)
+### LLM Services (Large Language Models) (18 services detected)
 
 | Service | Default Port | How It's Detected |
 |---------|-------------|-------------------|
@@ -184,13 +195,69 @@ When using the AI or Deep AI preset, the scanner identifies services by sending 
 | [LocalAI](https://github.com/mudler/LocalAI) | 8080 | `/readyz` health endpoint |
 | [FastChat](https://github.com/lm-sys/FastChat) | 21001/21002 | Controller on 21001, worker on 21002 |
 | [Tabby](https://github.com/TabbyML/tabby) | 8080 | `/v1/health` returns model info |
+| [NVIDIA NIM](https://docs.nvidia.com/nim/) | 8000 | `/v1/metadata` returns NIM-specific JSON |
+| [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) | 8000 | `/openapi.json` contains `dynamo` |
+| [OpenLLM](https://github.com/bentoml/OpenLLM) | 3000 | `/readyz` + root HTML containing `OpenLLM` |
+| [MLX-LM](https://github.com/ml-explore/mlx-lm) | 8080 | `/v1/models` lists `mlx-community/...` models |
+| [llamafile](https://github.com/Mozilla-Ocho/llamafile) | 8080 | Root HTML contains `llamafile` |
+| [Aphrodite Engine](https://github.com/aphrodite-engine/aphrodite-engine) | 2242 | `/health` on port 2242 |
 
-### Image Generation
+### Image Generation (4 services detected)
 
 | Service | Default Port | How It's Detected |
 |---------|-------------|-------------------|
 | [Stable Diffusion (A1111)](https://github.com/AUTOMATIC1111/stable-diffusion-webui) | 7860 | `/sdapi/v1/sd-models` and `/sdapi/v1/options` |
 | [ComfyUI](https://github.com/comfyanonymous/ComfyUI) | 8188 | `/system_stats` and `/object_info` |
+| [SD WebUI Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge) | 7861 | `/sdapi/v1/options` has `forge_*` keys |
+| [Fooocus-API](https://github.com/mrhan1993/Fooocus-API) | 8888 | `/ping` returns `pong` |
+
+### Voice / STT / TTS (7 services detected)
+
+| Service | Port | Detection |
+|---------|------|-----------|
+| [Speaches](https://github.com/speaches-ai/speaches) | 8000 | `/v1/models` lists `Systran/faster-whisper-*` |
+| [whisper.cpp server](https://github.com/ggml-org/whisper.cpp) | 8080 | `/inference` returns 400 with distinctive error |
+| [OpenedAI-Speech](https://github.com/matatonic/openedai-speech) | 8000 | `/v1/audio/voices` returns canonical voice list |
+| [F5-TTS](https://github.com/SWivid/F5-TTS) | 8000 | `/tts-status/{id}` returns JSON with `task_id` |
+| [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) | 9880 | Port 9880 + `/control` returns 400 |
+| [XTTS-API-Server](https://github.com/daswer123/xtts-api-server) | 8020 | `/speakers` on port 8020 |
+| [Coqui XTTS Streaming](https://github.com/coqui-ai/xtts-streaming-server) | 8000 | `/studio_speakers` returns 200 |
+
+### Video Gen (2 services detected)
+
+| Service | Port | Detection |
+|---------|------|-----------|
+| [SwarmUI](https://github.com/mcmonkeyprojects/SwarmUI) | 7801 | Root HTML title contains `SwarmUI` |
+| [HunyuanVideo](https://github.com/Tencent-Hunyuan/HunyuanVideo) | 8081 | Gradio app with `HunyuanVideo` in HTML |
+
+### Agent Platform (5 services detected)
+
+| Service | Port | Detection |
+|---------|------|-----------|
+| [AutoGen Studio](https://microsoft.github.io/autogen/) | 8081 | `/api/version` contains `autogenstudio` |
+| [Letta](https://github.com/letta-ai/letta) | 8283 | `/v1/health/` returns version |
+| [OpenHands](https://github.com/All-Hands-AI/OpenHands) | 3000 | `/api/options/config` contains `FEATURE_FLAGS` |
+| [CrewAI Studio](https://github.com/strnad/CrewAI-Studio) | 8501 | Root HTML contains `CrewAI Studio` |
+| [Langflow](https://github.com/langflow-ai/langflow) | 7860 | `/health_check` contains `chat_ready` |
+
+### RAG Platform (7 services detected)
+
+| Service | Port | Detection |
+|---------|------|-----------|
+| [Onyx (formerly Danswer)](https://github.com/onyx-dot-app/onyx) | 3000 | Root HTML title contains `Onyx` |
+| [R2R](https://github.com/SciPhi-AI/R2R) | 7272 | `/v3/health` on port 7272 |
+| [kotaemon](https://github.com/Cinnamon/kotaemon) | 7860 | Root HTML contains `kotaemon` |
+| [RAGFlow](https://github.com/infiniflow/ragflow) | 80 | `/v1/system/version` contains `RAGFlow` |
+| [Quivr](https://github.com/QuivrHQ/quivr) | 5050 | Backend `/healthz` on port 5050 |
+| [Verba](https://github.com/weaviate/Verba) | 8000 | `/api/health` returns `deployments` key |
+| [Khoj](https://github.com/khoj-ai/khoj) | 42110 | `/api/health` on port 42110 |
+
+### Embeddings (2 services detected)
+
+| Service | Port | Detection |
+|---------|------|-----------|
+| [HF Text Embeddings Inference](https://github.com/huggingface/text-embeddings-inference) | 8080 | `/info` has `auto_truncate` key |
+| [Infinity](https://github.com/michaelfeil/infinity) | 7997 | `/health` returns `unix` timestamp |
 
 ### ML Platforms
 
@@ -227,7 +294,7 @@ When using the AI or Deep AI preset, the scanner identifies services by sending 
 
 | Service | Default Port | How It's Detected |
 |---------|-------------|-------------------|
-| Docker API | 2375 | `/containers/json` - filters running containers by 33 AI image patterns |
+| Docker API | 2375 | `/containers/json` - filters running containers by 70+ AI image patterns |
 
 **Docker AI image patterns matched:** ollama, localai, vllm, text-generation-inference, tritonserver, torchserve, tensorflow/serving, stable-diffusion, comfyui, open-webui, anythingllm, librechat, flowise, dify, litellm, koboldcpp, tabbyml, whisper, llama, mistral, deepseek, qdrant, chromadb, weaviate, milvus, bentoml, langchain, langserve, ray, mlflow, mindsdb, privategpt, gpt4all
 
