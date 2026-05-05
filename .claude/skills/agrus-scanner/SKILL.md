@@ -80,8 +80,8 @@ The scanner detects 60+ AI/ML services across these categories:
 - **Voice / STT / TTS**: Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming
 - **ML Platforms**: NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB
 - **AI UIs**: Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT
-- **Agent Platforms**: AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow
-- **RAG Platforms**: Onyx, R2R, kotaemo, RAGFlow, Quivr, Verba, Khoj
+- **Agent Platform**: AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow
+- **RAG Platform**: Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj
 - **Embeddings**: HF Text Embeddings Inference (TEI), Infinity
 - **Vector DB**: Qdrant, ChromaDB, Weaviate, Milvus
 - **GPU/Infra**: NVIDIA DCGM, Docker API with 70+ AI image pattern matches
