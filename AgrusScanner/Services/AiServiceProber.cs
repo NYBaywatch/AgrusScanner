@@ -597,6 +597,67 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // VOICE / STT / TTS — v0.3.0
+        // ═══════════════════════════════════════════
+
+        // Speaches (faster-whisper-server fork) — /v1/models lists Whisper model IDs
+        new()
+        {
+            Path = "/v1/models", ServiceName = "Speaches", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "Systran/faster-whisper"
+        },
+        // whisper.cpp server — GET /inference returns 400 with distinctive error
+        new()
+        {
+            Path = "/inference", ServiceName = "whisper.cpp", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 80,
+            StatusCode = 400,
+            BodyContains = "no inference task",
+            PortHint = 8080
+        },
+        // OpenedAI-Speech — /v1/audio/voices returns canonical voice list
+        new()
+        {
+            Path = "/v1/audio/voices", ServiceName = "OpenedAI-Speech", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 75,
+            BodyContains = "alloy",
+            PortHint = 8000
+        },
+        // F5-TTS — /tts-status/{id} returns JSON with task_id field
+        new()
+        {
+            Path = "/tts-status/dummy", ServiceName = "F5-TTS", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 78,
+            BodyContains = "task_id",
+            PortHint = 8000
+        },
+        // GPT-SoVITS — port 9880 + /control returns 400
+        new()
+        {
+            Path = "/control?command=ping", ServiceName = "GPT-SoVITS", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 88,
+            StatusCode = 400,
+            PortHint = 9880
+        },
+        // XTTS-API-Server — /speakers returns array, port 8020 distinctive
+        new()
+        {
+            Path = "/speakers", ServiceName = "XTTS-API-Server", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 78,
+            StatusCode = 200,
+            PortHint = 8020
+        },
+        // Coqui XTTS Streaming Server — /studio_speakers returns 200
+        new()
+        {
+            Path = "/studio_speakers", ServiceName = "Coqui XTTS Streaming", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 75,
+            StatusCode = 200,
+            PortHint = 8000
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
