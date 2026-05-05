@@ -700,6 +700,51 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // AGENT PLATFORMS — v0.3.0
+        // ═══════════════════════════════════════════
+
+        // AutoGen Studio — /api/version returns autogenstudio version
+        new()
+        {
+            Path = "/api/version", ServiceName = "AutoGen Studio", Category = "Agent Platform",
+            Confidence = "high", Specificity = 88,
+            BodyContains = "autogenstudio",
+            PortHint = 8081
+        },
+        // Letta (formerly MemGPT) — port 8283 + /v1/health/
+        new()
+        {
+            Path = "/v1/health/", ServiceName = "Letta", Category = "Agent Platform",
+            Confidence = "high", Specificity = 92,
+            BodyContains = "version",
+            PortHint = 8283
+        },
+        // OpenHands (formerly OpenDevin) — /api/options/config has FEATURE_FLAGS
+        new()
+        {
+            Path = "/api/options/config", ServiceName = "OpenHands", Category = "Agent Platform",
+            Confidence = "high", Specificity = 90,
+            BodyContains = "FEATURE_FLAGS",
+            PortHint = 3000
+        },
+        // CrewAI Studio — Streamlit app with CrewAI Studio in HTML title
+        new()
+        {
+            Path = "/", ServiceName = "CrewAI Studio", Category = "Agent Platform",
+            Confidence = "high", Specificity = 82,
+            BodyContains = "CrewAI Studio",
+            PortHint = 8501
+        },
+        // Langflow — /health_check returns chat_ready field (distinct from Flowise)
+        new()
+        {
+            Path = "/health_check", ServiceName = "Langflow", Category = "Agent Platform",
+            Confidence = "high", Specificity = 90,
+            BodyContains = "chat_ready",
+            PortHint = 7860
+        },
+
+        // ═══════════════════════════════════════════
         // GENERIC / FALLBACK (lowest specificity)
         // ═══════════════════════════════════════════
 
