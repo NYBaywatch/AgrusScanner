@@ -349,6 +349,11 @@
       "timestamp": "2026-05-22T00:00:00Z",
       "count": 10,
       "uniques": 6
+    },
+    {
+      "timestamp": "2026-05-23T00:00:00Z",
+      "count": 7,
+      "uniques": 5
     }
   ],
   "views": [
@@ -701,6 +706,11 @@
       "timestamp": "2026-05-22T00:00:00Z",
       "count": 6,
       "uniques": 4
+    },
+    {
+      "timestamp": "2026-05-23T00:00:00Z",
+      "count": 4,
+      "uniques": 3
     }
   ],
   "referrers": [
@@ -1524,6 +1534,26 @@
         },
         {
           "referrer": "chatgpt.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-05-24",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 7,
+          "uniques": 7
+        },
+        {
+          "referrer": "chatgpt.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "github.com",
           "count": 1,
           "uniques": 1
         }
@@ -3001,6 +3031,29 @@
           "title": "Overview",
           "count": 9,
           "uniques": 9
+        }
+      ]
+    },
+    {
+      "date": "2026-05-24",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 19,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 10,
+          "uniques": 10
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/graphs/contributors",
+          "title": "/graphs/contributors",
+          "count": 1,
+          "uniques": 1
         }
       ]
     }
