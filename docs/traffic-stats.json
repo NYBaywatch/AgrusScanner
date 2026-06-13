@@ -2038,6 +2038,16 @@
           "uniques": 1
         }
       ]
+    },
+    {
+      "date": "2026-06-13",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
     }
   ],
   "paths": [
@@ -3923,6 +3933,23 @@
     },
     {
       "date": "2026-06-12",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-13",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
