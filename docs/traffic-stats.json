@@ -494,6 +494,11 @@
       "timestamp": "2026-06-20T00:00:00Z",
       "count": 38,
       "uniques": 16
+    },
+    {
+      "timestamp": "2026-06-21T00:00:00Z",
+      "count": 23,
+      "uniques": 11
     }
   ],
   "views": [
@@ -991,6 +996,11 @@
       "timestamp": "2026-06-20T00:00:00Z",
       "count": 1,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-06-21T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -2217,6 +2227,26 @@
     },
     {
       "date": "2026-06-21",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "referrer": "github.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-22",
       "sources": [
         {
           "referrer": "Google",
@@ -4202,6 +4232,17 @@
     },
     {
       "date": "2026-06-21",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 5,
+          "uniques": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-06-22",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
