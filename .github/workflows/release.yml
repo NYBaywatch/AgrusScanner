@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build-msi-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      # Gate: the release aborts here if the build or catalog tests fail.
+      - name: Build and test
+        run: |
+          dotnet build AgrusScanner.sln -c Release
+          dotnet test AgrusScanner.sln -c Release --no-build --verbosity normal
+
+      - name: Install WiX Toolset
+        run: dotnet tool install --global wix
+
+      - name: Build MSI
+        run: .\build-installer.ps1
+
+      - name: Verify tag matches csproj version
+        shell: pwsh
+        run: |
+          $csprojVersion = ([xml](Get-Content AgrusScanner/AgrusScanner.csproj)).Project.PropertyGroup.Version
+          $tagVersion = "${{ github.ref_name }}".TrimStart("v")
+          if ("$csprojVersion".Trim() -ne $tagVersion) {
+            throw "Tag ${{ github.ref_name }} does not match csproj version $csprojVersion"
+          }
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $msi = Get-ChildItem "Installer\bin\Release" -Filter "*.msi" -Recurse | Select-Object -First 1
+          gh release create "${{ github.ref_name }}" $msi.FullName `
+            --title "Agrus Scanner ${{ github.ref_name }}" `
+            --generate-notes

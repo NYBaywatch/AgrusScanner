@@ -16,7 +16,7 @@ public class AiServiceProber
 
     // ── Probe definitions ordered by specificity (highest first within each service) ──
 
-    private static readonly ProbeDefinition[] Probes =
+    internal static readonly ProbeDefinition[] Probes =
     [
         // ═══════════════════════════════════════════
         // LLM SERVICES
@@ -273,12 +273,14 @@ public class AiServiceProber
             BodyContains = "BentoML",
             PortHint = 3000
         },
-        // KServe V2 — /v2/health/ready
+        // KServe V2 — /v2/health/ready; same V2 protocol as Triton, so scope to
+        // KServe's default HTTP port (Triton defaults to 8000)
         new()
         {
             Path = "/v2/health/ready", ServiceName = "KServe", Category = "ML Platform",
             Confidence = "medium", Specificity = 75,
-            StatusCode = 200
+            StatusCode = 200,
+            PortHint = 8080
         },
         // MindsDB — distinctive port 47334
         new()
@@ -1379,7 +1381,7 @@ public class AiServiceProber
         return count > 0 ? $"{count} metric(s)" : "metrics";
     }
 
-    private class ProbeDefinition
+    internal class ProbeDefinition
     {
         public string Path { get; init; } = "/";
         public string ServiceName { get; init; } = "";

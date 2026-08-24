@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Build
+        run: dotnet build AgrusScanner.sln -c Release
+
+      - name: Test (probe catalog gates)
+        run: dotnet test AgrusScanner.sln -c Release --no-build --verbosity normal
