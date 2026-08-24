@@ -29,6 +29,26 @@ jobs:
       - name: Build MSI
         run: .\build-installer.ps1
 
+      # Gate: no release ships unsigned. Credentials are managed in Doppler
+      # (agrusscanner/prd) and synced to these repo secrets automatically.
+      - name: Sign MSI (Azure Trusted Signing)
+        shell: pwsh
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: |
+          dotnet tool install --global sign --prerelease
+          $msi = Get-ChildItem "Installer\bin\Release" -Filter "*.msi" -Recurse | Select-Object -First 1
+          sign code artifact-signing $msi.FullName `
+            --artifact-signing-endpoint "${{ secrets.AGRUS_SIGNING_ENDPOINT }}" `
+            --artifact-signing-account "${{ secrets.AGRUS_SIGNING_ACCOUNT }}" `
+            --artifact-signing-certificate-profile "${{ secrets.AGRUS_SIGNING_PROFILE }}"
+          if ($LASTEXITCODE -ne 0) { throw "MSI signing failed - aborting release" }
+          $sig = Get-AuthenticodeSignature $msi.FullName
+          if ($sig.Status -ne "Valid") { throw "Signature verification failed: $($sig.Status)" }
+          Write-Host "Signed by: $($sig.SignerCertificate.Subject)"
+
       - name: Verify tag matches csproj version
         shell: pwsh
         run: |
