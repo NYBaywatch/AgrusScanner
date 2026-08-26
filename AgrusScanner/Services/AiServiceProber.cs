@@ -660,6 +660,20 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // VOICE / STT / TTS — v0.3.1 ADDITIONS
+        // ═══════════════════════════════════════════
+
+        // Kokoro-FastAPI (aka "FastKoko") — /v1/audio/voices lists Kokoro's
+        // distinctive af_/am_/bf_-prefixed voice IDs (e.g. af_bella)
+        new()
+        {
+            Path = "/v1/audio/voices", ServiceName = "Kokoro-FastAPI", Category = "Voice / STT / TTS",
+            Confidence = "high", Specificity = 80,
+            BodyContains = "af_bella",
+            PortHint = 8880
+        },
+
+        // ═══════════════════════════════════════════
         // IMAGE GENERATION — v0.3.0 ADDITIONS
         // ═══════════════════════════════════════════
 
@@ -854,7 +868,9 @@ public class AiServiceProber
         "onyx", "r2r", "kotaemon", "ragflow", "quivr", "verba", "khoj",
         "text-embeddings-inference", "tei", "infinity",
         "nim", "dynamo", "openllm", "mlx", "aphrodite",
-        "hunyuanvideo", "wan2", "cogvideo"
+        "hunyuanvideo", "wan2", "cogvideo",
+        // v0.3.1 additions
+        "kokoro-fastapi", "kokoro"
     ];
 
     /// <summary>
