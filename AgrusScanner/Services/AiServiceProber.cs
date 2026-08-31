@@ -561,6 +561,14 @@ public class AiServiceProber
             BodyContains = "mlx-community",
             PortHint = 8080
         },
+        // llama-swap — /running is a management endpoint unique to this proxy,
+        // returns {"running": [...]} listing currently loaded backend models
+        new()
+        {
+            Path = "/running", ServiceName = "llama-swap", Category = "LLM",
+            Confidence = "medium", Specificity = 65,
+            BodyContains = "\"running\":"
+        },
         // llamafile — root HTML contains "llamafile"
         new()
         {
@@ -671,6 +679,15 @@ public class AiServiceProber
             Confidence = "high", Specificity = 80,
             BodyContains = "af_bella",
             PortHint = 8880
+        },
+        // Chatterbox-TTS-Server (devnen) — root Web UI branded with the
+        // Chatterbox model name; default port 8004
+        new()
+        {
+            Path = "/", ServiceName = "Chatterbox-TTS-Server", Category = "Voice / STT / TTS",
+            Confidence = "medium", Specificity = 75,
+            BodyContains = "Chatterbox",
+            PortHint = 8004
         },
 
         // ═══════════════════════════════════════════
@@ -870,7 +887,9 @@ public class AiServiceProber
         "nim", "dynamo", "openllm", "mlx", "aphrodite",
         "hunyuanvideo", "wan2", "cogvideo",
         // v0.3.1 additions
-        "kokoro-fastapi", "kokoro"
+        "kokoro-fastapi", "kokoro",
+        // v0.3.2 additions
+        "llama-swap", "chatterbox-tts"
     ];
 
     /// <summary>

@@ -9,7 +9,7 @@ public class ProbeCatalogTests
 {
     // Baseline at the time these gates were added. Signature updates are
     // additive-only; raise this floor when probes are intentionally added.
-    private const int BaselineProbeCount = 97;
+    private const int BaselineProbeCount = 99;
 
     private static readonly string[] ValidCategories =
     [
