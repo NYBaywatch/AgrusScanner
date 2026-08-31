@@ -25,6 +25,19 @@ Download the latest installer from [Releases](https://github.com/NYBaywatch/Agru
 
 Requires Windows 10/11.
 
+## What's New
+
+### v0.3.2 — August 2026
+
+- **llama-swap** detection (LLM) — identifies the local-LLM hot-swap proxy via its distinctive `/running` management endpoint
+- **Chatterbox-TTS-Server** detection (Voice / TTS) — recognizes the branded web UI on its default port 8004
+- Probe catalog grows to **99 definitions**; test dependencies updated
+
+### v0.3.1 — August 2026
+
+- **Kokoro-FastAPI** (aka "FastKoko") TTS detection — fingerprints its distinctive voice IDs via `/v1/audio/voices` on port 8880
+- Fixed stale version metadata in the app and installer
+
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
