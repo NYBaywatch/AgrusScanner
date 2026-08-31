@@ -1,0 +1,53 @@
+name: Auto Tag Release
+
+# Creates the release tag that the weekly maintenance agent cannot push
+# itself (its cloud environment denies tag/ref creation). When CI passes
+# on master and the csproj version has no matching tag, this tags the
+# commit using the GitHub App token so release.yml still fires — tags
+# created with the default GITHUB_TOKEN would not trigger it.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  tag:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Read version and check for existing tag
+        id: ver
+        run: |
+          VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' AgrusScanner/AgrusScanner.csproj)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          git fetch --tags --quiet origin
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate GitHub App token
+        if: steps.ver.outputs.exists == 'false'
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.TRAFFIC_APP_ID }}
+          private-key: ${{ secrets.TRAFFIC_APP_PRIVATE_KEY }}
+
+      - name: Create tag v${{ steps.ver.outputs.version }}
+        if: steps.ver.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/git/refs" \
+            -f ref="refs/tags/v${{ steps.ver.outputs.version }}" \
+            -f sha="${{ github.event.workflow_run.head_sha }}"
