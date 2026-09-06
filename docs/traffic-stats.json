@@ -609,6 +609,11 @@
       "timestamp": "2026-09-04T00:00:00Z",
       "count": 5,
       "uniques": 4
+    },
+    {
+      "timestamp": "2026-09-05T00:00:00Z",
+      "count": 6,
+      "uniques": 4
     }
   ],
   "views": [
@@ -1221,6 +1226,11 @@
       "timestamp": "2026-09-04T00:00:00Z",
       "count": 1,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-09-05T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -2657,6 +2667,31 @@
     },
     {
       "date": "2026-09-05",
+      "sources": [
+        {
+          "referrer": "Bing",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "Google",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "l.meta.ai",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-09-06",
       "sources": [
         {
           "referrer": "Bing",
@@ -4827,6 +4862,29 @@
           "path": "/NYBaywatch/AgrusScanner/blob/master/README.md",
           "title": "/blob/master/README.md",
           "count": 5,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v0.3.2",
+          "title": "/releases/tag/v0.3.2",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 10,
+          "uniques": 7
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/README.md",
+          "title": "/blob/master/README.md",
+          "count": 3,
           "uniques": 2
         },
         {
