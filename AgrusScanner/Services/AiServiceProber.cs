@@ -462,15 +462,6 @@ public class AiServiceProber
             StatusCode = 200,
             PortHint = 9091
         },
-        // Marqo — end-to-end vector search engine, distinctive default port 8882
-        new()
-        {
-            Path = "/", ServiceName = "Marqo", Category = "Vector DB",
-            Confidence = "medium", Specificity = 70,
-            StatusCode = 200,
-            PortHint = 8882
-        },
-
         // ═══════════════════════════════════════════
         // MCP SERVERS
         // ═══════════════════════════════════════════
@@ -598,15 +589,6 @@ public class AiServiceProber
         // LLM SERVING — v0.3.3 ADDITIONS
         // ═══════════════════════════════════════════
 
-        // Cortex (cortex.cpp, Jan.ai's local engine) — OpenAI-compatible API,
-        // distinctive default port 39281
-        new()
-        {
-            Path = "/v1/models", ServiceName = "Cortex", Category = "LLM",
-            Confidence = "high", Specificity = 80,
-            BodyContains = "\"data\"",
-            PortHint = 39281
-        },
         // LMDeploy (InternLM) — OpenAI-compatible API, distinctive default port 23333
         new()
         {
@@ -929,7 +911,7 @@ public class AiServiceProber
         // v0.3.2 additions
         "llama-swap", "chatterbox-tts",
         // v0.3.3 additions
-        "lmdeploy", "marqo"
+        "lmdeploy"
     ];
 
     /// <summary>

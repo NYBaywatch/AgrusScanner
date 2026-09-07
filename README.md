@@ -29,10 +29,9 @@ Requires Windows 10/11.
 
 ### v0.3.3 — September 2026
 
-- **Cortex** (cortex.cpp, Jan.ai's local engine) and **LMDeploy** (InternLM) detection (LLM) — OpenAI-compatible API servers fingerprinted by their distinctive default ports (39281, 23333)
+- **LMDeploy** (InternLM) detection (LLM) — OpenAI-compatible API server fingerprinted by its distinctive default port 23333
 - **exo** detection (LLM) — p2p distributed local-LLM cluster, identified via its dashboard/API on port 52415
-- **Marqo** detection (Vector DB) — end-to-end vector search engine on its distinctive default port 8882
-- Probe catalog grows to **103 definitions**; dependencies patched
+- Probe catalog grows to **101 definitions**; dependencies patched
 
 ### v0.3.2 — August 2026
 
@@ -44,7 +43,7 @@ Requires Windows 10/11.
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 103 probe definitions identifying 70+ AI/ML services
+- **AI Service Detection** - 101 probe definitions identifying 70+ AI/ML services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
 - **Export Results** - Save scan results to CSV or TXT via the toolbar EXPORT button
@@ -56,7 +55,7 @@ Requires Windows 10/11.
 
 | Category | Services Detected |
 |----------|-------------------|
-| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, Cortex, LMDeploy, exo |
+| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo |
 | **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
 | **Video Gen** | SwarmUI, HunyuanVideo |
 | **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server |
@@ -65,7 +64,7 @@ Requires Windows 10/11.
 | **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow |
 | **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
-| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Marqo |
+| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus |
 | **MCP Server** | Agrus Scanner MCP |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
 | **Container** | Docker API with 70+ AI image pattern matches |
