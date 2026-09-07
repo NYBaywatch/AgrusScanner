@@ -27,7 +27,7 @@ Requires Windows 10/11.
 
 ## What's New
 
-### v0.3.3 — September 2026
+### v0.3.4 — September 2026
 
 - **LMDeploy** (InternLM) detection (LLM) — OpenAI-compatible API server fingerprinted by its distinctive default port 23333
 - **exo** detection (LLM) — p2p distributed local-LLM cluster, identified via its dashboard/API on port 52415
