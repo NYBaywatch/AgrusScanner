@@ -639,6 +639,11 @@
       "timestamp": "2026-09-10T00:00:00Z",
       "count": 4,
       "uniques": 4
+    },
+    {
+      "timestamp": "2026-09-11T00:00:00Z",
+      "count": 2,
+      "uniques": 2
     }
   ],
   "views": [
@@ -1281,6 +1286,11 @@
       "timestamp": "2026-09-10T00:00:00Z",
       "count": 1,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-09-11T00:00:00Z",
+      "count": 0,
+      "uniques": 0
     }
   ],
   "referrers": [
@@ -2877,6 +2887,31 @@
     },
     {
       "date": "2026-09-11",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 7,
+          "uniques": 3
+        },
+        {
+          "referrer": "Bing",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "referrer": "github.com",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "referrer": "l.meta.ai",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-09-12",
       "sources": [
         {
           "referrer": "Google",
@@ -5228,6 +5263,59 @@
     },
     {
       "date": "2026-09-11",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 11,
+          "uniques": 7
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/README.md",
+          "title": "/blob/master/README.md",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/845962675546de3641d9f04e3ef2f3c57c93860f/docs/USER_GUIDE.md",
+          "title": "/blob/845962675546de3641d9f04e3ef2f3c57c93860f/docs/USER_GUIDE.md",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/PortScanner.cs",
+          "title": "/blob/master/AgrusScanner/Services/PortScanner.cs",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v0.3.2",
+          "title": "/releases/tag/v0.3.2",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/845962675546de3641d9f04e3ef2f3c57c93860f",
+          "title": "/tree/845962675546de3641d9f04e3ef2f3c57c93860f",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/AgrusScanner",
+          "title": "/tree/master/AgrusScanner",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/AgrusScanner/Services",
+          "title": "/tree/master/AgrusScanner/Services",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-09-12",
       "pages": [
         {
           "path": "/NYBaywatch/AgrusScanner",
