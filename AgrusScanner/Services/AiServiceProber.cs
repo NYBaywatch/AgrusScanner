@@ -607,6 +607,21 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // LLM SERVING — v0.3.5 ADDITIONS
+        // ═══════════════════════════════════════════
+
+        // TabbyAPI (ExLlamaV2 backend) — unauthenticated /.well-known/serviceinfo
+        // returns software.name = "TabbyAPI"; all other endpoints (/health,
+        // /v1/models, /props) require an API key by default, so this is the
+        // only reliable unauthenticated fingerprint
+        new()
+        {
+            Path = "/.well-known/serviceinfo", ServiceName = "TabbyAPI", Category = "LLM",
+            Confidence = "high", Specificity = 92,
+            BodyContains = "TabbyAPI"
+        },
+
+        // ═══════════════════════════════════════════
         // EMBEDDINGS / RERANKER — v0.3.0
         // ═══════════════════════════════════════════
 
@@ -798,6 +813,21 @@ public class AiServiceProber
         },
 
         // ═══════════════════════════════════════════
+        // AGENT PLATFORMS — v0.3.5 ADDITIONS
+        // ═══════════════════════════════════════════
+
+        // OpenClaw gateway — /health on its distinctive default port 18789
+        // (the 2026 breakout self-hosted agentic assistant); body format isn't
+        // guaranteed stable so this matches on the documented status code only
+        new()
+        {
+            Path = "/health", ServiceName = "OpenClaw", Category = "Agent Platform",
+            Confidence = "medium", Specificity = 70,
+            StatusCode = 200,
+            PortHint = 18789
+        },
+
+        // ═══════════════════════════════════════════
         // RAG PLATFORMS — v0.3.0
         // ═══════════════════════════════════════════
 
@@ -911,7 +941,9 @@ public class AiServiceProber
         // v0.3.2 additions
         "llama-swap", "chatterbox-tts",
         // v0.3.3 additions
-        "lmdeploy"
+        "lmdeploy",
+        // v0.3.5 additions
+        "tabbyapi", "theroyallab", "openclaw"
     ];
 
     /// <summary>

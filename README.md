@@ -27,23 +27,23 @@ Requires Windows 10/11.
 
 ## What's New
 
+### v0.3.5 — September 2026
+
+- **TabbyAPI** detection (LLM) — ExLlamaV2's official API server, fingerprinted via its unauthenticated `/.well-known/serviceinfo` endpoint (the only unauthenticated route TabbyAPI exposes by default)
+- **OpenClaw** detection (Agent Platform) — the self-hosted agentic assistant, identified via its gateway health check on its distinctive default port 18789
+- Probe catalog grows to **103 definitions**; no dependency updates this week (nothing outdated or vulnerable)
+
 ### v0.3.4 — September 2026
 
 - **LMDeploy** (InternLM) detection (LLM) — OpenAI-compatible API server fingerprinted by its distinctive default port 23333
 - **exo** detection (LLM) — p2p distributed local-LLM cluster, identified via its dashboard/API on port 52415
 - Probe catalog grows to **101 definitions**; dependencies patched
 
-### v0.3.2 — August 2026
-
-- **llama-swap** detection (LLM) — identifies the local-LLM hot-swap proxy via its distinctive `/running` management endpoint
-- **Chatterbox-TTS-Server** detection (Voice / TTS) — recognizes the branded web UI on its default port 8004
-- Probe catalog grows to **99 definitions**; test dependencies updated
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 101 probe definitions identifying 70+ AI/ML services
+- **AI Service Detection** - 103 probe definitions identifying 70+ AI/ML services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
 - **Export Results** - Save scan results to CSV or TXT via the toolbar EXPORT button
@@ -55,13 +55,13 @@ Requires Windows 10/11.
 
 | Category | Services Detected |
 |----------|-------------------|
-| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo |
+| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI |
 | **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
 | **Video Gen** | SwarmUI, HunyuanVideo |
 | **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
 | **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
-| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow |
+| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw |
 | **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
 | **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus |
