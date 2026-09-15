@@ -80,9 +80,9 @@ The app never deserializes a plain JSON catalog from disk. There is no "develope
 
 ## Update flow
 
-1. On startup and every `SignatureCheckIntervalHours` (default 24), app calls `GET https://api.jpftech.com/agrus/update-check?v=0.4.0&os=win11&sig=2026.09.15.1`.
-2. Lambda response gains two fields: `"sig_version": "2026.09.22.1"`, `"sig_url": "https://api.jpftech.com/agrus/sig/latest.agsig"`.
-3. If `sig_version` > loaded version:
+1. On startup (5 s after launch) and every `SignatureCheckIntervalHours` (default 24), the app fetches `https://github.com/NYBaywatch/AgrusScanner/releases/download/signatures/latest.json` (`SignatureUpdater.CheckAsync`). The feed lives on a rolling GitHub pre-release tagged `signatures`, so no AWS change was needed; the existing Lambda is untouched.
+2. `latest.json` carries `sig_version`, `min_app_version`, `sha256`, `probe_count`, `url`.
+3. If `sig_version` > loaded version and `min_app_version` ≤ running app:
    - **Notify** mode: show banner "New signatures available (2026.09.22.1)" with Install button.
    - **Auto** mode: download to `%LocalAppData%\AgrusScanner\signatures.agsig.tmp`, verify (rules 1–6), atomically rename over `signatures.agsig`, hot-swap the in-memory catalog, show a short toast.
    - **Off**: no check for signatures (app-update check still governed by `CheckForUpdates`).
@@ -98,8 +98,8 @@ Signature source of truth stays human-editable in the repo: `signatures/catalog.
 
 1. `dotnet test` — `ProbeCatalogTests` load `signatures/catalog.json` and gate it.
 2. `dotnet run --project AgrusScanner.SigTool -- pack signatures/catalog.json --version $(date +%Y.%m.%d).$RUN --min-app 0.4.0 --key env:AGSIG_SIGNING_KEY --aes env:AGSIG_AES_KEY --out latest.agsig` (secrets are passed as `env:NAME` so they never appear on a command line)
-3. Upload `latest.agsig` and `latest.json` (`{ "sig_version": ..., "sha256": ... }`) to S3 behind `api.jpftech.com/agrus/sig/`. Lambda reads `latest.json` to answer the update check.
-4. Also attach the `.agsig` to the next GitHub release for transparency.
+3. Verify the package against the public key extracted from `SignatureStore.cs` (catches a secret/key mismatch before publishing).
+4. Write `latest.json` and upload both files to the rolling `signatures` GitHub pre-release with `gh release upload --clobber`. Pre-release keeps it out of `/releases/latest`, so the app-update Lambda is unaffected.
 
 `AgrusScanner.SigTool` is a small console project in the solution with `keygen`, `validate`, `pack`, `verify`, and `dump` (decode to JSON for diffing) commands. It compiles the envelope and catalog sources directly from the app project (linked files), so both sides agree byte for byte.
 
@@ -162,13 +162,14 @@ Exposed in the settings panel next to the existing "Check for updates" toggle.
 | `AgrusScanner/AgrusScanner.csproj` | Modify — embed `signatures/catalog.json`, version 0.4.0 |
 | `AgrusScanner.Tests/SignaturePackageTests.cs` | Create — envelope round-trip, tamper, wrong-key, store-rejection tests |
 | `.github/workflows/signatures.yml` | Create — test, pack, upload |
-| `infra/agrus-update-lambda/lambda_function.py` | Modify — return `sig_version` / `sig_url` from S3 `latest.json` |
+| `AgrusScanner/Services/SignatureUpdater.cs` | Create — feed check, download with size + hash guard, install via `SignatureStore` |
+| `infra/agrus-update-lambda/lambda_function.py` | Unchanged — feed is hosted on GitHub Releases instead |
 | `README.md` | Modify — document signature updates and settings |
 
 ## Phasing
 
 1. **Catalog extraction** (own release, v0.4.0) — DONE 2026-09-15: `signatures/catalog.json`, SigTool, embedded baseline, `SignatureCatalog`, `SignaturePackage`, `SignatureStore`. App behaves identically; only the source of the tables changes. Startup already loads a verified `%LocalAppData%\AgrusScanner\signatures.agsig` if one exists, so phase 2 only has to download it.
-2. **Feed**: updater, settings, Lambda change, workflow. Small once phase 1 is in.
+2. **Feed** — DONE 2026-09-15: `SignatureUpdater`, Off / Notify / Auto setting, status text, `signatures.yml` publishing to the rolling `signatures` release.
 3. **Nice to have**: signature changelog in the notify banner, "reset to embedded signatures" button.
 
 ## Tamper tests (must exist before phase 2 ships)

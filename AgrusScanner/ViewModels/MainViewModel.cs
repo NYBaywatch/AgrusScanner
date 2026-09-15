@@ -32,6 +32,9 @@ public class MainViewModel : INotifyPropertyChanged
     private string _removedPortsText = "";
     private string? _updateText;
     private string? _updateUrl;
+    private SignatureUpdateInfo? _pendingSignatures;
+    private string? _signatureUpdateText;
+    private System.Threading.Timer? _signatureTimer;
     public MainViewModel()
     {
         _settings = _settingsService.Load();
@@ -43,6 +46,12 @@ public class MainViewModel : INotifyPropertyChanged
             if (_updateUrl is not null)
                 Process.Start(new ProcessStartInfo(_updateUrl) { UseShellExecute = true });
         });
+        InstallSignaturesCommand = new RelayCommand(async _ => await InstallPendingSignaturesAsync(), _ => _pendingSignatures is not null);
+        SignatureStore.CatalogChanged += _ => System.Windows.Application.Current?.Dispatcher.BeginInvoke(() =>
+        {
+            OnPropertyChanged(nameof(SignatureText));
+            OnPropertyChanged(nameof(BuiltInPortsDisplay));
+        });
         RefreshSettingsFlyout();
 
         ResultsView = CollectionViewSource.GetDefaultView(Results);
@@ -51,6 +60,98 @@ public class MainViewModel : INotifyPropertyChanged
         // Fire-and-forget update check (respects user setting)
         if (_settings.CheckForUpdates)
             _ = CheckForUpdateAsync();
+
+        StartSignatureChecks();
+    }
+
+    // --- Signature feed ---
+
+    private void StartSignatureChecks()
+    {
+        _signatureTimer?.Dispose();
+        _signatureTimer = null;
+        if (_settings.SignatureUpdates == SignatureUpdateMode.Off) return;
+
+        var interval = TimeSpan.FromHours(Math.Clamp(_settings.SignatureCheckIntervalHours, 1, 24 * 30));
+        _signatureTimer = new System.Threading.Timer(_ => _ = CheckForSignaturesAsync(), null, TimeSpan.FromSeconds(5), interval);
+    }
+
+    private async Task CheckForSignaturesAsync()
+    {
+        if (_settings.SignatureUpdates == SignatureUpdateMode.Off) return;
+        var info = await SignatureUpdater.CheckAsync();
+        if (info is null) return;
+
+        if (_settings.SignatureUpdates == SignatureUpdateMode.Auto)
+        {
+            var (ok, error) = await SignatureUpdater.DownloadAndInstallAsync(info);
+            System.Diagnostics.Debug.WriteLine(ok ? $"[Signatures] installed {info.SigVersion}" : $"[Signatures] install failed: {error}");
+            return;
+        }
+
+        _pendingSignatures = info;
+        SignatureUpdateText = $"Signatures {info.SigVersion} available — click to install";
+    }
+
+    private async Task InstallPendingSignaturesAsync()
+    {
+        var info = _pendingSignatures;
+        if (info is null) return;
+        SignatureUpdateText = "Installing signatures…";
+        var (ok, error) = await SignatureUpdater.DownloadAndInstallAsync(info);
+        _pendingSignatures = ok ? null : info;
+        SignatureUpdateText = ok ? null : $"Signature install failed: {error}";
+    }
+
+    public ICommand InstallSignaturesCommand { get; }
+
+    public string? SignatureUpdateText
+    {
+        get => _signatureUpdateText;
+        set
+        {
+            _signatureUpdateText = value;
+            System.Windows.Application.Current?.Dispatcher.BeginInvoke(() =>
+            {
+                OnPropertyChanged(nameof(SignatureUpdateText));
+                OnPropertyChanged(nameof(HasSignatureUpdate));
+            });
+        }
+    }
+
+    public bool HasSignatureUpdate => !string.IsNullOrEmpty(_signatureUpdateText);
+
+    /// <summary>"Signatures: 111 (embedded)" or "Signatures: 115 (2026.09.22.1)".</summary>
+    public string SignatureText
+    {
+        get
+        {
+            var c = SignatureStore.Current;
+            return $"Signatures: {c.Probes.Length} ({c.SourceVersion})";
+        }
+    }
+
+    public int SignatureUpdateModeIndex
+    {
+        get => (int)_settings.SignatureUpdates;
+        set
+        {
+            _settings.SignatureUpdates = (SignatureUpdateMode)Math.Clamp(value, 0, 2);
+            OnPropertyChanged();
+            SaveSettings();
+            StartSignatureChecks();
+        }
+    }
+
+    public bool CheckForUpdates
+    {
+        get => _settings.CheckForUpdates;
+        set
+        {
+            _settings.CheckForUpdates = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
     }
 
     private async Task CheckForUpdateAsync()

@@ -27,10 +27,15 @@ Requires Windows 10/11.
 
 ## What's New
 
+### v0.4.1 — September 2026
+
+- **Automatic signature updates** — detection signatures now ship as a signed feed, separate from the app. New signatures land weekly without reinstalling. Settings offers Off / Notify only / Auto-install (default), and the status bar shows the active signature version. Every package is signed in CI; the app refuses anything that does not verify against its built-in public key, so a tampered or third-party file is never loaded.
+- Settings: app update check can now be turned off from the UI
+
 ### v0.4.0 — September 2026
 
 - **MCP server detection** — finds Model Context Protocol servers on the network across all three transport generations: Streamable HTTP (`initialize`), the 2026-07-28 stateless `server/discover`, and legacy HTTP+SSE. Shows the server's self-reported name, version, capabilities (tools / resources / prompts), and protocol version. Sessions opened during detection are closed immediately; no tools are ever called.
-- **Signature catalog** — all detection definitions (probes, AI port preset, Docker image patterns) now live in `signatures/catalog.json` and are compiled in as a signed baseline. This is the groundwork for pushing new signatures without a full app update; the app only ever loads a signature package that verifies against its built-in public key.
+- **Signature catalog** — all detection definitions (probes, AI port preset, Docker image patterns) now live in `signatures/catalog.json` and are compiled in as the baseline. Groundwork for v0.4.1's signature feed.
 - New AI-preset ports for MCP tooling: 8811 (Docker MCP Gateway), 8931 (Playwright MCP), 6274/6277 (MCP Inspector), 8999 (Agrus), 8123 (Home Assistant, gated to its own probe)
 - Settings: the built-in MCP server (`--mcp-only` mode) can now be disabled
 - Probe catalog grows to **111 definitions**

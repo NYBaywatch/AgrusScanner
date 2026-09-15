@@ -21,4 +21,8 @@ public class AppSettings
 
     // Update checking (set false to disable update check pings)
     public bool CheckForUpdates { get; set; } = true;
+
+    // Detection signature feed: Off = never check, Notify = show banner, Auto = download + install (default)
+    public Services.SignatureUpdateMode SignatureUpdates { get; set; } = Services.SignatureUpdateMode.Auto;
+    public int SignatureCheckIntervalHours { get; set; } = 24;
 }

@@ -189,6 +189,12 @@ public partial class MainWindow : Window
 
     // --- Update link ---
 
+    private void SignatureLink_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (DataContext is MainViewModel vm)
+            vm.InstallSignaturesCommand.Execute(null);
+    }
+
     private void UpdateLink_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         if (DataContext is MainViewModel vm)

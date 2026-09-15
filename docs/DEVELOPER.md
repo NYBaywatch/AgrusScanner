@@ -10,6 +10,7 @@
 - [Scanning Pipeline](#scanning-pipeline)
 - [Concurrency Model](#concurrency-model)
 - [AI Service Probe System](#ai-service-probe-system)
+- [Signature Feed](#signature-feed)
 - [MCP Server](#mcp-server)
 - [Agent Integrations](#agent-integrations)
 - [Models](#models)
@@ -257,6 +258,19 @@ chromadb, weaviate, milvus, bentoml, langchain, langserve,
 ray, mlflow, mindsdb, privategpt, gpt4all
 ```
 
+## Signature Feed
+
+Detection definitions live in `signatures/catalog.json` (probes, `aiPorts`, `dockerPatterns`). **Add new services there, not in C#.** The file is embedded into the app as the baseline and published as a signed `.agsig` package by `.github/workflows/signatures.yml` on every push that touches `signatures/`.
+
+- `AgrusScanner.SigTool` — `validate`, `pack`, `verify`, `dump`, `keygen`. Run `dotnet run --project AgrusScanner.SigTool -- validate signatures/catalog.json` before committing.
+- `Services/SignaturePackage.cs` — the envelope (gzip → AES-256-GCM → ECDSA P-256 signature). Shared with SigTool as a linked file.
+- `Services/SignatureStore.cs` — holds the active catalog; `TryInstall` is the only way an external file becomes active and it enforces signature, min app version, no-downgrade, and catalog invariants.
+- `Services/SignatureUpdater.cs` — polls the rolling `signatures` GitHub release and installs per the user's setting.
+- Keys: private key and AES key exist only as repo secrets `AGSIG_SIGNING_KEY` / `AGSIG_AES_KEY`; the public key is `SignatureStore.PublicKeys["k1"]`. Rotation needs an app release (add the new key under a new id, publish with it, drop the old id later).
+- Probe fields `method`, `acceptHeader`, `contentType`, `body`, `headers` let POST-style services (e.g. MCP) ship by signature; per-service detail extraction in `AiServiceProber.TryExtractDetails` still needs an app release.
+
+Design: `docs/superpowers/specs/2026-09-15-signature-feed-design.md`.
+
 ## MCP Server
 
 ### Startup
@@ -397,34 +411,41 @@ The installer project uses WiX Toolset to produce an MSI. The published app is s
 
 ### Adding a New AI Service Probe
 
-In [`AiServiceProber.cs`](https://github.com/NYBaywatch/AgrusScanner/blob/master/AgrusScanner/Services/AiServiceProber.cs), add a `ProbeDefinition` to the `Probes` array:
+Add an entry to `probes` in [`signatures/catalog.json`](https://github.com/NYBaywatch/AgrusScanner/blob/master/signatures/catalog.json). Keep the file grouped by category, higher specificity first within a service:
 
-```csharp
-new()
+```json
 {
-    Path = "/api/health",          // Endpoint to probe
-    ServiceName = "MyService",     // Display name
-    Category = "LLM",             // Category for grouping
-    Confidence = "high",           // high/medium/low
-    Specificity = 85,              // Higher = preferred over generic
-    BodyContains = "my_unique_key",// Substring match
-    PortHint = 5555                // Optional: only probe this port
-},
+  "path": "/api/health",
+  "serviceName": "MyService",
+  "category": "LLM",
+  "confidence": "high",
+  "specificity": 85,
+  "bodyContains": "my_unique_key",
+  "portHint": 5555,
+  "note": "MyService — why this endpoint is distinctive"
+}
 ```
 
-Place it in the array ordered by category, with higher-specificity probes before lower ones.
+Optional request fields for services that need more than a bare GET: `method` ("POST"), `acceptHeader`, `contentType`, `body`, `headers` (see the MCP entries for examples). Then run the gates:
 
-To extract details, add a case to `TryExtractDetails()`:
+```bash
+dotnet run --project AgrusScanner.SigTool -- validate signatures/catalog.json
+dotnet test
+```
+
+Raise `BaselineProbeCount` in `ProbeCatalogTests.cs` to the new total. Pushing to `master` publishes the signed feed automatically; installed apps pick it up within a day. No app release is required unless you also need detail extraction:
+
 ```csharp
+// AiServiceProber.TryExtractDetails — needs an app release
 "MyService" when root.TryGetProperty("models", out var m) =>
     FormatModelNames(m),
 ```
 
 ### Adding a Docker AI Pattern
 
-Append to the `AiDockerPatterns` array in `AiServiceProber.cs`:
-```csharp
-"myservice"  // case-insensitive substring match on image name
+Append to `dockerPatterns` in `signatures/catalog.json` (case-insensitive substring match on the image name):
+```json
+"myservice"
 ```
 
 ### Adding a New Port Preset
