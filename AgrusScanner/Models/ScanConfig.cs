@@ -15,34 +15,8 @@ public class ScanConfig
         443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080, 8443
     ];
 
-    public static readonly int[] AiPorts = [
-        // LLM services
-        11434, 8000, 8080, 1234, 1337, 4891, 5001, 3000, 4000,
-        // LLM serving (v0.3.0)
-        2242,
-        // Image generation
-        7860, 8188,
-        // Image generation (v0.3.0)
-        7861, 7865, 7801,
-        // ML platforms
-        8081, 8082, 8265, 8500, 8501, 47334, 47335,
-        // AI platforms / UIs
-        3001, 3080, 5000,
-        // Voice / STT / TTS (v0.3.0)
-        8020, 9880,
-        // Agent platforms (v0.3.0)
-        8283,
-        // RAG platforms (v0.3.0)
-        5050, 7272, 42110,
-        // Embeddings (v0.3.0)
-        7997,
-        // GPU infrastructure
-        8002, 9400,
-        // Container detection
-        2375,
-        // Multi-use / fallback
-        8443, 21001, 21002
-    ];
+    // AI port preset ships with the signature catalog so new services can add ports without an app release.
+    public static int[] AiPorts => Services.SignatureStore.Current.AiPorts;
 
     public static readonly int[] AllPorts = Enumerable.Range(1, 65535).ToArray();
 

@@ -27,6 +27,14 @@ Requires Windows 10/11.
 
 ## What's New
 
+### v0.4.0 — September 2026
+
+- **MCP server detection** — finds Model Context Protocol servers on the network across all three transport generations: Streamable HTTP (`initialize`), the 2026-07-28 stateless `server/discover`, and legacy HTTP+SSE. Shows the server's self-reported name, version, capabilities (tools / resources / prompts), and protocol version. Sessions opened during detection are closed immediately; no tools are ever called.
+- **Signature catalog** — all detection definitions (probes, AI port preset, Docker image patterns) now live in `signatures/catalog.json` and are compiled in as a signed baseline. This is the groundwork for pushing new signatures without a full app update; the app only ever loads a signature package that verifies against its built-in public key.
+- New AI-preset ports for MCP tooling: 8811 (Docker MCP Gateway), 8931 (Playwright MCP), 6274/6277 (MCP Inspector), 8999 (Agrus), 8123 (Home Assistant, gated to its own probe)
+- Settings: the built-in MCP server (`--mcp-only` mode) can now be disabled
+- Probe catalog grows to **111 definitions**
+
 ### v0.3.5 — September 2026
 
 - **TabbyAPI** detection (LLM) — ExLlamaV2's official API server, fingerprinted via its unauthenticated `/.well-known/serviceinfo` endpoint (the only unauthenticated route TabbyAPI exposes by default)
@@ -43,7 +51,7 @@ Requires Windows 10/11.
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 103 probe definitions identifying 70+ AI/ML services
+- **AI Service Detection** - 111 probe definitions identifying 70+ AI/ML services and MCP servers
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
 - **Export Results** - Save scan results to CSV or TXT via the toolbar EXPORT button

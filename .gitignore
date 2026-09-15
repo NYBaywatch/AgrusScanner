@@ -78,3 +78,6 @@ Installer/publish/
 # Windows reserved names (accidental creation in Git Bash/WSL)
 nul
 CLAUDE.md
+
+# Built signature packages (produced by CI / SigTool, never committed)
+*.agsig

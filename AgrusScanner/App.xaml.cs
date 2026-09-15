@@ -14,11 +14,21 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // Load detection signatures: embedded baseline, then a verified installed package if present.
+        SignatureStore.Initialize();
+
         if (e.Args.Contains("--mcp-only", StringComparer.OrdinalIgnoreCase))
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             var settings = new SettingsService().Load();
+            if (!settings.McpServerEnabled)
+            {
+                System.Windows.MessageBox.Show("The built-in MCP server is disabled in Settings. Enable it in the Agrus Scanner window to use --mcp-only mode.",
+                    "Agrus Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                Shutdown(1);
+                return;
+            }
             var port = settings.McpPort;
 
             _trayIcon = new TrayIcon(port);

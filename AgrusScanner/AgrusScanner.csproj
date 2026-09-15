@@ -10,7 +10,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AssemblyName>AgrusScanner</AssemblyName>
     <RootNamespace>AgrusScanner</RootNamespace>
-    <Version>0.3.5</Version>
+    <Version>0.4.0</Version>
     <Product>Agrus Scanner</Product>
     <Description>Network reconnaissance and service scanning tool</Description>
     <Copyright>Copyright (c) 2025 Agrus</Copyright>
@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <Resource Include="icon.ico" />
+    <!-- Baseline detection signatures. Validated by AgrusScanner.Tests; the app fails fast at startup if malformed. -->
+    <EmbeddedResource Include="..\signatures\catalog.json" LogicalName="AgrusScanner.signatures.catalog.json" />
   </ItemGroup>
 
   <ItemGroup>

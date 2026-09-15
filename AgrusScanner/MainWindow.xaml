@@ -147,7 +147,9 @@
 
                             <TextBlock Text="MCP SERVER" FontWeight="Bold" FontSize="11"
                                        Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <CheckBox IsChecked="{Binding McpServerEnabled}" Content="Enable built-in MCP server (--mcp-only mode)"
+                                      Margin="0,0,0,6" />
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8" IsEnabled="{Binding McpServerEnabled}">
                                 <TextBlock Text="Port:" FontSize="11" Foreground="{StaticResource TextBrush}"
                                            VerticalAlignment="Center" Margin="0,0,6,0" />
                                 <TextBox Text="{Binding McpPort, UpdateSourceTrigger=LostFocus}"

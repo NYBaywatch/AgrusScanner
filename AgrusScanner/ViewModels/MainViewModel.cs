@@ -213,6 +213,17 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public bool McpServerEnabled
+    {
+        get => _settings.McpServerEnabled;
+        set
+        {
+            _settings.McpServerEnabled = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
     public int McpPort
     {
         get => _settings.McpPort;

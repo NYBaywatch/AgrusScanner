@@ -15,7 +15,8 @@ public class AppSettings
     public int[] CommonRemovedPorts { get; set; } = [];
     public int[] ExtendedRemovedPorts { get; set; } = [];
 
-    // MCP server port
+    // Built-in MCP server (only runs under --mcp-only). When disabled, that mode refuses to start.
+    public bool McpServerEnabled { get; set; } = true;
     public int McpPort { get; set; } = 8999;
 
     // Update checking (set false to disable update check pings)
