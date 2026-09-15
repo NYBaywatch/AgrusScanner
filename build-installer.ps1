@@ -35,7 +35,8 @@ $tsEndpoint = if ($env:AGRUS_SIGNING_ENDPOINT) { $env:AGRUS_SIGNING_ENDPOINT } e
 $tsAccount  = if ($env:AGRUS_SIGNING_ACCOUNT) { $env:AGRUS_SIGNING_ACCOUNT } else { "agrussigning" }
 $tsProfile  = if ($env:AGRUS_SIGNING_PROFILE) { $env:AGRUS_SIGNING_PROFILE } else { "agrus-public" }
 $tsSubscription = $env:AGRUS_SIGNING_SUBSCRIPTION
-$credType = if ($env:AZURE_CLIENT_SECRET) { "environment" } else { "azure-cli" }
+# CI (AZURE_CLIENT_SECRET set): no --azure-credential-type, so the tool's DefaultAzureCredential reads the AZURE_* env vars.
+$credType = if ($env:AZURE_CLIENT_SECRET) { "default" } else { "azure-cli" }
 $canSign = $false
 if (-not $signTool) {
     Write-Host "`nNote: 'sign' tool not found - output will be unsigned." -ForegroundColor DarkYellow
@@ -57,11 +58,12 @@ function Invoke-AgrusSign([string]$label, [string[]]$files) {
     }
     try {
         foreach ($f in $files) {
-            sign code artifact-signing $f `
-                --artifact-signing-endpoint $tsEndpoint `
-                --artifact-signing-account $tsAccount `
-                --artifact-signing-certificate-profile $tsProfile `
-                --azure-credential-type $credType
+            $signArgs = @("code", "artifact-signing", $f,
+                "--artifact-signing-endpoint", $tsEndpoint,
+                "--artifact-signing-account", $tsAccount,
+                "--artifact-signing-certificate-profile", $tsProfile)
+            if ($credType -ne "default") { $signArgs += @("--azure-credential-type", $credType) }
+            & sign @signArgs
             if ($LASTEXITCODE -ne 0) { throw "Signing failed for $f" }
             $sig = Get-AuthenticodeSignature $f
             if ($sig.Status -ne "Valid") { throw "Signature verification failed for $f : $($sig.Status)" }
