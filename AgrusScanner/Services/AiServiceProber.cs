@@ -15,6 +15,9 @@ public class AiServiceProber
 
     private readonly SemaphoreSlim _semaphore = new(32);
 
+    private static readonly string UserAgent =
+        $"AgrusScanner/{(typeof(AiServiceProber).Assembly.GetName().Version ?? new Version(0, 0, 0)).ToString(3)}";
+
     // ── Detection definitions come from the signature catalog (signatures/catalog.json baseline,
     //    or a verified .agsig package). See SignatureStore. ──
 
@@ -199,7 +202,7 @@ public class AiServiceProber
         {
             var url = $"http://{ip}:{port}/containers/json";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("User-Agent", "AgrusScanner/1.0");
+            request.Headers.Add("User-Agent", UserAgent);
 
             using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseContentRead, ct);
             var body = await response.Content.ReadAsStringAsync(ct);
@@ -251,7 +254,7 @@ public class AiServiceProber
     {
         var method = probe.Method == "POST" ? HttpMethod.Post : HttpMethod.Get;
         var request = new HttpRequestMessage(method, url);
-        request.Headers.Add("User-Agent", "AgrusScanner/1.0");
+        request.Headers.Add("User-Agent", UserAgent);
         if (probe.AcceptHeader is not null)
             request.Headers.TryAddWithoutValidation("Accept", probe.AcceptHeader);
         if (probe.Headers is not null)
@@ -327,7 +330,7 @@ public class AiServiceProber
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
             using var del = new HttpRequestMessage(HttpMethod.Delete, url);
-            del.Headers.Add("User-Agent", "AgrusScanner/1.0");
+            del.Headers.Add("User-Agent", UserAgent);
             del.Headers.TryAddWithoutValidation("Mcp-Session-Id", sessionId);
             using var _ = await _http.SendAsync(del, cts.Token);
         }

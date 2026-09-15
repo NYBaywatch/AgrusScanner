@@ -1,3 +1,4 @@
+using System.IO;
 using System.Security.Cryptography;
 using AgrusScanner.Models;
 using AgrusScanner.Services;
@@ -155,5 +156,84 @@ public class SignatureStoreTests
         Assert.False(SignatureStore.TryInstall(new byte[] { 1, 2, 3 }, out _, persist: false));
         Assert.False(SignatureStore.TryInstall(SignatureStore.Embedded.ToJson(), out _, persist: false));
         Assert.Equal("embedded", SignatureStore.Current.SourceVersion);
+    }
+}
+
+// Regression tests for the pre-1.0 security review: a signed-but-broken package must never throw out of TryInstall.
+public class SignatureHardeningTests
+{
+    private static readonly (string Pub, string Priv) Keys = SignaturePackage.GenerateKeyPair();
+    private static readonly byte[] Aes = RandomNumberGenerator.GetBytes(32);
+
+    private static byte[] Pack(byte[] payload)
+    {
+        using var key = SignaturePackage.ImportPrivateKey(Keys.Priv);
+        return SignaturePackage.Pack(payload, "2099.1.1.1", "0.0.0", key, Aes);
+    }
+
+    private static byte[] Unpack(byte[] pkg)
+    {
+        using var key = SignaturePackage.ImportPublicKey(Keys.Pub);
+        return SignaturePackage.Unpack(pkg, key, Aes, out _);
+    }
+
+    [Fact]
+    public void Signed_non_json_payload_is_rejected_by_parse_not_crash()
+    {
+        var json = Unpack(Pack("this is not json"u8.ToArray()));
+        Assert.ThrowsAny<Exception>(() => SignatureCatalog.Parse(json));
+        // and the store contract: false, never throw (uses the real key, so it fails at the signature step, still no throw)
+        Assert.False(SignatureStore.TryInstall(Pack("this is not json"u8.ToArray()), out _, persist: false));
+    }
+
+    [Fact]
+    public void Null_path_or_null_header_value_is_a_validation_error_not_an_exception()
+    {
+        var json = "{\"schemaVersion\":1,\"probes\":[{\"path\":null,\"serviceName\":\"X\",\"category\":\"LLM\",\"confidence\":\"high\",\"specificity\":50,\"statusCode\":200},"
+                 + "{\"path\":\"/h\",\"serviceName\":\"Y\",\"category\":\"MCP Server\",\"confidence\":\"high\",\"specificity\":50,\"statusCode\":200,\"headers\":{\"A\":null}}],"
+                 + "\"aiPorts\":[1],\"dockerPatterns\":[\"a\"]}";
+        var ex = Assert.Throws<InvalidDataException>(() => SignatureCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(json)));
+        Assert.Contains("null path", ex.Message);
+        Assert.Contains("invalid header", ex.Message);
+    }
+
+    [Fact]
+    public void Post_is_only_allowed_for_mcp_discovery()
+    {
+        var baseline = SignatureStore.Embedded;
+        var evil = new SignatureCatalog
+        {
+            Probes = [.. baseline.Probes, new ProbeDefinition
+            {
+                Path = "/admin/reset", Method = "POST", ServiceName = "Evil", Category = "LLM", Confidence = "high",
+                Specificity = 50, ContentType = "application/json", Body = "{\"reset\":true}", StatusCode = 200
+            }],
+            AiPorts = baseline.AiPorts, DockerPatterns = baseline.DockerPatterns
+        };
+        var errors = evil.Validate();
+        Assert.Contains(errors, e => e.Contains("POST outside the MCP Server category"));
+        Assert.Contains(errors, e => e.Contains("not a JSON-RPC"));
+    }
+
+    [Fact]
+    public void Shipped_catalog_post_bodies_pass_the_mcp_restriction()
+    {
+        Assert.Empty(SignatureStore.Embedded.Validate());
+        Assert.Contains(SignatureStore.Embedded.Probes, p => p.Method == "POST");
+    }
+
+    [Fact]
+    public void Gzip_bomb_is_rejected_at_inflate()
+    {
+        var bomb = new byte[20 * 1024 * 1024]; // zeros compress ~1000:1
+        var ex = Assert.Throws<SignatureException>(() => Unpack(Pack(bomb)));
+        Assert.Contains("inflates beyond", ex.Message);
+    }
+
+    [Fact]
+    public void Oversized_package_is_rejected_before_verification()
+    {
+        Assert.False(SignatureStore.TryInstall(new byte[SignatureStore.MaxPackageBytes + 1], out var error, persist: false));
+        Assert.Contains("too large", error);
     }
 }

@@ -28,7 +28,8 @@ public static class SignatureUpdater
 
     static SignatureUpdater()
     {
-        Http.DefaultRequestHeaders.UserAgent.ParseAdd("AgrusScanner/1.0");
+        var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0);
+        Http.DefaultRequestHeaders.UserAgent.ParseAdd($"AgrusScanner/{v.ToString(3)}");
     }
 
     /// <summary>Returns feed info if the feed has a newer signature version than the active catalog, else null.</summary>
@@ -48,8 +49,9 @@ public static class SignatureUpdater
             if (!string.IsNullOrWhiteSpace(manifest.MinAppVersion) && SignaturePackage.ParseVersion(manifest.MinAppVersion) > appVersion)
                 return null;
 
+            // The manifest may only point inside the feed release; anything else is ignored.
             var url = string.IsNullOrWhiteSpace(manifest.Url) ? FeedBase + "latest.agsig" : manifest.Url;
-            if (!url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) return null;
+            if (!url.StartsWith(FeedBase, StringComparison.Ordinal)) url = FeedBase + "latest.agsig";
             return new SignatureUpdateInfo(manifest.SigVersion, url, manifest.Sha256 ?? "");
         }
         catch (Exception ex)
@@ -87,7 +89,7 @@ public static class SignatureUpdater
 
             return SignatureStore.TryInstall(bytes, out var error) ? (true, "") : (false, error);
         }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or TaskCanceledException)
+        catch (Exception ex)
         {
             return (false, ex.Message);
         }

@@ -279,7 +279,7 @@ Design: `docs/superpowers/specs/2026-09-15-signature-feed-design.md`.
 
 - Embedded ASP.NET Core `WebApplication`
 - Endpoint: `http://localhost:{port}/mcp` (default port: 8999)
-- Server info: `name: "agrus-scanner", version: "0.2.2"`
+- Server info: `name: "agrus-scanner"`, version = the app assembly version
 - Runs only under the `--mcp-only` flag (headless, tray icon); can be disabled in Settings (`McpServerEnabled`)
 
 ### Tool Definitions

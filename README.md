@@ -27,9 +27,17 @@ Requires Windows 10/11.
 
 ## What's New
 
+### v1.0.0 — September 2026
+
+First stable release. Everything from the 0.4 line is included; 1.0 marks the point where the detection engine, the signed signature feed, and the MCP integration are considered complete and supported.
+
+- Detection signatures now update automatically through a signed feed (see v0.4.1 below); no reinstall needed for new services
+- Installer and app are Authenticode-signed via Azure Trusted Signing
+- Full test suite covers the signature envelope (tamper, wrong key, truncation, downgrade), catalog invariants, MCP detection, and live in-process server fixtures
+
 ### v0.4.1 — September 2026
 
-- **Automatic signature updates** — detection signatures now ship as a signed feed, separate from the app. New signatures land weekly without reinstalling. Settings offers Off / Notify only / Auto-install (default), and the status bar shows the active signature version. Every package is signed in CI; the app refuses anything that does not verify against its built-in public key, so a tampered or third-party file is never loaded.
+- **Automatic signature updates** — detection signatures now ship as a signed feed, separate from the app. New signatures land automatically without reinstalling. Settings offers Off / Notify only / Auto-install (default), and the status bar shows the active signature version. Every package is signed in CI; the app refuses anything that does not verify against its built-in public key, so a tampered or third-party file is never loaded.
 - Settings: app update check can now be turned off from the UI
 
 ### v0.4.0 — September 2026

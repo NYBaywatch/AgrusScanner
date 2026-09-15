@@ -28,6 +28,7 @@ public static class SignatureStore
     private static readonly byte[] AesKey = Convert.FromBase64String("/H5xTLCWR6TV2nzOhxeAMyrgvAuo5v6KeFo93gqPJhA=");
 
     private const string EmbeddedResourceName = "AgrusScanner.signatures.catalog.json";
+    public const long MaxPackageBytes = 4 * 1024 * 1024;
 
     public static readonly string InstalledPackagePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AgrusScanner", "signatures.agsig");
@@ -66,6 +67,11 @@ public static class SignatureStore
         if (!File.Exists(InstalledPackagePath)) return;
         try
         {
+            if (new FileInfo(InstalledPackagePath).Length > MaxPackageBytes)
+            {
+                Debug.WriteLine("[SignatureStore] Ignoring installed package: file too large");
+                return;
+            }
             if (!TryInstall(File.ReadAllBytes(InstalledPackagePath), out var error, persist: false))
                 Debug.WriteLine($"[SignatureStore] Ignoring installed package: {error}");
         }
@@ -84,26 +90,32 @@ public static class SignatureStore
         error = "";
         try
         {
-            var catalog = Verify(package, out var header);
+            if (package.Length > MaxPackageBytes) throw new SignatureException("Package too large.");
 
+            SignatureCatalog catalog;
+            SignaturePackage.Header header;
+            // Verify and swap under one lock so two overlapping installs cannot race the no-downgrade rule.
             lock (Gate)
             {
+                catalog = Verify(package, out header);
+                if (persist)
+                {
+                    // Persist first: if the write fails, nothing changes in memory and the user sees the error.
+                    Directory.CreateDirectory(Path.GetDirectoryName(InstalledPackagePath)!);
+                    var tmp = InstalledPackagePath + ".tmp";
+                    File.WriteAllBytes(tmp, package);
+                    File.Move(tmp, InstalledPackagePath, overwrite: true);
+                }
                 _current = catalog;
-            }
-            if (persist)
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(InstalledPackagePath)!);
-                var tmp = InstalledPackagePath + ".tmp";
-                File.WriteAllBytes(tmp, package);
-                File.Move(tmp, InstalledPackagePath, overwrite: true);
             }
             Debug.WriteLine($"[SignatureStore] Active signatures: {header.SigVersion} ({catalog.Probes.Length} probes)");
             CatalogChanged?.Invoke(catalog);
             return true;
         }
-        catch (Exception ex) when (ex is SignatureException or InvalidDataException or IOException or UnauthorizedAccessException)
+        catch (Exception ex)
         {
-            error = ex.Message;
+            // Contract: never throw. A malformed-but-signed catalog is a CI bug, not a reason to crash the app.
+            error = ex is SignatureException or InvalidDataException ? ex.Message : $"{ex.GetType().Name}: {ex.Message}";
             return false;
         }
     }
@@ -135,7 +147,10 @@ public static class SignatureStore
         if (minApp > appVersion)
             throw new SignatureException($"Package requires Agrus Scanner {minApp} or newer (running {appVersion.ToString(3)}).");
 
-        // Rule 4: no downgrade below what is already active (embedded baseline has no version and never blocks)
+        if (string.IsNullOrWhiteSpace(header.SigVersion)) throw new SignatureException("Package has no sigVersion.");
+
+        // Rule 4: no downgrade below what is already active. The embedded baseline has no version and never
+        // blocks, so at startup an older *signed* on-disk package is accepted; the next feed check replaces it.
         var active = Current;
         if (active.SourceVersion != "embedded" && SignaturePackage.CompareSigVersions(header.SigVersion, active.SourceVersion) <= 0)
             throw new SignatureException($"Package {header.SigVersion} is not newer than active signatures {active.SourceVersion}.");

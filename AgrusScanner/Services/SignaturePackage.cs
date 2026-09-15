@@ -21,6 +21,7 @@ public static class SignaturePackage
     public const int SignatureLength = 64;
     private static readonly byte[] Magic = "AGSG"u8.ToArray();
     private const int NonceLength = 12, TagLength = 16;
+    private const int MaxInflatedBytes = 16 * 1024 * 1024;
 
     public sealed class Header
     {
@@ -136,7 +137,13 @@ public static class SignaturePackage
         {
             using var z = new GZipStream(new MemoryStream(plain), CompressionMode.Decompress);
             using var outMs = new MemoryStream();
-            z.CopyTo(outMs);
+            var buf = new byte[64 * 1024];
+            int n;
+            while ((n = z.Read(buf, 0, buf.Length)) > 0)
+            {
+                outMs.Write(buf, 0, n);
+                if (outMs.Length > MaxInflatedBytes) throw new SignatureException("Payload inflates beyond the allowed size.");
+            }
             return outMs.ToArray();
         }
         catch (Exception ex) when (ex is InvalidDataException or IOException)

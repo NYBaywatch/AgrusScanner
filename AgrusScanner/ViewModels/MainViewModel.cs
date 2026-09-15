@@ -85,7 +85,7 @@ public class MainViewModel : INotifyPropertyChanged
         if (_settings.SignatureUpdates == SignatureUpdateMode.Auto)
         {
             var (ok, error) = await SignatureUpdater.DownloadAndInstallAsync(info);
-            System.Diagnostics.Debug.WriteLine(ok ? $"[Signatures] installed {info.SigVersion}" : $"[Signatures] install failed: {error}");
+            if (!ok) SignatureUpdateText = $"Signature update {info.SigVersion} failed: {error}";
             return;
         }
 

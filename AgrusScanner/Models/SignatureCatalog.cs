@@ -70,6 +70,7 @@ public class SignatureCatalog
         foreach (var p in Probes)
         {
             var id = $"'{p.ServiceName}' ({p.Path})";
+            if (p.Path is null) { errors.Add($"Probe '{p.ServiceName}' has a null path."); continue; }
             if (string.IsNullOrWhiteSpace(p.ServiceName)) errors.Add($"Probe with path '{p.Path}' has no serviceName.");
             if (!ValidCategories.Contains(p.Category)) errors.Add($"Probe {id} has invalid category '{p.Category}'.");
             if (!ValidConfidences.Contains(p.Confidence)) errors.Add($"Probe {id} has invalid confidence '{p.Confidence}'.");
@@ -83,9 +84,17 @@ public class SignatureCatalog
                 errors.Add($"Probe {id} has a body but method is not POST.");
             if (p.Method == "POST" && (p.Body is null || p.ContentType is null))
                 errors.Add($"Probe {id} is a POST but lacks body or contentType.");
+            // POST is only for MCP discovery. A signed catalog must never be able to turn the scanner
+            // into a general-purpose request tool against scanned hosts.
+            if (p.Method == "POST" && p.Category != "MCP Server")
+                errors.Add($"Probe {id} uses POST outside the MCP Server category.");
+            if (p.Method == "POST" && p.Body is not null && !IsAllowedMcpBody(p.Body))
+                errors.Add($"Probe {id} POST body is not a JSON-RPC initialize/server/discover/ping request.");
+            if (p.AcceptHeader is not null && !IsHeaderValue(p.AcceptHeader)) errors.Add($"Probe {id} has an invalid acceptHeader.");
+            if (p.ContentType is not null && !IsHeaderValue(p.ContentType)) errors.Add($"Probe {id} has an invalid contentType.");
             if (p.Headers is not null)
                 foreach (var (hn, hv) in p.Headers)
-                    if (hn.Length == 0 || hn.Any(ch => ch <= ' ' || ch > '~' || ch == ':') || hv.Any(ch => ch < ' ' || ch > '~'))
+                    if (string.IsNullOrEmpty(hn) || hn.Any(ch => ch <= ' ' || ch > '~' || ch == ':') || hv is null || !IsHeaderValue(hv))
                         errors.Add($"Probe {id} has an invalid header '{hn}'.");
             if (p.PortHint is < 1 or > 65535) errors.Add($"Probe {id} has invalid portHint {p.PortHint}.");
         }
@@ -98,5 +107,22 @@ public class SignatureCatalog
         foreach (var d in DockerPatterns.Where(string.IsNullOrWhiteSpace)) errors.Add("Empty Docker pattern.");
 
         return errors;
+    }
+
+    private static bool IsHeaderValue(string v) => v.Length > 0 && v.Length <= 256 && v.All(ch => ch >= ' ' && ch <= '~');
+
+    private static readonly string[] AllowedRpcMethods = ["initialize", "server/discover", "ping"];
+
+    private static bool IsAllowedMcpBody(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+            return root.ValueKind == JsonValueKind.Object
+                && root.TryGetProperty("jsonrpc", out var v) && v.GetString() == "2.0"
+                && root.TryGetProperty("method", out var m) && AllowedRpcMethods.Contains(m.GetString());
+        }
+        catch (JsonException) { return false; }
     }
 }

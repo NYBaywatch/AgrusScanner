@@ -43,9 +43,11 @@ jobs:
           $sig = "{0}.{1}" -f (Get-Date -AsUTC -Format "yyyy.MM.dd"), $env:GITHUB_RUN_NUMBER
           $app = ([xml](Get-Content AgrusScanner/AgrusScanner.csproj)).Project.PropertyGroup.Version
           $pub = (Select-String -Path AgrusScanner/Services/SignatureStore.cs -Pattern '\["k1"\]\s*=\s*"([^"]+)"').Matches[0].Groups[1].Value
+          $aes = (Select-String -Path AgrusScanner/Services/SignatureStore.cs -Pattern 'FromBase64String\("([^"]+)"\)').Matches[0].Groups[1].Value
           "sig=$sig"  >> $env:GITHUB_OUTPUT
           "app=$app"  >> $env:GITHUB_OUTPUT
           "pub=$pub"  >> $env:GITHUB_OUTPUT
+          "aes=$aes"  >> $env:GITHUB_OUTPUT
           Write-Host "sigVersion=$sig minAppVersion=$app"
 
       # Secrets are passed as env:NAME so they never appear on a command line.
@@ -58,8 +60,10 @@ jobs:
           $tool = "AgrusScanner.SigTool/bin/Release/net9.0/AgrusScanner.SigTool.exe"
           & $tool pack signatures/catalog.json --version "${{ steps.ver.outputs.sig }}" --min-app "${{ steps.ver.outputs.app }}" --key env:AGSIG_SIGNING_KEY --aes env:AGSIG_AES_KEY --out latest.agsig
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # Verify with the public key compiled into the app: catches a secret/key mismatch before anything is published.
-          & $tool verify latest.agsig --pub "${{ steps.ver.outputs.pub }}" --aes env:AGSIG_AES_KEY
+          # Verify with the public key AND AES key compiled into the app (not the secrets): catches any
+          # secret/embedded-key mismatch before anything is published.
+          $env:APP_AES_KEY = "${{ steps.ver.outputs.aes }}"
+          & $tool verify latest.agsig --pub "${{ steps.ver.outputs.pub }}" --aes env:APP_AES_KEY
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Write manifest
