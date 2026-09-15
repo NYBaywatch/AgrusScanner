@@ -26,28 +26,32 @@ jobs:
       - name: Install WiX Toolset
         run: dotnet tool install --global wix
 
-      - name: Build MSI
-        run: .\build-installer.ps1
-
+      # Signing happens inside build-installer.ps1: app exe/dll after publish, MSI after packing.
       # Gate: no release ships unsigned. Credentials are managed in Doppler
       # (agrusscanner/prd) and synced to these repo secrets automatically.
-      - name: Sign MSI (Azure Trusted Signing)
+      - name: Build and sign MSI (Azure Trusted Signing)
         shell: pwsh
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AGRUS_SIGNING_ENDPOINT: ${{ secrets.AGRUS_SIGNING_ENDPOINT }}
+          AGRUS_SIGNING_ACCOUNT: ${{ secrets.AGRUS_SIGNING_ACCOUNT }}
+          AGRUS_SIGNING_PROFILE: ${{ secrets.AGRUS_SIGNING_PROFILE }}
         run: |
           dotnet tool install --global sign --prerelease
-          $msi = Get-ChildItem "Installer\bin\Release" -Filter "*.msi" -Recurse | Select-Object -First 1
-          sign code artifact-signing $msi.FullName `
-            --artifact-signing-endpoint "${{ secrets.AGRUS_SIGNING_ENDPOINT }}" `
-            --artifact-signing-account "${{ secrets.AGRUS_SIGNING_ACCOUNT }}" `
-            --artifact-signing-certificate-profile "${{ secrets.AGRUS_SIGNING_PROFILE }}"
-          if ($LASTEXITCODE -ne 0) { throw "MSI signing failed - aborting release" }
-          $sig = Get-AuthenticodeSignature $msi.FullName
-          if ($sig.Status -ne "Valid") { throw "Signature verification failed: $($sig.Status)" }
-          Write-Host "Signed by: $($sig.SignerCertificate.Subject)"
+          .\build-installer.ps1
+          if ($LASTEXITCODE -ne 0) { throw "build-installer.ps1 failed" }
+
+      - name: Verify signatures
+        shell: pwsh
+        run: |
+          $files = @("Installer\publish\AgrusScanner.exe", "Installer\publish\AgrusScanner.dll") + (Get-ChildItem "Installer\bin\Release" -Filter "*.msi" -Recurse | ForEach-Object FullName)
+          foreach ($f in $files) {
+            $sig = Get-AuthenticodeSignature $f
+            if ($sig.Status -ne "Valid") { throw "Unsigned or invalid signature: $f ($($sig.Status)) - aborting release" }
+            Write-Host "$(Split-Path $f -Leaf): signed by $($sig.SignerCertificate.Subject)"
+          }
 
       - name: Verify tag matches csproj version
         shell: pwsh

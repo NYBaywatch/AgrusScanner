@@ -27,6 +27,10 @@ Requires Windows 10/11.
 
 ## What's New
 
+### v1.0.1 — September 2026
+
+- The installed `AgrusScanner.exe` and `AgrusScanner.dll` are now Authenticode-signed inside the MSI, not just the MSI itself. Release builds abort if any of the three is unsigned.
+
 ### v1.0.0 — September 2026
 
 First stable release. Everything from the 0.4 line is included; 1.0 marks the point where the detection engine, the signed signature feed, and the MCP integration are considered complete and supported.
