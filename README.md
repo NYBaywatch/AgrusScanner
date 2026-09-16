@@ -2,6 +2,8 @@
 
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NYBaywatch/AgrusScanner/total?style=flat&logo=github&label=Downloads)](https://github.com/NYBaywatch/AgrusScanner/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/NYBaywatch/AgrusScanner?style=flat&logo=github)](https://github.com/NYBaywatch/AgrusScanner)
+[![Latest release](https://img.shields.io/github/v/release/NYBaywatch/AgrusScanner?style=flat&label=Release)](https://github.com/NYBaywatch/AgrusScanner/releases/latest)
+[![Signatures](https://img.shields.io/badge/signatures-auto--updating-2ea44f?style=flat)](#detection-signatures)
 
 Network reconnaissance tool with deep AI/ML service detection. Scans your network to discover hosts, open ports, and identifies AI services running across your infrastructure.
 
@@ -23,21 +25,21 @@ Download the latest installer from [Releases](https://github.com/NYBaywatch/Agru
 
 **[AgrusScanner-Setup.msi](https://github.com/NYBaywatch/AgrusScanner/releases/latest/download/AgrusScanner-Setup.msi)** — self-contained, no .NET runtime needed.
 
-Requires Windows 10/11.
+Requires Windows 10/11. The installer and the installed binaries are Authenticode-signed (Azure Trusted Signing, publisher *Joseph Fago*). Once installed, detection signatures keep themselves current; you only need a new installer when the app itself changes.
 
 ## What's New
 
-### v1.0.1 — September 2026
+### v1.0 — September 2026 (current)
 
-- The installed `AgrusScanner.exe` and `AgrusScanner.dll` are now Authenticode-signed inside the MSI, not just the MSI itself. Release builds abort if any of the three is unsigned.
+**Agrus Scanner 1.0 is the first stable release.** The detection engine, the signed signature feed, and the MCP integration are complete and supported. From here on, new AI services are delivered as signature updates and the app version only changes when the engine, UI, or MCP tools change.
 
-### v1.0.0 — September 2026
+- **Self-updating detection signatures** — probes, AI ports, and Docker image patterns ship as a cryptographically signed feed. New services land automatically without reinstalling. See [Detection Signatures](#detection-signatures).
+- **MCP server detection** across all three transport generations, with server name, version, and capabilities extracted.
+- **Everything is signed** — the MSI, `AgrusScanner.exe`, and `AgrusScanner.dll` are Authenticode-signed via Azure Trusted Signing; releases abort if any is unsigned. Signature packages are signed with a separate key that the app verifies before loading.
+- **Settings** — signature updates (Off / Notify only / Auto-install), app update check, and the built-in MCP server can each be turned off.
+- 111 probe definitions across 13 categories; 43 automated tests including tamper, wrong-key, downgrade, and live MCP-server fixtures.
 
-First stable release. Everything from the 0.4 line is included; 1.0 marks the point where the detection engine, the signed signature feed, and the MCP integration are considered complete and supported.
-
-- Detection signatures now update automatically through a signed feed (see v0.4.1 below); no reinstall needed for new services
-- Installer and app are Authenticode-signed via Azure Trusted Signing
-- Full test suite covers the signature envelope (tamper, wrong key, truncation, downgrade), catalog invariants, MCP detection, and live in-process server fixtures
+Point releases (1.0.x) carry fixes only. Signature versions are dated (for example `2026.09.15.1`) and shown in the status bar.
 
 ### v0.4.1 — September 2026
 
@@ -69,6 +71,7 @@ First stable release. Everything from the 0.4 line is included; 1.0 marks the po
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
 - **AI Service Detection** - 111 probe definitions identifying 70+ AI/ML services and MCP servers
+- **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
 - **Export Results** - Save scan results to CSV or TXT via the toolbar EXPORT button
@@ -90,11 +93,43 @@ First stable release. Everything from the 0.4 line is included; 1.0 marks the po
 | **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
 | **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus |
-| **MCP Server** | Agrus Scanner MCP |
+| **MCP Server** | Any MCP server over Streamable HTTP (`initialize` / `server/discover`) or legacy HTTP+SSE, plus Home Assistant MCP; reports name, version, and tools/resources/prompts |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
 | **Container** | Docker API with 70+ AI image pattern matches |
 
 Detection goes beyond port scanning - the prober queries service-specific API endpoints, extracts model names, versions, GPU info, and container details.
+
+## Detection Signatures
+
+Starting with 1.0, what Agrus can detect is separate from the app itself, the same way an antivirus separates its engine from its definitions.
+
+**How it works**
+
+- Every probe, AI port preset entry, and Docker image pattern lives in one catalog. A copy is built into each release as the baseline, so the app works fully offline.
+- New signatures are published to the [`signatures` feed](https://github.com/NYBaywatch/AgrusScanner/releases/tag/signatures) on GitHub, typically weekly as new AI services appear. The app checks the feed a few seconds after launch and once a day after that.
+- The active signature version and probe count are shown in Settings and the help popup, and in the status bar when an update is available. Versions are dated, e.g. `2026.09.22.1`.
+
+**Your choices (Settings → Updates → Detection signatures)**
+
+| Mode | Behavior |
+|------|----------|
+| **Auto-install** (default) | New signatures download and activate silently and apply from the next probed host onward |
+| **Notify only** | A link appears in the status bar; click it to install |
+| **Off** | Never contacts the feed; the built-in baseline is used |
+
+**How it stays safe**
+
+- Each package is signed in CI with a private key that exists only as a GitHub Actions secret. The app carries the matching public key and refuses any package that fails verification, is older than what is already active, needs a newer app version, or fails structural checks (no duplicates, no shrinking, valid categories).
+- A signature package can only add or refine detection. It cannot add code, change what ports are scanned outside the AI preset, or make the scanner send anything other than the fixed set of read-only discovery requests (POST is limited to MCP `initialize` / `server/discover` / `ping`).
+- If a downloaded file is tampered with, corrupted, or served by the wrong host, it is discarded and the last good set stays active. Nothing is ever loaded from disk without the same checks.
+
+**What still needs an app update**
+
+Rich detail extraction for a brand-new service (model lists, GPU names) is code, so a signature can label a service before the next release shows its details. Engine, UI, and MCP-tool changes are also app releases, which the existing update check announces.
+
+**Contributing a signature**
+
+Add an entry to [`signatures/catalog.json`](signatures/catalog.json) and open a pull request; the catalog gates in CI validate it and, once merged, the feed publishes automatically. Details are in [docs/DEVELOPER.md](docs/DEVELOPER.md#signature-feed).
 
 ## Usage
 
@@ -185,12 +220,20 @@ The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkil
 
 ## Privacy & Updates
 
-Agrus Scanner checks for updates on startup by contacting `api.jpftech.com`. This sends the app version and OS version — no personal data, no machine IDs, no IP addresses are stored. You can disable this in Settings by setting `CheckForUpdates` to `false` in `%LOCALAPPDATA%\AgrusScanner\settings.json`.
+Agrus Scanner makes two kinds of outbound requests, both optional and both visible in Settings → Updates:
+
+- **App update check** on startup to `api.jpftech.com`, sending only the app version and OS version. No personal data, machine IDs, or IP addresses are stored. Toggle: *Check for app updates on startup*.
+- **Signature feed check** to `github.com` (the `signatures` release) on startup and daily, fetching a small manifest and, when newer, the signed package. No identifying data is sent. Toggle: *Detection signatures* → Off.
+
+Scan traffic itself only goes to the IP range you enter. Settings are stored in `%LOCALAPPDATA%\AgrusScanner\settings.json`; an installed signature package lives alongside it as `signatures.agsig`.
 
 ## Security
 
-v0.2.2 includes hardening across the codebase:
+Hardening carried through to 1.0:
 
+- **Code signing** — MSI, exe, and dll are Authenticode-signed (Azure Trusted Signing); the release pipeline refuses to publish if any signature is missing or invalid
+- **Signed detection feed** — signature packages are ECDSA P-256 signed and verified before use; downgrade, oversize, decompression-bomb, and malformed packages are rejected, and a package cannot introduce arbitrary requests (see [Detection Signatures](#detection-signatures))
+- **Bounded probes** — streaming (SSE) responses are cut off at 1.5 s / 64 KB; MCP sessions opened during detection are closed immediately and no tools are ever invoked
 - **Input limits** — CIDR and range parsing capped at 65,536 addresses to prevent memory exhaustion
 - **Path traversal protection** — MCP `export_results` restricted to the user's Documents folder
 - **DNS rebinding defense** — MCP server validates Host headers, rejecting non-localhost requests
