@@ -12,15 +12,17 @@ namespace AgrusScanner.Services;
 public record SignatureUpdateInfo(string SigVersion, string Url, string Sha256);
 
 /// <summary>
-/// Checks the signature feed and installs new packages. The feed is a rolling GitHub release
-/// tagged "signatures" holding latest.json + latest.agsig, published by .github/workflows/signatures.yml.
+/// Checks the signature feed and installs new packages. The feed is published by .github/workflows/signatures.yml
+/// to a rolling GitHub release tagged "signatures" and served through downloads.jpftech.com/signatures/.
 ///
 /// Trust does not depend on this transport: whatever is downloaded goes through
 /// <see cref="SignatureStore.TryInstall"/>, which rejects anything not signed by the CI key.
 /// </summary>
 public static class SignatureUpdater
 {
-    public const string FeedBase = "https://github.com/NYBaywatch/AgrusScanner/releases/download/signatures/";
+    // downloads.jpftech.com fronts the GitHub "signatures" release (infra/downloads-worker). Serving the feed
+    // there lets us count daily check-ins (approximate active installs) without any identifying data.
+    public const string FeedBase = "https://downloads.jpftech.com/signatures/";
     private const string ManifestUrl = FeedBase + "latest.json";
     private const long MaxPackageBytes = 4 * 1024 * 1024;
 

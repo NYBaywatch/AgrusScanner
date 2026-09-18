@@ -3,6 +3,7 @@
 [![Downloads (all channels)](https://img.shields.io/endpoint?url=https%3A%2F%2Fdownloads.jpftech.com%2Fbadge.json&style=flat&logo=windows&label=Downloads)](https://jpftech.com/tools/)
 [![GitHub Stars](https://img.shields.io/github/stars/NYBaywatch/AgrusScanner?style=flat&logo=github)](https://github.com/NYBaywatch/AgrusScanner)
 [![Latest release](https://img.shields.io/github/v/release/NYBaywatch/AgrusScanner?style=flat&label=Release)](https://github.com/NYBaywatch/AgrusScanner/releases/latest)
+[![Active installs](https://img.shields.io/endpoint?url=https%3A%2F%2Fdownloads.jpftech.com%2Fbadge-active.json&style=flat&label=Active%20installs)](#detection-signatures)
 [![Signatures](https://img.shields.io/badge/signatures-auto--updating-2ea44f?style=flat)](#detection-signatures)
 
 Network reconnaissance tool with deep AI/ML service detection. Scans your network to discover hosts, open ports, and identifies AI services running across your infrastructure.
@@ -225,7 +226,7 @@ The skill at `.claude/skills/agrus-scanner/SKILL.md` follows the open [AgentSkil
 Agrus Scanner makes two kinds of outbound requests, both optional and both visible in Settings → Updates:
 
 - **App update check** on startup to `api.jpftech.com`, sending only the app version and OS version. No personal data, machine IDs, or IP addresses are stored. Toggle: *Check for app updates on startup*.
-- **Signature feed check** to `github.com` (the `signatures` release) on startup and daily, fetching a small manifest and, when newer, the signed package. No identifying data is sent. Toggle: *Detection signatures* → Off.
+- **Signature feed check** to `downloads.jpftech.com` on startup and daily, fetching a small manifest and, when newer, the signed package. No identifying data is sent; the server only counts how many checks happen per day, which is what the "Active installs" badge shows. Toggle: *Detection signatures* → Off.
 
 Scan traffic itself only goes to the IP range you enter. Settings are stored in `%LOCALAPPDATA%\AgrusScanner\settings.json`; an installed signature package lives alongside it as `signatures.agsig`.
 

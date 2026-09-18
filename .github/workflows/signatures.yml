@@ -76,7 +76,7 @@ jobs:
             min_app_version = "${{ steps.ver.outputs.app }}"
             sha256          = $sha
             probe_count     = $count
-            url             = "https://github.com/${{ github.repository }}/releases/download/signatures/latest.agsig"
+            url             = "https://downloads.jpftech.com/signatures/latest.agsig"
             published       = (Get-Date -AsUTC -Format "o")
             commit          = "${{ github.sha }}"
           } | ConvertTo-Json | Set-Content latest.json -Encoding utf8

@@ -4,6 +4,11 @@
 //   GET /AgrusScanner-Setup.msi         rolling "latest" name, counted under its own key
 //   GET /stats.json                     { direct: {file: n, ...}, direct_total, github_total, total }
 //   GET /badge.json                     shields.io endpoint badge: combined download count
+//   GET /signatures/latest.json         signature feed manifest (proxied from the GitHub "signatures"
+//                                       release, cached 60 s). Counted as one "check-in" per fetch,
+//                                       per day: installed apps poll this daily, so the daily number
+//                                       approximates active installs.
+//   GET /signatures/latest.agsig        signature package (proxied, cached 10 min). Counted per sigVersion.
 //   GET /                               redirect to the Tools page
 //
 // Counting: one increment per completed GET of a .msi (HEAD and non-zero Range requests are
@@ -22,7 +27,9 @@ export default {
     }
     if (path === "/stats.json") return stats(env, ctx);
     if (path === "/badge.json") return badge(env, ctx);
+    if (path === "/badge-active.json") return activeBadge(env);
     if (path === "/robots.txt") return new Response("User-agent: *\nDisallow: /\n", { headers: { "content-type": "text/plain" } });
+    if (path.startsWith("/signatures/")) return signatures(path.slice("/signatures/".length), request, env, ctx);
 
     if (request.method !== "GET" && request.method !== "HEAD") {
       return new Response("Method not allowed", { status: 405, headers: { allow: "GET, HEAD" } });
@@ -75,6 +82,82 @@ export default {
   }
 };
 
+// ── Signature feed ─────────────────────────────────────────────────────────────
+const SIG_UPSTREAM = "https://github.com/NYBaywatch/AgrusScanner/releases/download/signatures/";
+
+async function signatures(name, request, env, ctx) {
+  if (name !== "latest.json" && name !== "latest.agsig") return new Response("Not found", { status: 404 });
+  if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
+
+  const cache = caches.default;
+  const cacheKey = new Request(`https://downloads.jpftech.com/signatures/${name}`, { method: "GET" });
+  let res = await cache.match(cacheKey);
+  if (!res) {
+    const upstream = await fetch(SIG_UPSTREAM + name, { headers: { "user-agent": "agrus-downloads-worker" }, redirect: "follow" });
+    if (!upstream.ok) return new Response("Feed unavailable", { status: 502 });
+    const body = await upstream.arrayBuffer();
+    const headers = new Headers({
+      "content-type": name.endsWith(".json") ? "application/json; charset=utf-8" : "application/octet-stream",
+      "cache-control": name.endsWith(".json") ? "public, max-age=60" : "public, max-age=600",
+      "access-control-allow-origin": "*",
+      "x-content-type-options": "nosniff"
+    });
+    res = new Response(body, { status: 200, headers });
+    ctx.waitUntil(cache.put(cacheKey, res.clone()));
+  }
+  if (request.method === "GET") ctx.waitUntil(bumpSignature(env, name, res.clone()));
+  return request.method === "HEAD" ? new Response(null, { status: 200, headers: res.headers }) : res;
+}
+
+async function bumpSignature(env, name, res) {
+  try {
+    const day = new Date().toISOString().slice(0, 10);
+    if (name === "latest.json") {
+      await incr(env, `sigcheck:${day}`, 60 * 60 * 24 * 400);
+      await incr(env, "sigcheck:total");
+    } else {
+      let ver = "unknown";
+      try {
+        const m = await (await caches.default.match(new Request("https://downloads.jpftech.com/signatures/latest.json")))?.json();
+        if (m?.sig_version) ver = m.sig_version;
+      } catch {}
+      await incr(env, `sigdl:${ver}`);
+      await incr(env, "sigdl:total");
+    }
+  } catch {}
+}
+
+async function incr(env, key, ttl) {
+  const n = parseInt((await env.COUNTS.get(key)) || "0", 10) || 0;
+  await env.COUNTS.put(key, String(n + 1), ttl ? { expirationTtl: ttl } : undefined);
+}
+
+async function signatureStats(env) {
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const [t, y, total, dlTotal] = await Promise.all([
+    env.COUNTS.get(`sigcheck:${today}`), env.COUNTS.get(`sigcheck:${yesterday}`),
+    env.COUNTS.get("sigcheck:total"), env.COUNTS.get("sigdl:total")
+  ]);
+  const byVersion = {};
+  const list = await env.COUNTS.list({ prefix: "sigdl:" });
+  for (const k of list.keys) if (k.name !== "sigdl:total") byVersion[k.name.slice(6)] = parseInt((await env.COUNTS.get(k.name)) || "0", 10) || 0;
+  // last 14 days of check-ins
+  const days = {};
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+    days[d] = parseInt((await env.COUNTS.get(`sigcheck:${d}`)) || "0", 10) || 0;
+  }
+  return {
+    checks_today: parseInt(t || "0", 10) || 0,
+    checks_yesterday: parseInt(y || "0", 10) || 0,
+    checks_total: parseInt(total || "0", 10) || 0,
+    checks_by_day: days,
+    package_downloads_total: parseInt(dlTotal || "0", 10) || 0,
+    package_downloads_by_version: byVersion
+  };
+}
+
 async function bump(env, key) {
   if (!/\.(msi|exe|zip)$/i.test(key)) return;
   try {
@@ -123,15 +206,23 @@ async function githubTotal(env) {
 }
 
 async function stats(env) {
-  const [{ direct, total: directTotal }, gh] = await Promise.all([directCounts(env), githubTotal(env)]);
+  const [{ direct, total: directTotal }, gh, sig] = await Promise.all([directCounts(env), githubTotal(env), signatureStats(env)]);
   const body = {
     direct,
     direct_total: directTotal,
     github_total: gh,
     total: directTotal + gh,
+    signatures: sig,
     generated: new Date().toISOString()
   };
   return json(body, 60);
+}
+
+async function activeBadge(env) {
+  const sig = await signatureStats(env);
+  // yesterday is the last complete day; fall back to today early in the day
+  const n = sig.checks_yesterday || sig.checks_today;
+  return json({ schemaVersion: 1, label: "active installs", message: compact(n), color: "2ea44f", cacheSeconds: 3600 }, 3600);
 }
 
 async function badge(env) {
