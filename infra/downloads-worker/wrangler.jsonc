@@ -1,0 +1,20 @@
+{
+  // downloads.jpftech.com — serves Agrus Scanner installers from R2 and counts downloads.
+  // Deploy: cd infra/downloads-worker && wrangler deploy   (needs `wrangler login` on the jpfago@gmail.com account)
+  "name": "agrus-downloads",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-01",
+  "routes": [
+    { "pattern": "downloads.jpftech.com", "custom_domain": true }
+  ],
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "agrus-downloads" }
+  ],
+  "kv_namespaces": [
+    { "binding": "COUNTS", "id": "4f6b6f0a381f461994e517d2ca5ec05d" }
+  ],
+  "vars": {
+    "GITHUB_REPO": "NYBaywatch/AgrusScanner",
+    "TOOLS_PAGE": "https://jpftech.com/tools/"
+  }
+}

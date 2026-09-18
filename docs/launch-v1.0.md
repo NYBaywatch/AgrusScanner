@@ -12,12 +12,12 @@
 | awesome-windows | PR opened (maintainer is strict; may be rejected) | https://github.com/0PandaDEV/awesome-windows/pull/300 |
 | Hacker News | Draft below; post yourself from your HN account | |
 | Microsoft Store | Developer account created (free, storedeveloper.microsoft.com). App "Agrus Scanner" reserved; draft submission: Availability, Properties, Age ratings (Everyone/3+), Packages (R2 URL, x64, /qn) done. Remaining: upload 3 listing images (docs/store/*.png) via the file picker, Save, Submit. | https://partner.microsoft.com/en-US/dashboard/win32apps/b92b452c-7adb-4713-a73b-2f3f276d2853/overview |
-| Downloads host (R2) | Live: `agrus-downloads` bucket, versioned + rolling MSI | https://pub-b5e7279503cd4517a6c29ec7726d0e9c.r2.dev/AgrusScanner-Setup-1.0.1.msi |
+| Downloads host | Live: `downloads.jpftech.com` Worker (infra/downloads-worker) in front of R2 bucket `agrus-downloads`; counts downloads; `/stats.json`, `/badge.json` (README badge = direct + GitHub) | https://downloads.jpftech.com/AgrusScanner-Setup-1.0.1.msi |
 | jpftech.com/tools | Live: Tools page with download, checksum, winget line | https://jpftech.com/tools/ |
 
 After the winget PR merges: `winget install Agrus.AgrusScanner`. Put that one-liner in every future post. Future versions: bump `PackageVersion`, `InstallerUrl`, `InstallerSha256`, `ProductCode`, `ReleaseDate` in `packaging/winget/manifests/...` and run `wingetcreate update Agrus.AgrusScanner --version X --urls <msi-url> --submit`.
 
-**To do:** attach `downloads.jpftech.com` to the R2 bucket (needs zone ID); create a scoped Cloudflare API token (Workers R2 Storage: Edit, this bucket only) and add repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` so releases auto-upload.
+**To do:** create a scoped Cloudflare API token (Workers R2 Storage: Edit, this bucket only) and add repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` so releases auto-upload.
 
 ---
 

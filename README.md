@@ -1,6 +1,6 @@
 # Agrus Scanner
 
-[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/NYBaywatch/AgrusScanner/total?style=flat&logo=github&label=Downloads)](https://github.com/NYBaywatch/AgrusScanner/releases)
+[![Downloads (all channels)](https://img.shields.io/endpoint?url=https%3A%2F%2Fdownloads.jpftech.com%2Fbadge.json&style=flat&logo=windows&label=Downloads)](https://jpftech.com/tools/)
 [![GitHub Stars](https://img.shields.io/github/stars/NYBaywatch/AgrusScanner?style=flat&logo=github)](https://github.com/NYBaywatch/AgrusScanner)
 [![Latest release](https://img.shields.io/github/v/release/NYBaywatch/AgrusScanner?style=flat&label=Release)](https://github.com/NYBaywatch/AgrusScanner/releases/latest)
 [![Signatures](https://img.shields.io/badge/signatures-auto--updating-2ea44f?style=flat)](#detection-signatures)
@@ -23,7 +23,7 @@ It also runs as an MCP server, so AI agents like Claude Code and OpenClaw can us
 
 Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases), or directly:
 
-**[AgrusScanner-Setup-1.0.1.msi](https://pub-b5e7279503cd4517a6c29ec7726d0e9c.r2.dev/AgrusScanner-Setup-1.0.1.msi)** — self-contained, no .NET runtime needed.
+**[AgrusScanner-Setup-1.0.1.msi](https://downloads.jpftech.com/AgrusScanner-Setup-1.0.1.msi)** — self-contained, no .NET runtime needed.
 
 Or visit the [Tools page](https://jpftech.com/tools/) for the download link, checksum, and winget install command.
 
