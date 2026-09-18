@@ -11,7 +11,7 @@
 | awesome-security | PR opened | https://github.com/sbilly/awesome-security/pull/731 |
 | awesome-windows | PR opened (maintainer is strict; may be rejected) | https://github.com/0PandaDEV/awesome-windows/pull/300 |
 | Hacker News | Draft below; post yourself from your HN account | |
-| Microsoft Store | Needs your Partner Center account; steps below | |
+| Microsoft Store | Developer account created (free, storedeveloper.microsoft.com). App "Agrus Scanner" reserved; draft submission: Availability, Properties, Age ratings (Everyone/3+), Packages (R2 URL, x64, /qn) done. Remaining: upload 3 listing images (docs/store/*.png) via the file picker, Save, Submit. | https://partner.microsoft.com/en-US/dashboard/win32apps/b92b452c-7adb-4713-a73b-2f3f276d2853/overview |
 | Downloads host (R2) | Live: `agrus-downloads` bucket, versioned + rolling MSI | https://pub-b5e7279503cd4517a6c29ec7726d0e9c.r2.dev/AgrusScanner-Setup-1.0.1.msi |
 | jpftech.com/tools | Live: Tools page with download, checksum, winget line | https://jpftech.com/tools/ |
 
@@ -77,14 +77,11 @@ Option 1 is the safest. Option 3 if you want the security angle.
 
 The Store accepts unpackaged Win32 apps (MSI/EXE hosted by you) since 2021, so the existing signed MSI works without MSIX repackaging. What I cannot do for you: create the account or agree to the developer agreement.
 
-**One-time (you):**
-
-1. https://partner.microsoft.com/dashboard → sign in with the same Microsoft account → enroll in the **Windows & Xbox** developer program. Individual account, one-time US$19. Identity verification can take 1–3 days.
-2. Apps and games → **New product** → **MSI or EXE app** → reserve the name **Agrus Scanner**.
+**One-time (done 2026-09-18):** registration moved to https://storedeveloper.microsoft.com/onboarding and is now free. Account: jfago@hotmail.com (personal; the Azure signing tenant is a client's and must not own the Store listing). Name "Agrus Scanner" reserved; Partner Center ID b92b452c-7adb-4713-a73b-2f3f276d2853. Note: the old partner.microsoft.com/dashboard/registration URLs show "Access restricted" for personal accounts.
 
 **Submission (I can fill everything except the final Submit if you sign in on the Chrome tab):**
 
-- Packages: *Installer URL* `https://github.com/NYBaywatch/AgrusScanner/releases/download/v1.0.1/AgrusScanner-Setup.msi`, architecture x64, language English, *Installer parameters (silent)* `/qn`, *Package type* MSI. The Store requires the installer to be silent-capable and signed; both are true.
+- Packages: the Store rejects URLs that redirect, so GitHub release URLs do not work. Use the R2 URL `https://pub-b5e7279503cd4517a6c29ec7726d0e9c.r2.dev/AgrusScanner-Setup-<version>.msi` (versioned; the Store wants a new URL per version), architecture x64, language English (United States), *Installer parameters* `/qn`, *Package type* MSI.
 - Properties: Category **Developer tools** (or **Security**), sub-category Networking. Privacy policy URL: you need a page; the README "Privacy & Updates" section on GitHub works as the URL: `https://github.com/NYBaywatch/AgrusScanner#privacy--updates`. Website: repo URL. Support contact: `https://github.com/NYBaywatch/AgrusScanner/issues`.
 - Age ratings: IARC questionnaire, all "no" → rated for everyone.
 - Store listing: description below; screenshots 1366×768 or larger (take 2–4: main results grid, an AI-detection detail, Settings showing the signature feed, MCP mode tray); logo 300×300 PNG (export from `AgrusScanner/icon.ico`); short title "Agrus Scanner"; search terms: network scanner, shadow AI, Ollama, MCP, port scanner.
