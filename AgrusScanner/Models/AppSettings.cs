@@ -19,6 +19,10 @@ public class AppSettings
     public bool McpServerEnabled { get; set; } = true;
     public int McpPort { get; set; } = 8999;
 
+    // After an MCP server answers initialize, also call tools/list (read-only) to show its tool names.
+    // Off by default because it goes a step beyond a bare handshake.
+    public bool EnumerateMcpTools { get; set; }
+
     // Update checking (set false to disable update check pings)
     public bool CheckForUpdates { get; set; } = true;
 

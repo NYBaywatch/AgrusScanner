@@ -39,7 +39,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 - **Self-updating detection signatures** — probes, AI ports, and Docker image patterns ship as a cryptographically signed feed. New services land automatically without reinstalling. See [Detection Signatures](#detection-signatures).
 - **MCP server detection** across all three transport generations, with server name, version, and capabilities extracted.
 - **Everything is signed** — the MSI, `AgrusScanner.exe`, and `AgrusScanner.dll` are Authenticode-signed via Azure Trusted Signing; releases abort if any is unsigned. Signature packages are signed with a separate key that the app verifies before loading.
-- **Settings** — signature updates (Off / Notify only / Auto-install), app update check, and the built-in MCP server can each be turned off.
+- **Settings** — signature updates (Off / Notify only / Auto-install), app update check, MCP tool-name enumeration (off by default), and the built-in MCP server can each be turned on or off.
 - 111 probe definitions across 13 categories; 43 automated tests including tamper, wrong-key, downgrade, and live MCP-server fixtures.
 
 Point releases (1.0.x) carry fixes only. Signature versions are dated (for example `2026.09.15.1`) and shown in the status bar.
@@ -51,7 +51,7 @@ Point releases (1.0.x) carry fixes only. Signature versions are dated (for examp
 
 ### v0.4.0 — September 2026
 
-- **MCP server detection** — finds Model Context Protocol servers on the network across all three transport generations: Streamable HTTP (`initialize`), the 2026-07-28 stateless `server/discover`, and legacy HTTP+SSE. Shows the server's self-reported name, version, capabilities (tools / resources / prompts), and protocol version. Sessions opened during detection are closed immediately; no tools are ever called.
+- **MCP server detection** — finds Model Context Protocol servers on the network across all three transport generations: Streamable HTTP (`initialize`), the 2026-07-28 stateless `server/discover`, and legacy HTTP+SSE. Shows the server's self-reported name, version, capabilities (tools / resources / prompts), and protocol version. Sessions opened during detection are closed immediately; no tools are ever called. An opt-in setting adds a read-only `tools/list` after the handshake so results show the exposed tool names (for example `tools: read_file, write_file, query`), which is what tells you a rogue listener has filesystem or database reach.
 - **Signature catalog** — all detection definitions (probes, AI port preset, Docker image patterns) now live in `signatures/catalog.json` and are compiled in as the baseline. Groundwork for v0.4.1's signature feed.
 - New AI-preset ports for MCP tooling: 8811 (Docker MCP Gateway), 8931 (Playwright MCP), 6274/6277 (MCP Inspector), 8999 (Agrus), 8123 (Home Assistant, gated to its own probe)
 - Settings: the built-in MCP server (`--mcp-only` mode) can now be disabled

@@ -67,6 +67,28 @@ public class McpExtractionTests
     }
 
     [Fact]
+    public void Tools_list_result_names_capped()
+    {
+        var tools = string.Join(",", Enumerable.Range(1, 11).Select(i => "{\"name\":\"tool_" + i + "\",\"inputSchema\":{}}"));
+        var body = "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"tools\":[" + tools + "]}}";
+        Assert.Equal("tools: tool_1, tool_2, tool_3, tool_4, tool_5, tool_6, tool_7, tool_8, +3 more", AiServiceProber.ExtractMcpTools(body));
+    }
+
+    [Fact]
+    public void Tools_list_result_sse_framed_and_sanitised()
+    {
+        const string body = "event: message\r\ndata: {\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"tools\":[{\"name\":\"read_file\"},{\"name\":\"exec,\\u0007sql\"}]}}\r\n\r\n";
+        Assert.Equal("tools: read_file, execsql", AiServiceProber.ExtractMcpTools(body));
+    }
+
+    [Fact]
+    public void Tools_list_error_or_garbage_yields_empty()
+    {
+        Assert.Equal("", AiServiceProber.ExtractMcpTools("{\"jsonrpc\":\"2.0\",\"id\":2,\"error\":{\"code\":-32600,\"message\":\"Server not initialized\"}}"));
+        Assert.Equal("", AiServiceProber.ExtractMcpTools("not json"));
+    }
+
+    [Fact]
     public void Garbage_yields_empty()
     {
         Assert.Equal("", AiServiceProber.ExtractMcpInfo("<html>"));

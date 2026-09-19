@@ -146,6 +146,9 @@
                                        Foreground="{StaticResource AccentBrush}" Margin="0,0,0,8" />
 
                             <CheckBox IsChecked="{Binding SkipPing}" Content="Skip ping (scan all IPs)"
+                                      Margin="0,0,0,6" />
+                            <CheckBox IsChecked="{Binding EnumerateMcpTools}" Content="List tool names on detected MCP servers"
+                                      ToolTip="After a successful MCP handshake, also sends a read-only tools/list so results show which tools the server exposes. Never invokes a tool. Off by default because it goes one step beyond detection."
                                       Margin="0,0,0,8" />
 
                             <TextBlock Text="UPDATES" FontWeight="Bold" FontSize="11"

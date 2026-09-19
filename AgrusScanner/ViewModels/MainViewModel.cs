@@ -38,6 +38,7 @@ public class MainViewModel : INotifyPropertyChanged
     public MainViewModel()
     {
         _settings = _settingsService.Load();
+        _aiProber.EnumerateMcpTools = _settings.EnumerateMcpTools;
         StartCommand = new RelayCommand(async _ => await StartScanAsync(), _ => !IsScanning);
         StopCommand = new RelayCommand(_ => StopScan(), _ => IsScanning);
         ExportCommand = new RelayCommand(_ => ExportResults(), _ => CanExport);
@@ -309,6 +310,18 @@ public class MainViewModel : INotifyPropertyChanged
         set
         {
             _settings.SkipPing = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
+    public bool EnumerateMcpTools
+    {
+        get => _settings.EnumerateMcpTools;
+        set
+        {
+            _settings.EnumerateMcpTools = value;
+            _aiProber.EnumerateMcpTools = value;
             OnPropertyChanged();
             SaveSettings();
         }

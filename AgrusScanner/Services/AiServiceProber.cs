@@ -15,6 +15,13 @@ public class AiServiceProber
 
     private readonly SemaphoreSlim _semaphore = new(32);
 
+    /// <summary>
+    /// When true, a successful MCP initialize is followed by a read-only tools/list on the same session
+    /// so the result shows which tools the server exposes. Off by default: it goes one step beyond a
+    /// handshake, so the user opts in.
+    /// </summary>
+    public bool EnumerateMcpTools { get; set; }
+
     private static readonly string UserAgent =
         $"AgrusScanner/{(typeof(AiServiceProber).Assembly.GetName().Version ?? new Version(0, 0, 0)).ToString(3)}";
 
@@ -93,9 +100,18 @@ public class AiServiceProber
 
                         var details = TryExtractDetails(probe.ServiceName, probe.Path, body, port);
 
-                        // MCP initialize may have opened a session; close it (spec: client SHOULD DELETE).
-                        if (probe.Method == "POST" && response.Headers.TryGetValues("Mcp-Session-Id", out var sessionIds))
-                            _ = CloseMcpSessionAsync(url, sessionIds.First());
+                        // MCP initialize may have opened a session; optionally list its tools, then close it
+                        // (spec: client SHOULD DELETE).
+                        if (probe.Method == "POST" && probe.Category == "MCP Server")
+                        {
+                            var sessionId = response.Headers.TryGetValues("Mcp-Session-Id", out var sessionIds) ? sessionIds.First() : null;
+                            if (EnumerateMcpTools && body.Contains("\"serverInfo\"", StringComparison.Ordinal))
+                            {
+                                var tools = await ListMcpToolsAsync(url, probe, sessionId, ct);
+                                if (tools.Length > 0) details = string.IsNullOrEmpty(details) ? tools : $"{details} · {tools}";
+                            }
+                            if (sessionId is not null) _ = CloseMcpSessionAsync(url, sessionId);
+                        }
 
                         if (best == null || probe.Specificity > best.Specificity)
                         {
@@ -250,7 +266,7 @@ public class AiServiceProber
 
     // ── Request shaping + streaming reads (driven by the catalog's optional request fields) ──
 
-    private static HttpRequestMessage BuildRequest(ProbeDefinition probe, string url)
+    private static HttpRequestMessage BuildRequest(ProbeDefinition probe, string url, string? bodyOverride = null)
     {
         var method = probe.Method == "POST" ? HttpMethod.Post : HttpMethod.Get;
         var request = new HttpRequestMessage(method, url);
@@ -261,7 +277,7 @@ public class AiServiceProber
             foreach (var (name, value) in probe.Headers)
                 request.Headers.TryAddWithoutValidation(name, value);
         if (method == HttpMethod.Post)
-            request.Content = new StringContent(probe.Body ?? "", System.Text.Encoding.UTF8, probe.ContentType ?? "application/json");
+            request.Content = new StringContent(bodyOverride ?? probe.Body ?? "", System.Text.Encoding.UTF8, probe.ContentType ?? "application/json");
         return request;
     }
 
@@ -322,6 +338,72 @@ public class AiServiceProber
             pos = nl + 1;
         }
         return -1;
+    }
+
+    private const string InitializedNotification = "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}";
+    private const string ToolsListRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}";
+
+    /// <summary>
+    /// Read-only follow-up after a successful initialize: send notifications/initialized, then tools/list,
+    /// on the same session. Never calls a tool. Returns "" on any failure.
+    /// </summary>
+    private static async Task<string> ListMcpToolsAsync(string url, ProbeDefinition probe, string? sessionId, CancellationToken ct)
+    {
+        try
+        {
+            using var init = BuildRequest(probe, url, InitializedNotification);
+            if (sessionId is not null) init.Headers.TryAddWithoutValidation("Mcp-Session-Id", sessionId);
+            using var _ = await _http.SendAsync(init, HttpCompletionOption.ResponseHeadersRead, ct);
+
+            using var list = BuildRequest(probe, url, ToolsListRequest);
+            if (sessionId is not null) list.Headers.TryAddWithoutValidation("Mcp-Session-Id", sessionId);
+            using var response = await _http.SendAsync(list, HttpCompletionOption.ResponseHeadersRead, ct);
+            if (!response.IsSuccessStatusCode) return "";
+            var body = await ReadStreamingBodyAsync(response, ct);
+            return ExtractMcpTools(body);
+        }
+        catch (Exception) when (ct.IsCancellationRequested) { throw; }
+        catch (Exception) { return ""; }
+    }
+
+    private const int MaxToolNamesShown = 8;
+
+    /// <summary>"tools: read_file, write_file, +3 more" from a tools/list result (JSON or SSE-framed).</summary>
+    internal static string ExtractMcpTools(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(UnwrapSse(body));
+            if (!doc.RootElement.TryGetProperty("result", out var result)
+                || !result.TryGetProperty("tools", out var tools) || tools.ValueKind != JsonValueKind.Array)
+                return "";
+
+            var names = new List<string>();
+            foreach (var t in tools.EnumerateArray())
+            {
+                if (!t.TryGetProperty("name", out var n) || n.ValueKind != JsonValueKind.String) continue;
+                var clean = new string((n.GetString() ?? "").Where(ch => !char.IsControl(ch) && ch != ',').ToArray()).Trim();
+                if (clean.Length == 0) continue;
+                if (clean.Length > 32) clean = clean[..32];
+                names.Add(clean);
+            }
+            if (names.Count == 0) return "";
+
+            var shown = names.Take(MaxToolNamesShown).ToList();
+            var extra = names.Count - shown.Count;
+            return $"tools: {string.Join(", ", shown)}" + (extra > 0 ? $", +{extra} more" : "");
+        }
+        catch (JsonException) { return ""; }
+    }
+
+    private static string UnwrapSse(string body)
+    {
+        var text = body.TrimStart();
+        if (!text.StartsWith("event:", StringComparison.Ordinal) && !text.StartsWith("data:", StringComparison.Ordinal)) return text;
+        return string.Join("", text.Split('\n')
+            .Select(l => l.TrimEnd('\r'))
+            .Where(l => l.StartsWith("data:", StringComparison.Ordinal))
+            .Select(l => l[5..].TrimStart()));
     }
 
     private static async Task CloseMcpSessionAsync(string url, string sessionId)
