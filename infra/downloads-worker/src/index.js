@@ -3,7 +3,8 @@
 //   GET /AgrusScanner-Setup-1.0.1.msi   stream from R2, count one download
 //   GET /AgrusScanner-Setup.msi         rolling "latest" name, counted under its own key
 //   GET /stats.json                     { direct: {file: n, ...}, direct_total, github_total, total }
-//   GET /badge.json                     shields.io endpoint badge: combined download count
+//   GET /badge.json                     shields.io endpoint badge: combined installer download count
+//   GET /badge-signatures.json          shields.io endpoint badge: signature package downloads
 //   GET /signatures/latest.json         signature feed manifest (proxied from the GitHub "signatures"
 //                                       release, cached 60 s). Counted as one "check-in" per fetch,
 //                                       per day: installed apps poll this daily, so the daily number
@@ -27,7 +28,7 @@ export default {
     }
     if (path === "/stats.json") return stats(env, ctx);
     if (path === "/badge.json") return badge(env, ctx);
-    if (path === "/badge-active.json") return activeBadge(env);
+    if (path === "/badge-signatures.json" || path === "/badge-active.json") return signatureBadge(env);
     if (path === "/robots.txt") return new Response("User-agent: *\nDisallow: /\n", { headers: { "content-type": "text/plain" } });
     if (path.startsWith("/signatures/")) return signatures(path.slice("/signatures/".length), request, env, ctx);
 
@@ -197,7 +198,11 @@ async function githubTotal(env) {
     if (!res.ok) return cached?.total ?? 0;
     const releases = await res.json();
     let total = 0;
-    for (const r of releases) for (const a of r.assets || []) total += a.download_count || 0;
+    // Installer downloads only: the "signatures" release is the feed, and --clobber resets its counts.
+    for (const r of releases) {
+      if (r.tag_name === "signatures") continue;
+      for (const a of r.assets || []) total += a.download_count || 0;
+    }
     await env.COUNTS.put(cacheKey, JSON.stringify({ total, at: Date.now() }));
     return total;
   } catch {
@@ -218,11 +223,9 @@ async function stats(env) {
   return json(body, 60);
 }
 
-async function activeBadge(env) {
+async function signatureBadge(env) {
   const sig = await signatureStats(env);
-  // yesterday is the last complete day; fall back to today early in the day
-  const n = sig.checks_yesterday || sig.checks_today;
-  return json({ schemaVersion: 1, label: "active installs", message: compact(n), color: "2ea44f", cacheSeconds: 3600 }, 3600);
+  return json({ schemaVersion: 1, label: "signature downloads", message: compact(sig.package_downloads_total), color: "2ea44f", cacheSeconds: 3600 }, 3600);
 }
 
 async function badge(env) {
