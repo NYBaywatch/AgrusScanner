@@ -85,9 +85,10 @@ jobs:
         run: |
           $msi = Get-ChildItem "Installer\bin\Release" -Filter "*.msi" -Recurse | Select-Object -First 1
           $version = "${{ github.ref_name }}".TrimStart("v")
-          Copy-Item $msi.FullName "Installer\bin\Release\AgrusScanner-Setup.msi"
+          $rolling = Join-Path (Get-Location) "Installer\bin\Release\AgrusScanner-Setup.msi"
+          if ($msi.FullName -ne $rolling) { Copy-Item $msi.FullName $rolling }
           "msi_path=$($msi.FullName)" >> $env:GITHUB_OUTPUT
-          "rolling_path=Installer\bin\Release\AgrusScanner-Setup.msi" >> $env:GITHUB_OUTPUT
+          "rolling_path=$rolling" >> $env:GITHUB_OUTPUT
           "version=$version" >> $env:GITHUB_OUTPUT
           if ([string]::IsNullOrEmpty($env:HAS_CF_TOKEN)) {
             Write-Host "::notice::CLOUDFLARE_API_TOKEN secret not set - skipping R2 upload. See docs/launch-v1.0.md for setup steps."
