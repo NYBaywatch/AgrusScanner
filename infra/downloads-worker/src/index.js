@@ -1,6 +1,6 @@
 // downloads.jpftech.com
 //
-//   GET /AgrusScanner-Setup-1.0.1.msi   stream from R2, count one download
+//   GET /AgrusScanner-Setup-1.0.2.msi   stream from R2, count one download
 //   GET /AgrusScanner-Setup.msi         rolling "latest" name, counted under its own key
 //   GET /stats.json                     { direct: {file: n, ...}, direct_total, github_total, total }
 //   GET /badge.json                     shields.io endpoint badge: combined installer download count
