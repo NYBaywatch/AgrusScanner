@@ -26,7 +26,7 @@ Download the latest installer from [Releases](https://github.com/NYBaywatch/Agru
 
 **[AgrusScanner-Setup-1.0.2.msi](https://downloads.jpftech.com/AgrusScanner-Setup-1.0.2.msi)** — self-contained, no .NET runtime needed.
 
-Or visit the [Tools page](https://jpftech.com/tools/) for the download link, checksum, and winget install command.
+Also available on the [Microsoft Store](https://apps.microsoft.com/detail/XPFCPDLRHCS574). Or visit the [Tools page](https://jpftech.com/tools/) for the download link, checksum, and winget install command.
 
 Requires Windows 10/11. The installer and the installed binaries are Authenticode-signed (Azure Trusted Signing, publisher *Joseph Fago*). Once installed, detection signatures keep themselves current; you only need a new installer when the app itself changes.
 
