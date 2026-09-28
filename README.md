@@ -32,53 +32,23 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ## What's New
 
+### Signatures — September 2026
+
+- **Agent Zero** detection (Agent Platform) — Docker-first autonomous agent framework, fingerprinted via its web UI's root page title on its distinctive default port 50001
+- **Hayhooks (Haystack)** detection (RAG Platform) — deepset's REST/MCP pipeline server for Haystack, identified via its `/status` endpoint on its distinctive default port 1416
+- **Typesense** detection (Vector DB) — typo-tolerant search engine with vector/hybrid search, increasingly used as a RAG backend; identified via `/health` on its distinctive default port 8108
+- Probe catalog grows to **114 definitions**; signatures ship automatically through the rolling feed — no app update needed
+
 ### v1.0.2 — September 2026 (current)
 
 - **MCP tool-name enumeration (opt-in)** — a new setting, *List tool names on detected MCP servers*, follows a successful handshake with a read-only `tools/list` on the same session and shows the exposed tool names in the result (for example `tools: read_file, write_file, query`). That is what tells you a rogue listener has filesystem or database reach. Off by default; the scanner still never invokes a tool.
 - The signature feed is now fetched through `downloads.jpftech.com` instead of GitHub directly.
 
-### v1.0 — September 2026
-
-**Agrus Scanner 1.0 is the first stable release.** The detection engine, the signed signature feed, and the MCP integration are complete and supported. From here on, new AI services are delivered as signature updates and the app version only changes when the engine, UI, or MCP tools change.
-
-- **Self-updating detection signatures** — probes, AI ports, and Docker image patterns ship as a cryptographically signed feed. New services land automatically without reinstalling. See [Detection Signatures](#detection-signatures).
-- **MCP server detection** across all three transport generations, with server name, version, and capabilities extracted.
-- **Everything is signed** — the MSI, `AgrusScanner.exe`, and `AgrusScanner.dll` are Authenticode-signed via Azure Trusted Signing; releases abort if any is unsigned. Signature packages are signed with a separate key that the app verifies before loading.
-- **Settings** — signature updates (Off / Notify only / Auto-install), app update check, MCP tool-name enumeration (off by default), and the built-in MCP server can each be turned on or off.
-- 111 probe definitions across 13 categories; 46 automated tests including tamper, wrong-key, downgrade, and live MCP-server fixtures.
-
-Point releases (1.0.x) carry fixes only. Signature versions are dated (for example `2026.09.15.1`) and shown in the status bar.
-
-### v0.4.1 — September 2026
-
-- **Automatic signature updates** — detection signatures now ship as a signed feed, separate from the app. New signatures land automatically without reinstalling. Settings offers Off / Notify only / Auto-install (default), and the status bar shows the active signature version. Every package is signed in CI; the app refuses anything that does not verify against its built-in public key, so a tampered or third-party file is never loaded.
-- Settings: app update check can now be turned off from the UI
-
-### v0.4.0 — September 2026
-
-- **MCP server detection** — finds Model Context Protocol servers on the network across all three transport generations: Streamable HTTP (`initialize`), the 2026-07-28 stateless `server/discover`, and legacy HTTP+SSE. Shows the server's self-reported name, version, capabilities (tools / resources / prompts), and protocol version. Sessions opened during detection are closed immediately; no tools are ever called.
-- **Signature catalog** — all detection definitions (probes, AI port preset, Docker image patterns) now live in `signatures/catalog.json` and are compiled in as the baseline. Groundwork for v0.4.1's signature feed.
-- New AI-preset ports for MCP tooling: 8811 (Docker MCP Gateway), 8931 (Playwright MCP), 6274/6277 (MCP Inspector), 8999 (Agrus), 8123 (Home Assistant, gated to its own probe)
-- Settings: the built-in MCP server (`--mcp-only` mode) can now be disabled
-- Probe catalog grows to **111 definitions**
-
-### v0.3.5 — September 2026
-
-- **TabbyAPI** detection (LLM) — ExLlamaV2's official API server, fingerprinted via its unauthenticated `/.well-known/serviceinfo` endpoint (the only unauthenticated route TabbyAPI exposes by default)
-- **OpenClaw** detection (Agent Platform) — the self-hosted agentic assistant, identified via its gateway health check on its distinctive default port 18789
-- Probe catalog grows to **103 definitions**; no dependency updates this week (nothing outdated or vulnerable)
-
-### v0.3.4 — September 2026
-
-- **LMDeploy** (InternLM) detection (LLM) — OpenAI-compatible API server fingerprinted by its distinctive default port 23333
-- **exo** detection (LLM) — p2p distributed local-LLM cluster, identified via its dashboard/API on port 52415
-- Probe catalog grows to **101 definitions**; dependencies patched
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 111 probe definitions identifying 70+ AI/ML services and MCP servers
+- **AI Service Detection** - 114 probe definitions identifying 70+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -97,10 +67,10 @@ Point releases (1.0.x) carry fixes only. Signature versions are dated (for examp
 | **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
 | **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
-| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw |
-| **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj |
+| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero |
+| **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj, Hayhooks (Haystack) |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
-| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus |
+| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense |
 | **MCP Server** | Any MCP server over Streamable HTTP (`initialize` / `server/discover`) or legacy HTTP+SSE, plus Home Assistant MCP; reports name, version, and tools/resources/prompts |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
 | **Container** | Docker API with 70+ AI image pattern matches |
@@ -148,7 +118,7 @@ Add an entry to [`signatures/catalog.json`](signatures/catalog.json) and open a 
    - **Quick** - 6 common ports
    - **Common** - 22 well-known ports
    - **Extended** - 58 service ports
-   - **AI Scan** - 38 AI/ML-specific ports with service probing
+   - **AI Scan** - 47 AI/ML-specific ports with service probing
    - **Deep AI Scan** - All 65535 ports with full AI probing (slow but complete)
    - **No port scan** - Ping sweep only
 3. Click **START**

@@ -1086,6 +1086,36 @@
       "specificity": 70,
       "bodyContains": "gradio-app",
       "note": "Gradio detection — root page loads Gradio JS framework"
+    },
+    {
+      "path": "/",
+      "serviceName": "Agent Zero",
+      "category": "Agent Platform",
+      "confidence": "medium",
+      "specificity": 75,
+      "bodyContains": "<title>Agent Zero</title>",
+      "portHint": 50001,
+      "note": "Agent Zero — Docker-first autonomous agent framework; web UI root page title on its distinctive default port 50001"
+    },
+    {
+      "path": "/status",
+      "serviceName": "Hayhooks (Haystack)",
+      "category": "RAG Platform",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "\"pipelines\"",
+      "portHint": 1416,
+      "note": "Hayhooks — deepset Haystack's REST/MCP pipeline server; /status lists deployed pipelines, distinctive default port 1416"
+    },
+    {
+      "path": "/health",
+      "serviceName": "Typesense",
+      "category": "Vector DB",
+      "confidence": "medium",
+      "specificity": 70,
+      "bodyContains": "{\"ok\":true}",
+      "portHint": 8108,
+      "note": "Typesense — typo-tolerant search engine with vector/hybrid search, increasingly used as a RAG backend; /health on distinctive default port 8108"
     }
   ],
   "aiPorts": [
@@ -1132,7 +1162,10 @@
     6274,
     6277,
     8999,
-    8123
+    8123,
+    50001,
+    1416,
+    8108
   ],
   "dockerPatterns": [
     "ollama",
