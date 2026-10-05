@@ -32,6 +32,11 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ## What's New
 
+### Signatures — October 2026
+
+- **VoiceStudio** detection (Voice / STT / TTS) — fully-local, open-source ElevenLabs alternative (voice cloning, dubbing, transcription, audiobooks); identified via its `/.well-known/voicestudio-speech` discovery endpoint on its distinctive default port 3900
+- Probe catalog grows to **115 definitions**; signatures ship automatically through the rolling feed — no app update needed
+
 ### Signatures — September 2026
 
 - **Agent Zero** detection (Agent Platform) — Docker-first autonomous agent framework, fingerprinted via its web UI's root page title on its distinctive default port 50001
@@ -39,16 +44,11 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 - **Typesense** detection (Vector DB) — typo-tolerant search engine with vector/hybrid search, increasingly used as a RAG backend; identified via `/health` on its distinctive default port 8108
 - Probe catalog grows to **114 definitions**; signatures ship automatically through the rolling feed — no app update needed
 
-### v1.0.2 — September 2026 (current)
-
-- **MCP tool-name enumeration (opt-in)** — a new setting, *List tool names on detected MCP servers*, follows a successful handshake with a read-only `tools/list` on the same session and shows the exposed tool names in the result (for example `tools: read_file, write_file, query`). That is what tells you a rogue listener has filesystem or database reach. Off by default; the scanner still never invokes a tool.
-- The signature feed is now fetched through `downloads.jpftech.com` instead of GitHub directly.
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 114 probe definitions identifying 70+ AI/ML services and MCP servers
+- **AI Service Detection** - 115 probe definitions identifying 70+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -64,7 +64,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 | **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI |
 | **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
 | **Video Gen** | SwarmUI, HunyuanVideo |
-| **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server |
+| **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server, VoiceStudio |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
 | **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
 | **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero |

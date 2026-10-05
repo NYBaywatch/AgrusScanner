@@ -1116,6 +1116,16 @@
       "bodyContains": "{\"ok\":true}",
       "portHint": 8108,
       "note": "Typesense — typo-tolerant search engine with vector/hybrid search, increasingly used as a RAG backend; /health on distinctive default port 8108"
+    },
+    {
+      "path": "/.well-known/voicestudio-speech",
+      "serviceName": "VoiceStudio",
+      "category": "Voice / STT / TTS",
+      "confidence": "high",
+      "specificity": 88,
+      "bodyContains": "voicestudio.speech.v1",
+      "portHint": 3900,
+      "note": "VoiceStudio — fully-local, open-source ElevenLabs alternative (voice cloning, dubbing, transcription, audiobooks); unauthenticated discovery endpoint returns protocol id \"voicestudio.speech.v1\", distinctive default port 3900"
     }
   ],
   "aiPorts": [
@@ -1165,7 +1175,8 @@
     8123,
     50001,
     1416,
-    8108
+    8108,
+    3900
   ],
   "dockerPatterns": [
     "ollama",
@@ -1249,6 +1260,7 @@
     "lmdeploy",
     "tabbyapi",
     "theroyallab",
-    "openclaw"
+    "openclaw",
+    "voicestudio"
   ]
 }
