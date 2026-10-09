@@ -17,13 +17,15 @@ public class PingScanner
             if (reply.Status == IPStatus.Success)
                 return (true, reply.RoundtripTime);
         }
-        catch (PingException)
-        {
-            // Host unreachable or network error
-        }
         catch (OperationCanceledException)
         {
             throw;
+        }
+        catch (Exception)
+        {
+            // PingException: host unreachable or network error. Anything else (e.g. no raw-socket
+            // permission and no ping binary when running unprivileged on Linux) also means "not
+            // reachable by ICMP"; callers can use skip_ping to scan regardless.
         }
 
         return (false, null);

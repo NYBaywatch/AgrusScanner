@@ -111,15 +111,27 @@ public class ScannerMcpTools
         if (fmt == "auto")
             fmt = file_path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ? "csv" : "json";
 
-        // Restrict exports to user's Documents folder to prevent path traversal
+        // Restrict exports to the user's Documents folder to prevent path traversal.
+        // On Linux/containers MyDocuments can be empty; fall back to a dedicated export dir rather
+        // than letting an empty prefix match every path.
         var safeDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var fullPath = Path.GetFullPath(file_path);
-        if (!fullPath.StartsWith(safeDir, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrEmpty(safeDir))
+            safeDir = Path.Combine(Path.GetTempPath(), "agrus-exports");
+        safeDir = Path.GetFullPath(safeDir);
+        Directory.CreateDirectory(safeDir);
+        var safePrefix = safeDir.EndsWith(Path.DirectorySeparatorChar) ? safeDir : safeDir + Path.DirectorySeparatorChar;
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+        string fullPath;
+        if (!Path.IsPathRooted(file_path))
         {
-            // If caller passed a bare filename, place it in Documents
-            if (!Path.IsPathRooted(file_path))
-                fullPath = Path.Combine(safeDir, Path.GetFileName(file_path));
-            else
+            // Bare or relative name: always place it directly in the safe folder.
+            fullPath = Path.Combine(safeDir, Path.GetFileName(file_path));
+        }
+        else
+        {
+            fullPath = Path.GetFullPath(file_path);
+            if (!fullPath.StartsWith(safePrefix, comparison))
                 return JsonSerializer.Serialize(new { error = $"Export path must be under {safeDir}" }, _json);
         }
 

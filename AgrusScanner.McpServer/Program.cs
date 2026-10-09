@@ -15,7 +15,9 @@ using ModelContextProtocol.Server;
 //   agrus-mcp --http [port]   Streamable HTTP at /mcp (default port 8999)
 //   --bind <address>          HTTP bind address. Defaults to 127.0.0.1, or 0.0.0.0 when
 //                             running inside a container (DOTNET_RUNNING_IN_CONTAINER=true)
-//   MCP_TOKEN=<secret>        If set, HTTP requests must carry "Authorization: Bearer <secret>"
+//   MCP_TOKEN=<secret>        HTTP requests must carry "Authorization: Bearer <secret>".
+//                             Required for any non-loopback bind unless --no-auth is passed.
+//   --no-auth                 Explicitly allow an unauthenticated non-loopback HTTP listener.
 //
 // All diagnostics go to stderr: in stdio mode stdout is the protocol channel.
 
@@ -31,6 +33,7 @@ var bindIndex = Array.FindIndex(args, a => a.Equals("--bind", StringComparison.O
 if (bindIndex >= 0 && bindIndex + 1 < args.Length)
     bind = args[bindIndex + 1];
 var token = Environment.GetEnvironmentVariable("MCP_TOKEN");
+var noAuth = args.Any(a => a.Equals("--no-auth", StringComparison.OrdinalIgnoreCase));
 
 if (args.Any(a => a is "-h" or "--help"))
 {
@@ -39,6 +42,7 @@ if (args.Any(a => a is "-h" or "--help"))
     Console.Error.WriteLine("  --http [port]     MCP over Streamable HTTP at /mcp (default port 8999)");
     Console.Error.WriteLine("  --bind <address>  Bind address (default 127.0.0.1; 0.0.0.0 inside a container)");
     Console.Error.WriteLine("  MCP_TOKEN env     Require 'Authorization: Bearer <token>' on HTTP requests");
+    Console.Error.WriteLine("  --no-auth         Allow a non-loopback HTTP listener without MCP_TOKEN (not recommended)");
     return 0;
 }
 
@@ -49,6 +53,13 @@ var version = (typeof(ScannerMcpTools).Assembly.GetName().Version ?? new Version
 
 if (useHttp)
 {
+    var loopback = bind is "127.0.0.1" or "localhost" or "::1";
+    if (!loopback && token is not { Length: > 0 } && !noAuth)
+    {
+        Console.Error.WriteLine($"Refusing to listen on {bind} without authentication. Set MCP_TOKEN, bind to 127.0.0.1, or pass --no-auth.");
+        return 2;
+    }
+
     var builder = WebApplication.CreateBuilder();
     builder.Logging.ClearProviders();
     builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
@@ -61,15 +72,26 @@ if (useHttp)
 
     var app = builder.Build();
 
-    var loopback = bind is "127.0.0.1" or "localhost" or "::1";
     app.Use(async (context, next) =>
     {
-        // Loopback binding: reject non-local Host headers to block DNS rebinding (same rule as the desktop app).
-        if (loopback && context.Request.Host.Host is not ("localhost" or "127.0.0.1" or "::1"))
+        // Loopback binding: reject non-local Host and Origin headers to block DNS rebinding and
+        // browser-driven cross-site requests (same Host rule as the desktop app; Origin per MCP spec).
+        if (loopback)
         {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Forbidden: invalid Host header");
-            return;
+            if (context.Request.Host.Host is not ("localhost" or "127.0.0.1" or "::1"))
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Forbidden: invalid Host header");
+                return;
+            }
+            var origin = context.Request.Headers.Origin.ToString();
+            if (origin.Length > 0 && !(Uri.TryCreate(origin, UriKind.Absolute, out var o)
+                && o.Host is "localhost" or "127.0.0.1" or "::1" or "[::1]"))
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Forbidden: invalid Origin header");
+                return;
+            }
         }
         // Optional shared secret for any non-local deployment.
         if (token is { Length: > 0 })
@@ -91,7 +113,7 @@ if (useHttp)
     app.MapMcp("/mcp");
     Console.Error.WriteLine($"agrus-scanner {version} listening on http://{bind}:{port}/mcp"
         + (token is { Length: > 0 } ? " (bearer token required)" : "")
-        + (!loopback && token is not { Length: > 0 } ? " WARNING: non-loopback bind with no MCP_TOKEN set" : ""));
+        + (!loopback && token is not { Length: > 0 } ? " WARNING: --no-auth, anyone who can reach this port can run scans" : ""));
     await app.RunAsync();
 }
 else

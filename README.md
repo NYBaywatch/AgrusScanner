@@ -162,17 +162,17 @@ dotnet run --project AgrusScanner.McpServer
 dotnet run --project AgrusScanner.McpServer -- --http 8999
 ```
 
-HTTP mode binds to loopback and checks Host headers, like the desktop app. Pass `--bind 0.0.0.0` to listen on all interfaces (the default inside a container), and set `MCP_TOKEN` to require `Authorization: Bearer <token>` on every request.
+HTTP mode binds to loopback and checks Host and Origin headers, like the desktop app. Pass `--bind 0.0.0.0` to listen on all interfaces (the default inside a container). A non-loopback listener refuses to start unless `MCP_TOKEN` is set, which makes every request require `Authorization: Bearer <token>`; `--no-auth` overrides that check and is not recommended.
 
 A `Dockerfile` at the repo root builds it into a container:
 
 ```bash
 docker build -t agrus-mcp .
-docker run -i --rm agrus-mcp                    # stdio
-docker run --rm -p 8999:8999 agrus-mcp --http   # HTTP at http://localhost:8999/mcp
+docker run -i --rm agrus-mcp                                        # stdio
+docker run --rm -p 8999:8999 -e MCP_TOKEN=secret agrus-mcp --http   # HTTP at http://localhost:8999/mcp
 ```
 
-Scanning your LAN from inside a container requires host networking (`--network host` on Linux) so the scanner can reach the subnet. Inside a container the server binds to all interfaces so Docker's port mapping works; if you publish that port beyond localhost, set `MCP_TOKEN` (`-e MCP_TOKEN=...`) so only clients holding the token can call the scanning tools.
+The image runs as a non-root user. Scanning your LAN from inside a container requires host networking (`--network host` on Linux) so the scanner can reach the subnet. Inside a container the server binds to all interfaces so Docker's port mapping works, which is why HTTP mode there requires `MCP_TOKEN`.
 
 ## AI Agent Integration
 
