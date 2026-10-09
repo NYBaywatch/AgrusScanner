@@ -774,6 +774,11 @@
       "timestamp": "2026-10-07T00:00:00Z",
       "count": 16,
       "uniques": 10
+    },
+    {
+      "timestamp": "2026-10-08T00:00:00Z",
+      "count": 19,
+      "uniques": 13
     }
   ],
   "views": [
@@ -1551,6 +1556,11 @@
       "timestamp": "2026-10-07T00:00:00Z",
       "count": 8,
       "uniques": 8
+    },
+    {
+      "timestamp": "2026-10-08T00:00:00Z",
+      "count": 5,
+      "uniques": 5
     }
   ],
   "referrers": [
@@ -4445,6 +4455,56 @@
         },
         {
           "referrer": "out.reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "sources": [
+        {
+          "referrer": "lm.facebook.com",
+          "count": 33,
+          "uniques": 31
+        },
+        {
+          "referrer": "facebook.com",
+          "count": 30,
+          "uniques": 30
+        },
+        {
+          "referrer": "l.facebook.com",
+          "count": 30,
+          "uniques": 21
+        },
+        {
+          "referrer": "github.com",
+          "count": 23,
+          "uniques": 12
+        },
+        {
+          "referrer": "Google",
+          "count": 11,
+          "uniques": 11
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 7,
+          "uniques": 3
+        },
+        {
+          "referrer": "m.facebook.com",
+          "count": 6,
+          "uniques": 5
+        },
+        {
+          "referrer": "l.meta.ai",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "old.reddit.com",
           "count": 1,
           "uniques": 1
         }
@@ -8473,6 +8533,71 @@
           "title": "/releases",
           "count": 5,
           "uniques": 5
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/screenshot.png",
+          "title": "/blob/master/docs/screenshot.png",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/README.md",
+          "title": "/blob/master/README.md",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.3",
+          "title": "/releases/tag/v1.0.3",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/AgrusScanner/Services",
+          "title": "/tree/master/AgrusScanner/Services",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "title": "/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 226,
+          "uniques": 157
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/commits/master",
+          "title": "/commits/master",
+          "count": 8,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.2",
+          "title": "/releases/tag/v1.0.2",
+          "count": 6,
+          "uniques": 5
+        },
+        {
+          "path": "/nybaywatch/agrusscanner",
+          "title": "Overview",
+          "count": 5,
+          "uniques": 5
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 4,
+          "uniques": 4
         },
         {
           "path": "/NYBaywatch/AgrusScanner/blob/master/docs/screenshot.png",
