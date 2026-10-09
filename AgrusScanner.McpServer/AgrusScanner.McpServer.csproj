@@ -15,7 +15,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>agrus-mcp</AssemblyName>
     <RootNamespace>AgrusScanner.McpServer</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Product>Agrus Scanner MCP Server</Product>
     <Description>Network reconnaissance and AI/MCP service discovery as MCP tools</Description>
     <Copyright>Copyright (c) 2025 Agrus</Copyright>
