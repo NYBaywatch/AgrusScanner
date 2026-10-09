@@ -147,7 +147,32 @@ This starts a Streamable HTTP MCP server on `http://localhost:8999/mcp` (port co
 |------|-------------|
 | `scan_network` | Ping sweep + port scan + DNS + AI probing across an IP range |
 | `probe_host` | Deep-scan a single IP with port scan and AI detection |
+| `export_results` | Write the last scan or probe results to a JSON or CSV file |
 | `list_presets` | List available scan presets with port counts |
+
+### Headless MCP Server (Docker / stdio)
+
+`AgrusScanner.McpServer` is a cross-platform console build of the same MCP tools, with no UI or Windows dependency. It shares the scanning engine and tool definitions with the desktop app through linked sources, so both expose an identical tool surface.
+
+```bash
+# stdio transport (what MCP clients launch; default)
+dotnet run --project AgrusScanner.McpServer
+
+# Streamable HTTP on 127.0.0.1:8999/mcp
+dotnet run --project AgrusScanner.McpServer -- --http 8999
+```
+
+HTTP mode binds to loopback and checks Host headers, like the desktop app. Pass `--bind 0.0.0.0` to listen on all interfaces (the default inside a container), and set `MCP_TOKEN` to require `Authorization: Bearer <token>` on every request.
+
+A `Dockerfile` at the repo root builds it into a container:
+
+```bash
+docker build -t agrus-mcp .
+docker run -i --rm agrus-mcp                    # stdio
+docker run --rm -p 8999:8999 agrus-mcp --http   # HTTP at http://localhost:8999/mcp
+```
+
+Scanning your LAN from inside a container requires host networking (`--network host` on Linux) so the scanner can reach the subnet. Inside a container the server binds to all interfaces so Docker's port mapping works; if you publish that port beyond localhost, set `MCP_TOKEN` (`-e MCP_TOKEN=...`) so only clients holding the token can call the scanning tools.
 
 ## AI Agent Integration
 

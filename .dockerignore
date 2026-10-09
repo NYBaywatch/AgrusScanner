@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+.git/
+.vs/
+.serena/
+.vec-from-here/
+.wrangler/
+python-cli/
+Installer/
+docs/
