@@ -809,6 +809,11 @@
       "timestamp": "2026-10-14T00:00:00Z",
       "count": 6,
       "uniques": 6
+    },
+    {
+      "timestamp": "2026-10-15T00:00:00Z",
+      "count": 9,
+      "uniques": 9
     }
   ],
   "views": [
@@ -1621,6 +1626,11 @@
       "timestamp": "2026-10-14T00:00:00Z",
       "count": 1,
       "uniques": 1
+    },
+    {
+      "timestamp": "2026-10-15T00:00:00Z",
+      "count": 89,
+      "uniques": 60
     }
   ],
   "referrers": [
@@ -4832,6 +4842,56 @@
           "referrer": "reddit.com",
           "count": 3,
           "uniques": 2
+        },
+        {
+          "referrer": "l.meta.ai",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "sources": [
+        {
+          "referrer": "l.facebook.com",
+          "count": 19,
+          "uniques": 13
+        },
+        {
+          "referrer": "lm.facebook.com",
+          "count": 16,
+          "uniques": 15
+        },
+        {
+          "referrer": "facebook.com",
+          "count": 14,
+          "uniques": 14
+        },
+        {
+          "referrer": "github.com",
+          "count": 13,
+          "uniques": 10
+        },
+        {
+          "referrer": "Google",
+          "count": 11,
+          "uniques": 10
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "referrer": "m.facebook.com",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "a.tldrnewsletter.com",
+          "count": 1,
+          "uniques": 1
         },
         {
           "referrer": "l.meta.ai",
@@ -9346,6 +9406,71 @@
         {
           "path": "/NYBaywatch/AgrusScanner/blob/3f28d8847cec28e33ddbc3cb359d06c2ca320d0b/signatures/catalog.json",
           "title": "/blob/3f28d8847cec28e33ddbc3cb359d06c2ca320d0b/signatures/catalog.json",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 211,
+          "uniques": 151
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/commits/master",
+          "title": "/commits/master",
+          "count": 8,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.2",
+          "title": "/releases/tag/v1.0.2",
+          "count": 5,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.3",
+          "title": "/releases/tag/v1.0.3",
+          "count": 4,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "title": "/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "count": 4,
+          "uniques": 3
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "path": "/nybaywatch/agrusscanner",
+          "title": "Overview",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/tree/master/.claude/skills/agrus-scanner",
+          "title": "/tree/master/.claude/skills/agrus-scanner",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/3f28d8847cec28e33ddbc3cb359d06c2ca320d0b/signatures/catalog.json",
+          "title": "/blob/3f28d8847cec28e33ddbc3cb359d06c2ca320d0b/signatures/catalog.json",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/AgrusScanner.SigTool/Program.cs",
+          "title": "/blob/master/AgrusScanner.SigTool/Program.cs",
           "count": 1,
           "uniques": 1
         }
