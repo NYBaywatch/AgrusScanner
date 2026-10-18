@@ -1126,6 +1126,16 @@
       "bodyContains": "voicestudio.speech.v1",
       "portHint": 3900,
       "note": "VoiceStudio — fully-local, open-source ElevenLabs alternative (voice cloning, dubbing, transcription, audiobooks); unauthenticated discovery endpoint returns protocol id \"voicestudio.speech.v1\", distinctive default port 3900"
+    },
+    {
+      "path": "/openapi.json",
+      "serviceName": "Dia-TTS-Server",
+      "category": "Voice / STT / TTS",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "Dia TTS Server",
+      "portHint": 8003,
+      "note": "Dia-TTS-Server (devnen) — OpenAI-compatible server for the Dia 1.6B/2 TTS model with built-in Web UI; FastAPI /openapi.json schema title is literally \"Dia TTS Server\", distinctive default port 8003"
     }
   ],
   "aiPorts": [
@@ -1176,7 +1186,8 @@
     50001,
     1416,
     8108,
-    3900
+    3900,
+    8003
   ],
   "dockerPatterns": [
     "ollama",

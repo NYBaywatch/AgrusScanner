@@ -35,7 +35,8 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 ### Signatures — October 2026
 
 - **VoiceStudio** detection (Voice / STT / TTS) — fully-local, open-source ElevenLabs alternative (voice cloning, dubbing, transcription, audiobooks); identified via its `/.well-known/voicestudio-speech` discovery endpoint on its distinctive default port 3900
-- Probe catalog grows to **115 definitions**; signatures ship automatically through the rolling feed — no app update needed
+- **Dia-TTS-Server** detection (Voice / STT / TTS) — OpenAI-compatible server for the Dia 1.6B/2 TTS model with a built-in Web UI, from the same maintainer as the existing Chatterbox-TTS-Server signature; identified via its FastAPI `/openapi.json` schema title on its distinctive default port 8003
+- Probe catalog grows to **116 definitions**; signatures ship automatically through the rolling feed — no app update needed
 
 ### Signatures — September 2026
 
@@ -48,7 +49,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 115 probe definitions identifying 70+ AI/ML services and MCP servers
+- **AI Service Detection** - 116 probe definitions identifying 70+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -64,7 +65,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 | **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI |
 | **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
 | **Video Gen** | SwarmUI, HunyuanVideo |
-| **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server, VoiceStudio |
+| **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server, VoiceStudio, Dia-TTS-Server |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
 | **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
 | **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero |
@@ -118,7 +119,7 @@ Add an entry to [`signatures/catalog.json`](signatures/catalog.json) and open a 
    - **Quick** - 6 common ports
    - **Common** - 22 well-known ports
    - **Extended** - 58 service ports
-   - **AI Scan** - 47 AI/ML-specific ports with service probing
+   - **AI Scan** - 49 AI/ML-specific ports with service probing
    - **Deep AI Scan** - All 65535 ports with full AI probing (slow but complete)
    - **No port scan** - Ping sweep only
 3. Click **START**
