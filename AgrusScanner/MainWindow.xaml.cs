@@ -11,6 +11,7 @@ using System.Windows.Media;
 using AgrusScanner.Models;
 using AgrusScanner.ViewModels;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AgrusScanner;
 

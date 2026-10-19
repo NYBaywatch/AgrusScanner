@@ -29,7 +29,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: "9.0.x"
+          dotnet-version: "10.0.x"
 
       # Gate: a malformed, duplicate, or shrunken catalog never ships.
       - name: Build and test
@@ -58,7 +58,7 @@ jobs:
           AGSIG_SIGNING_KEY: ${{ secrets.AGSIG_SIGNING_KEY }}
           AGSIG_AES_KEY: ${{ secrets.AGSIG_AES_KEY }}
         run: |
-          $tool = "AgrusScanner.SigTool/bin/Release/net9.0/AgrusScanner.SigTool.exe"
+          $tool = "AgrusScanner.SigTool/bin/Release/net10.0/AgrusScanner.SigTool.exe"
           & $tool pack signatures/catalog.json --version "${{ steps.ver.outputs.sig }}" --min-app "${{ steps.ver.outputs.app }}" --key env:AGSIG_SIGNING_KEY --aes env:AGSIG_AES_KEY --out latest.agsig
           if ($LASTEXITCODE -ne 0) { exit 1 }
           # Verify with the public key AND AES key compiled into the app (not the secrets): catches any

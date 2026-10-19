@@ -24,7 +24,7 @@
 
 ## Architecture Overview
 
-Agrus Scanner follows the **MVVM** (Model-View-ViewModel) pattern built on WPF/.NET 9.0. The core scanning logic lives in stateless service classes, the UI binds to an `ObservableCollection` on the ViewModel, and an embedded ASP.NET Core server exposes MCP tools for agent integration.
+Agrus Scanner follows the **MVVM** (Model-View-ViewModel) pattern built on WPF/.NET 10.0. The core scanning logic lives in stateless service classes, the UI binds to an `ObservableCollection` on the ViewModel, and an embedded ASP.NET Core server exposes MCP tools for agent integration.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -107,7 +107,7 @@ Scanner/
 
 | Component | Technology |
 |-----------|-----------|
-| Runtime | .NET 9.0 (self-contained, Windows) |
+| Runtime | .NET 10.0 (self-contained, Windows) |
 | UI | WPF (Windows Presentation Foundation) |
 | MCP SDK | ModelContextProtocol v0.8.0-preview.1 |
 | MCP Transport | ASP.NET Core (Streamable HTTP) |

@@ -1,5 +1,5 @@
 # Build script for Agrus Scanner MSI installer
-# Prerequisites: .NET 9 SDK, WiX Toolset v5 (dotnet tool install --global wix)
+# Prerequisites: .NET 10 SDK, WiX Toolset v5 (dotnet tool install --global wix)
 # Optional: dotnet sign tool (dotnet tool install --global sign --prerelease) + Azure Trusted Signing account
 
 $ErrorActionPreference = "Stop"
