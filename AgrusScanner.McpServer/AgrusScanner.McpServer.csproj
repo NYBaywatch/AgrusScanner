@@ -34,8 +34,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="ModelContextProtocol" Version="0.9.0-preview.2" />
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.9.0-preview.2" />
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
