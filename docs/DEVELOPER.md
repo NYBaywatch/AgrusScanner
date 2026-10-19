@@ -470,3 +470,7 @@ public static async Task<string> MyTool(
     return JsonSerializer.Serialize(result);
 }
 ```
+
+## Code review
+
+Pull requests are reviewed automatically by CodeRabbit (config in `.coderabbit.yaml`), alongside CI, CodeQL and zizmor.
