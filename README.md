@@ -24,13 +24,19 @@ It also runs as an MCP server, so AI agents like Claude Code and OpenClaw can us
 
 Download the latest installer from [Releases](https://github.com/NYBaywatch/AgrusScanner/releases), or directly:
 
-**[AgrusScanner-Setup-1.0.2.msi](https://downloads.jpftech.com/AgrusScanner-Setup-1.0.2.msi)** — self-contained, no .NET runtime needed.
+**[AgrusScanner-Setup-1.0.6.msi](https://downloads.jpftech.com/AgrusScanner-Setup-1.0.6.msi)** — self-contained, no .NET runtime needed.
 
 Also available on the [Microsoft Store](https://apps.microsoft.com/detail/XPFCPDLRHCS574). Or visit the [Tools page](https://jpftech.com/tools/) for the download link, checksum, and winget install command.
 
 Requires Windows 10/11. The installer and the installed binaries are Authenticode-signed (Azure Trusted Signing, publisher *Joseph Fago*). Once installed, detection signatures keep themselves current; you only need a new installer when the app itself changes.
 
 ## What's New
+
+### App 1.0.6 — October 2026
+
+- Runtime moved to **.NET 10** (.NET 9 leaves support in November 2026); still self-contained, no runtime install needed
+- MCP server now on the stable **ModelContextProtocol SDK 2.2** (was a preview build); same tools, same transports
+- Repo hardening: CodeQL, Dependabot, workflow linting and AI code review on every pull request; third-party Actions pinned to commit SHAs
 
 ### Signatures — October 2026
 
