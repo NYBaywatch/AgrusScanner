@@ -1,0 +1,23 @@
+name: Workflow lint
+
+on:
+  push:
+    branches: [master]
+    paths: [".github/workflows/**", ".github/dependabot.yml"]
+  pull_request:
+    paths: [".github/workflows/**", ".github/dependabot.yml"]
+
+permissions: {}
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
