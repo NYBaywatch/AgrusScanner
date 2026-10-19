@@ -5,8 +5,7 @@ on:
     - cron: '0 6 * * *'  # Daily at 06:00 UTC
   workflow_dispatch:       # Manual trigger
 
-permissions:
-  contents: write
+permissions: {}
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -14,6 +13,8 @@ env:
 jobs:
   persist-traffic:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Generate GitHub App token
         id: app-token
