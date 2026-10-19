@@ -1,0 +1,19 @@
+# CodeRabbit AI review config. Docs: https://docs.coderabbit.ai/reference/configuration
+language: en-US
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: false
+  auto_review:
+    enabled: true
+    drafts: false
+    ignore_usernames:
+      - dependabot[bot]
+  path_filters:
+    - "!docs/**"
+    - "!Installer/publish/**"
+    - "!**/*.md"
+chat:
+  auto_reply: true
