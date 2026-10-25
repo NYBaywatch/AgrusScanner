@@ -10,7 +10,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AssemblyName>AgrusScanner</AssemblyName>
     <RootNamespace>AgrusScanner</RootNamespace>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <Product>Agrus Scanner</Product>
     <Description>Network reconnaissance and service scanning tool</Description>
     <Copyright>Copyright (c) 2025 Agrus</Copyright>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="ModelContextProtocol" Version="2.3.0" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
