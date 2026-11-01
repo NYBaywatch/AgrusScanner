@@ -1136,6 +1136,106 @@
       "bodyContains": "Dia TTS Server",
       "portHint": 8003,
       "note": "Dia-TTS-Server (devnen) — OpenAI-compatible server for the Dia 1.6B/2 TTS model with built-in Web UI; FastAPI /openapi.json schema title is literally \"Dia TTS Server\", distinctive default port 8003"
+    },
+    {
+      "path": "/v1/health",
+      "serviceName": "Lemonade Server",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 90,
+      "bodyContains": "model_loaded",
+      "portHint": 13305,
+      "note": "AMD Lemonade Server — local OpenAI/Ollama-compatible LLM server for NPU/GPU inference, unauthenticated by default; /v1/health's \"model_loaded\" field beats the generic Tabby /v1/health probe on specificity, distinctive default port 13305"
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "serviceName": "LobeChat",
+      "category": "AI Platform",
+      "confidence": "medium",
+      "specificity": 80,
+      "bodyContains": "LobeHub",
+      "portHint": 3210,
+      "note": "LobeChat (branded LobeHub) — self-hosted multi-provider AI chat workspace; Next.js manifest route carries the BRANDING_NAME constant on its distinctive default port 3210 (medium confidence: self-hosters can override the brand name)"
+    },
+    {
+      "path": "/site.webmanifest",
+      "serviceName": "NextChat",
+      "category": "AI Platform",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "NextChat",
+      "portHint": 3000,
+      "note": "NextChat (ChatGPTNextWeb) — self-hosted multi-provider chat UI; site.webmanifest short_name on its common default port 3000"
+    },
+    {
+      "path": "/v1/models",
+      "serviceName": "NVIDIA TensorRT-LLM",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "tensorrt_llm",
+      "portHint": 8000,
+      "note": "NVIDIA TensorRT-LLM's OpenAI-compatible trtllm-serve — /v1/models owned_by is hardcoded to \"tensorrt_llm\"; distinct from our NIM (/v1/metadata) and Triton probes on the same default port"
+    },
+    {
+      "path": "/v1/models",
+      "serviceName": "DeepSpeed-MII",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "deepspeed-mii",
+      "portHint": 8000,
+      "note": "DeepSpeed-MII's OpenAI-compatible server — /v1/models owned_by is hardcoded to \"deepspeed-mii\" and the API is unauthenticated unless the operator sets api_keys"
+    },
+    {
+      "path": "/v1/models",
+      "serviceName": "MLC LLM",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "MLC-LLM",
+      "portHint": 8000,
+      "note": "MLC LLM's OpenAI-compatible REST server — /v1/models owned_by is hardcoded to \"MLC-LLM\""
+    },
+    {
+      "path": "/",
+      "serviceName": "Portkey AI Gateway",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 82,
+      "bodyContains": "AI Gateway says hey!",
+      "portHint": 8787,
+      "note": "Portkey AI Gateway — self-hosted LLM gateway/router with no built-in auth by default; root path returns a fixed greeting on its distinctive default port 8787"
+    },
+    {
+      "path": "/healthcheck",
+      "serviceName": "Helicone",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 82,
+      "bodyContains": "healthy :)",
+      "portHint": 8585,
+      "note": "Helicone — self-hosted LLM observability/gateway (Jawn service); /healthcheck on its distinctive default port 8585"
+    },
+    {
+      "path": "/",
+      "serviceName": "AstrBot",
+      "category": "AI Platform",
+      "confidence": "high",
+      "specificity": 82,
+      "bodyContains": "AstrBot Dashboard",
+      "portHint": 6185,
+      "note": "AstrBot — self-hosted multi-platform agent/chatbot framework; its dashboard SPA root carries an \"AstrBot Dashboard\" title on its distinctive default port 6185"
+    },
+    {
+      "path": "/info",
+      "serviceName": "h2oGPT",
+      "category": "AI Platform",
+      "confidence": "high",
+      "specificity": 84,
+      "bodyContains": "submit_nochat_api",
+      "portHint": 7860,
+      "note": "h2oGPT — self-hosted open-source chat UI (Gradio-based); /info API-introspection endpoint exposes the submit_nochat_api route name, more specific than the generic Gradio probe on the same default port"
     }
   ],
   "aiPorts": [
@@ -1187,7 +1287,12 @@
     1416,
     8108,
     3900,
-    8003
+    8003,
+    13305,
+    3210,
+    8787,
+    8585,
+    6185
   ],
   "dockerPatterns": [
     "ollama",
@@ -1272,6 +1377,16 @@
     "tabbyapi",
     "theroyallab",
     "openclaw",
-    "voicestudio"
+    "voicestudio",
+    "lemonade",
+    "lobe-chat",
+    "nextchat",
+    "tensorrt-llm",
+    "deepspeed-mii",
+    "mlc-llm",
+    "portkey",
+    "helicone",
+    "astrbot",
+    "h2ogpt"
   ]
 }

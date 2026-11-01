@@ -32,30 +32,32 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ## What's New
 
+### Signatures — November 2026
+
+- **Lemonade Server** detection (LLM) — AMD's local OpenAI/Ollama-compatible LLM server for NPU/GPU inference; identified via `/v1/health`'s `model_loaded` field on its distinctive default port 13305
+- **NVIDIA TensorRT-LLM** detection (LLM) — standalone `trtllm-serve` OpenAI-compatible server; identified via the hardcoded `tensorrt_llm` `owned_by` field on `/v1/models`
+- **DeepSpeed-MII** detection (LLM) — Microsoft's OpenAI-compatible inference server; identified via the hardcoded `deepspeed-mii` `owned_by` field on `/v1/models`
+- **MLC LLM** detection (LLM) — OpenAI-compatible REST server for MLC-compiled models; identified via the hardcoded `MLC-LLM` `owned_by` field on `/v1/models`
+- **Portkey AI Gateway** detection (LLM) — self-hosted LLM gateway/router with no built-in auth by default; identified via its fixed root-path greeting on its distinctive default port 8787
+- **Helicone** detection (LLM) — self-hosted LLM observability/gateway; identified via `/healthcheck` on its distinctive default port 8585
+- **NextChat** detection (AI Platform) — self-hosted multi-provider chat UI; identified via its `/site.webmanifest` on its common default port 3000
+- **LobeChat** detection (AI Platform) — self-hosted AI chat workspace branded LobeHub; identified via its `/manifest.webmanifest` on its distinctive default port 3210
+- **AstrBot** detection (AI Platform) — self-hosted multi-platform agent/chatbot framework; identified via its dashboard title on its distinctive default port 6185
+- **h2oGPT** detection (AI Platform) — self-hosted open-source chat UI; identified via the `submit_nochat_api` route name on its Gradio `/info` endpoint
+- Six of the above close gaps found against comparable open-source scanners (Julius, nmap-ai-recon) in this month's [competitive coverage review](docs/competitive-coverage.md)
+- Probe catalog grows to **126 definitions**; signatures ship automatically through the rolling feed — no app update needed
+
 ### App 1.0.6 — October 2026
 
 - Runtime moved to **.NET 10** (.NET 9 leaves support in November 2026); still self-contained, no runtime install needed
 - MCP server now on the stable **ModelContextProtocol SDK 2.2** (was a preview build); same tools, same transports
 - Repo hardening: CodeQL, Dependabot, workflow linting and AI code review on every pull request; third-party Actions pinned to commit SHAs
 
-### Signatures — October 2026
-
-- **VoiceStudio** detection (Voice / STT / TTS) — fully-local, open-source ElevenLabs alternative (voice cloning, dubbing, transcription, audiobooks); identified via its `/.well-known/voicestudio-speech` discovery endpoint on its distinctive default port 3900
-- **Dia-TTS-Server** detection (Voice / STT / TTS) — OpenAI-compatible server for the Dia 1.6B/2 TTS model with a built-in Web UI, from the same maintainer as the existing Chatterbox-TTS-Server signature; identified via its FastAPI `/openapi.json` schema title on its distinctive default port 8003
-- Probe catalog grows to **116 definitions**; signatures ship automatically through the rolling feed — no app update needed
-
-### Signatures — September 2026
-
-- **Agent Zero** detection (Agent Platform) — Docker-first autonomous agent framework, fingerprinted via its web UI's root page title on its distinctive default port 50001
-- **Hayhooks (Haystack)** detection (RAG Platform) — deepset's REST/MCP pipeline server for Haystack, identified via its `/status` endpoint on its distinctive default port 1416
-- **Typesense** detection (Vector DB) — typo-tolerant search engine with vector/hybrid search, increasingly used as a RAG backend; identified via `/health` on its distinctive default port 8108
-- Probe catalog grows to **114 definitions**; signatures ship automatically through the rolling feed — no app update needed
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 116 probe definitions identifying 70+ AI/ML services and MCP servers
+- **AI Service Detection** - 126 probe definitions identifying 100+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -68,12 +70,12 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 | Category | Services Detected |
 |----------|-------------------|
-| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI |
+| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, NVIDIA TensorRT-LLM, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI, Lemonade Server, DeepSpeed-MII, MLC LLM, Portkey AI Gateway, Helicone |
 | **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
 | **Video Gen** | SwarmUI, HunyuanVideo |
 | **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server, VoiceStudio, Dia-TTS-Server |
 | **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
-| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps |
+| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps, NextChat, LobeChat, AstrBot, h2oGPT |
 | **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero |
 | **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj, Hayhooks (Haystack) |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
