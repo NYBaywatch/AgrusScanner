@@ -899,6 +899,11 @@
       "timestamp": "2026-11-01T00:00:00Z",
       "count": 39,
       "uniques": 18
+    },
+    {
+      "timestamp": "2026-11-02T00:00:00Z",
+      "count": 52,
+      "uniques": 28
     }
   ],
   "views": [
@@ -1801,6 +1806,11 @@
       "timestamp": "2026-11-01T00:00:00Z",
       "count": 7,
       "uniques": 3
+    },
+    {
+      "timestamp": "2026-11-02T00:00:00Z",
+      "count": 25,
+      "uniques": 6
     }
   ],
   "referrers": [
@@ -5770,6 +5780,56 @@
         },
         {
           "referrer": "l.facebook.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "m.facebook.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "out.reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "sources": [
+        {
+          "referrer": "github.com",
+          "count": 10,
+          "uniques": 4
+        },
+        {
+          "referrer": "Google",
+          "count": 9,
+          "uniques": 4
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 5,
+          "uniques": 5
+        },
+        {
+          "referrer": "song-luo.com",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "l.facebook.com",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "referrer": "Baidu",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "jpftech.com",
           "count": 1,
           "uniques": 1
         },
@@ -11461,6 +11521,71 @@
         {
           "path": "/NYBaywatch/AgrusScanner/tree/master/AgrusScanner",
           "title": "/tree/master/AgrusScanner",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 75,
+          "uniques": 42
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.7",
+          "title": "/releases/tag/v1.0.7",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/2",
+          "title": "/pull/2",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/checks",
+          "title": "/pull/6/checks",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/commits",
+          "title": "/pull/6/commits",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pulls",
+          "title": "/pulls",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.8",
+          "title": "/releases/tag/v1.0.8",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "title": "/blob/master/.claude/skills/agrus-scanner/SKILL.md",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/screenshot.png",
+          "title": "/blob/master/docs/screenshot.png",
           "count": 1,
           "uniques": 1
         }
