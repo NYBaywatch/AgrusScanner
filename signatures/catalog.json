@@ -1236,6 +1236,92 @@
       "bodyContains": "submit_nochat_api",
       "portHint": 7860,
       "note": "h2oGPT — self-hosted open-source chat UI (Gradio-based); /info API-introspection endpoint exposes the submit_nochat_api route name, more specific than the generic Gradio probe on the same default port"
+    },
+    {
+      "path": "/",
+      "serviceName": "Marqo",
+      "category": "Vector DB",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "Welcome to Marqo",
+      "portHint": 8882,
+      "note": "Marqo — self-hosted open-source tensor/vector search engine combining vector and keyword search, unauthenticated by default; root path returns a fixed welcome banner on its distinctive default port 8882"
+    },
+    {
+      "path": "/",
+      "serviceName": "Opik",
+      "category": "LLM",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "<title>Comet Opik</title>",
+      "portHint": 5173,
+      "note": "Comet Opik — self-hosted open-source LLM/RAG/agent observability and evaluation platform, no auth by default; frontend root page title on its standard docker-compose frontend port 5173"
+    },
+    {
+      "path": "/",
+      "serviceName": "Agenta",
+      "category": "LLM",
+      "confidence": "medium",
+      "specificity": 75,
+      "bodyContains": "Agenta: The LLMOps platform.",
+      "note": "Agenta — self-hosted open-source LLMOps platform for prompt management, evaluation and observability; root page title, served behind Traefik on a user-configured port (80 by default) so no portHint is set"
+    },
+    {
+      "path": "/",
+      "serviceName": "Attu",
+      "category": "Vector DB",
+      "confidence": "high",
+      "specificity": 80,
+      "bodyContains": "<title>Attu</title>",
+      "note": "Attu — official web GUI for self-hosted Milvus, commonly bundled in Milvus docker-compose stacks with no auth by default; root page title, port varies by deployment (no portHint)"
+    },
+    {
+      "path": "/",
+      "serviceName": "Easy Diffusion",
+      "category": "Image Gen",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "<title>Easy Diffusion</title>",
+      "portHint": 9000,
+      "note": "Easy Diffusion (formerly Stable Diffusion UI) — one-click self-hosted Stable Diffusion web app, unauthenticated by default; root page title on its distinctive default port 9000"
+    },
+    {
+      "path": "/",
+      "serviceName": "ClearML",
+      "category": "ML Platform",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "automate and orchestrate your ML stack",
+      "note": "ClearML — self-hosted open-source MLOps platform (experiment tracking, model/pipeline management); webserver root page carries this fixed tagline, port is user-configured (8080 by default) so no portHint is set"
+    },
+    {
+      "path": "/version",
+      "serviceName": "Rasa",
+      "category": "Agent Platform",
+      "confidence": "high",
+      "specificity": 85,
+      "bodyContains": "minimum_compatible_version",
+      "portHint": 5005,
+      "note": "Rasa Open Source — self-hosted conversational AI/chatbot framework; /version reports minimum_compatible_version on its default REST server port 5005, unauthenticated unless the operator adds auth"
+    },
+    {
+      "path": "/",
+      "serviceName": "Chainlit",
+      "category": "AI Platform",
+      "confidence": "high",
+      "specificity": 80,
+      "bodyContains": "Chainlit/chainlit",
+      "note": "Chainlit — popular self-hosted Python framework for building LLM chat apps, publicly accessible with no auth by default; root page carries a Chainlit/chainlit marker, port is set by the app (8000 by default) so no portHint is set"
+    },
+    {
+      "path": "/",
+      "serviceName": "FastGPT",
+      "category": "RAG Platform",
+      "confidence": "medium",
+      "specificity": 72,
+      "bodyContains": "FastGPT",
+      "portHint": 3000,
+      "note": "FastGPT — self-hosted open-source LLM knowledge-base/RAG platform; root page carries the FastGPT brand name on its docker-compose default port 3000 (medium confidence: the word alone is less distinctive than a title tag)"
     }
   ],
   "aiPorts": [
@@ -1292,7 +1378,11 @@
     3210,
     8787,
     8585,
-    6185
+    6185,
+    8882,
+    5173,
+    9000,
+    5005
   ],
   "dockerPatterns": [
     "ollama",
@@ -1387,6 +1477,13 @@
     "portkey",
     "helicone",
     "astrbot",
-    "h2ogpt"
+    "h2ogpt",
+    "marqo",
+    "opik",
+    "agenta",
+    "attu",
+    "clearml",
+    "rasa",
+    "fastgpt"
   ]
 }

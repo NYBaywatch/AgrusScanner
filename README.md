@@ -32,6 +32,19 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ## What's New
 
+### Signatures — November 8, 2026
+
+- **Marqo** detection (Vector DB) — self-hosted open-source tensor/vector search engine combining vector and keyword search, unauthenticated by default; identified via its root-path welcome banner on its distinctive default port 8882
+- **Comet Opik** detection (LLM) — self-hosted LLM/RAG/agent observability and evaluation platform, no auth by default; identified via its frontend page title on its standard docker-compose port 5173
+- **Agenta** detection (LLM) — self-hosted LLMOps platform for prompt management, evaluation and observability; identified via its root page title
+- **Attu** detection (Vector DB) — official web GUI for self-hosted Milvus, commonly bundled in Milvus docker-compose stacks with no auth by default; identified via its root page title
+- **Easy Diffusion** detection (Image Gen) — one-click self-hosted Stable Diffusion web app, unauthenticated by default; identified via its root page title on its distinctive default port 9000
+- **ClearML** detection (ML Platform) — self-hosted open-source MLOps platform for experiment tracking and pipeline management; identified via its webserver root page tagline
+- **Rasa** detection (Agent Platform) — self-hosted conversational AI/chatbot framework; identified via `/version`'s `minimum_compatible_version` field on its default REST server port 5005
+- **Chainlit** detection (AI Platform) — popular self-hosted Python framework for building LLM chat apps, publicly accessible with no auth by default; identified via a generator marker on its root page
+- **FastGPT** detection (RAG Platform) — self-hosted open-source LLM knowledge-base/RAG platform; identified via its root page branding on its docker-compose default port 3000
+- Probe catalog grows to **135 definitions**; signatures ship automatically through the rolling feed — no app update needed
+
 ### Signatures — November 2026
 
 - **Lemonade Server** detection (LLM) — AMD's local OpenAI/Ollama-compatible LLM server for NPU/GPU inference; identified via `/v1/health`'s `model_loaded` field on its distinctive default port 13305
@@ -47,17 +60,11 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 - Six of the above close gaps found against comparable open-source scanners (Julius, nmap-ai-recon) in this month's [competitive coverage review](docs/competitive-coverage.md)
 - Probe catalog grows to **126 definitions**; signatures ship automatically through the rolling feed — no app update needed
 
-### App 1.0.6 — October 2026
-
-- Runtime moved to **.NET 10** (.NET 9 leaves support in November 2026); still self-contained, no runtime install needed
-- MCP server now on the stable **ModelContextProtocol SDK 2.2** (was a preview build); same tools, same transports
-- Repo hardening: CodeQL, Dependabot, workflow linting and AI code review on every pull request; third-party Actions pinned to commit SHAs
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 126 probe definitions identifying 100+ AI/ML services and MCP servers
+- **AI Service Detection** - 135 probe definitions identifying 100+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -70,16 +77,16 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 | Category | Services Detected |
 |----------|-------------------|
-| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, NVIDIA TensorRT-LLM, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI, Lemonade Server, DeepSpeed-MII, MLC LLM, Portkey AI Gateway, Helicone |
-| **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API |
+| **LLM** | Ollama, vLLM, HF TGI, llama.cpp, KoboldCpp, LM Studio, LiteLLM, Jan.ai, GPT4All, LocalAI, FastChat, Tabby, Xinference, SGLang, text-generation-webui, NVIDIA NIM, NVIDIA Dynamo, NVIDIA TensorRT-LLM, OpenLLM, MLX-LM, llamafile, Aphrodite Engine, llama-swap, LMDeploy, exo, TabbyAPI, Lemonade Server, DeepSpeed-MII, MLC LLM, Portkey AI Gateway, Helicone, Comet Opik, Agenta |
+| **Image Gen** | Stable Diffusion (A1111), ComfyUI, InvokeAI, SD WebUI Forge, Fooocus-API, Easy Diffusion |
 | **Video Gen** | SwarmUI, HunyuanVideo |
 | **Voice / STT / TTS** | Speaches, whisper.cpp, OpenedAI-Speech, F5-TTS, GPT-SoVITS, XTTS-API-Server, Coqui XTTS Streaming, Kokoro-FastAPI, Chatterbox-TTS-Server, VoiceStudio, Dia-TTS-Server |
-| **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB |
-| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps, NextChat, LobeChat, AstrBot, h2oGPT |
-| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero |
-| **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj, Hayhooks (Haystack) |
+| **ML Platform** | NVIDIA Triton, TorchServe, TensorFlow Serving, MLflow, Ray Serve, BentoML, KServe, MindsDB, ClearML |
+| **AI Platform** | Open WebUI, AnythingLLM, LibreChat, Flowise, Dify, SillyTavern, n8n, PrivateGPT, Gradio apps, NextChat, LobeChat, AstrBot, h2oGPT, Chainlit |
+| **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero, Rasa |
+| **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj, Hayhooks (Haystack), FastGPT |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
-| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense |
+| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense, Marqo, Attu |
 | **MCP Server** | Any MCP server over Streamable HTTP (`initialize` / `server/discover`) or legacy HTTP+SSE, plus Home Assistant MCP; reports name, version, and tools/resources/prompts |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
 | **Container** | Docker API with 70+ AI image pattern matches |
