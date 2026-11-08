@@ -34,7 +34,6 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ### Signatures — November 8, 2026
 
-- **Marqo** detection (Vector DB) — self-hosted open-source tensor/vector search engine combining vector and keyword search, unauthenticated by default; identified via its root-path welcome banner on its distinctive default port 8882
 - **Comet Opik** detection (LLM) — self-hosted LLM/RAG/agent observability and evaluation platform, no auth by default; identified via its frontend page title on its standard docker-compose port 5173
 - **Agenta** detection (LLM) — self-hosted LLMOps platform for prompt management, evaluation and observability; identified via its root page title
 - **Attu** detection (Vector DB) — official web GUI for self-hosted Milvus, commonly bundled in Milvus docker-compose stacks with no auth by default; identified via its root page title
@@ -43,7 +42,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 - **Rasa** detection (Agent Platform) — self-hosted conversational AI/chatbot framework; identified via `/version`'s `minimum_compatible_version` field on its default REST server port 5005
 - **Chainlit** detection (AI Platform) — popular self-hosted Python framework for building LLM chat apps, publicly accessible with no auth by default; identified via a generator marker on its root page
 - **FastGPT** detection (RAG Platform) — self-hosted open-source LLM knowledge-base/RAG platform; identified via its root page branding on its docker-compose default port 3000
-- Probe catalog grows to **135 definitions**; signatures ship automatically through the rolling feed — no app update needed
+- Probe catalog grows to **134 definitions**; signatures ship automatically through the rolling feed — no app update needed
 
 ### Signatures — November 2026
 
@@ -64,7 +63,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 135 probe definitions identifying 100+ AI/ML services and MCP servers
+- **AI Service Detection** - 134 probe definitions identifying 100+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -86,7 +85,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 | **Agent Platform** | AutoGen Studio, Letta, OpenHands, CrewAI Studio, Langflow, OpenClaw, Agent Zero, Rasa |
 | **RAG Platform** | Onyx, R2R, kotaemon, RAGFlow, Quivr, Verba, Khoj, Hayhooks (Haystack), FastGPT |
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
-| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense, Marqo, Attu |
+| **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense, Attu |
 | **MCP Server** | Any MCP server over Streamable HTTP (`initialize` / `server/discover`) or legacy HTTP+SSE, plus Home Assistant MCP; reports name, version, and tools/resources/prompts |
 | **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
 | **Container** | Docker API with 70+ AI image pattern matches |

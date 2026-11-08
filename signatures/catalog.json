@@ -1239,16 +1239,6 @@
     },
     {
       "path": "/",
-      "serviceName": "Marqo",
-      "category": "Vector DB",
-      "confidence": "high",
-      "specificity": 85,
-      "bodyContains": "Welcome to Marqo",
-      "portHint": 8882,
-      "note": "Marqo — self-hosted open-source tensor/vector search engine combining vector and keyword search, unauthenticated by default; root path returns a fixed welcome banner on its distinctive default port 8882"
-    },
-    {
-      "path": "/",
       "serviceName": "Opik",
       "category": "LLM",
       "confidence": "high",
@@ -1379,7 +1369,6 @@
     8787,
     8585,
     6185,
-    8882,
     5173,
     9000,
     5005
@@ -1478,7 +1467,6 @@
     "helicone",
     "astrbot",
     "h2ogpt",
-    "marqo",
     "opik",
     "agenta",
     "attu",
