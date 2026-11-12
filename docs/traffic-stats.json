@@ -944,6 +944,11 @@
       "timestamp": "2026-11-10T00:00:00Z",
       "count": 14,
       "uniques": 10
+    },
+    {
+      "timestamp": "2026-11-11T00:00:00Z",
+      "count": 24,
+      "uniques": 15
     }
   ],
   "views": [
@@ -1891,6 +1896,11 @@
       "timestamp": "2026-11-10T00:00:00Z",
       "count": 7,
       "uniques": 6
+    },
+    {
+      "timestamp": "2026-11-11T00:00:00Z",
+      "count": 7,
+      "uniques": 4
     }
   ],
   "referrers": [
@@ -6307,6 +6317,51 @@
           "referrer": "github.com",
           "count": 14,
           "uniques": 8
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 9,
+          "uniques": 6
+        },
+        {
+          "referrer": "l.facebook.com",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "referrer": "aocr.org",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "jpftech.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "m.facebook.com",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "out.reddit.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 20,
+          "uniques": 5
+        },
+        {
+          "referrer": "github.com",
+          "count": 14,
+          "uniques": 9
         },
         {
           "referrer": "reddit.com",
@@ -12601,6 +12656,71 @@
         {
           "path": "/NYBaywatch/AgrusScanner/blob/master/signatures/catalog.json",
           "title": "/blob/master/signatures/catalog.json",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 98,
+          "uniques": 47
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/2",
+          "title": "/pull/2",
+          "count": 6,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.8",
+          "title": "/releases/tag/v1.0.8",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/competitive-coverage.md",
+          "title": "/blob/master/docs/competitive-coverage.md",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/checks",
+          "title": "/pull/6/checks",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/commits",
+          "title": "/pull/6/commits",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pulls",
+          "title": "/pulls",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/screenshot.png",
+          "title": "/blob/master/docs/screenshot.png",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/signatures/catalog.json",
+          "title": "/blob/master/signatures/catalog.json",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/branches",
+          "title": "/branches",
           "count": 1,
           "uniques": 1
         }
