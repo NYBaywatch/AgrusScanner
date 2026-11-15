@@ -959,6 +959,11 @@
       "timestamp": "2026-11-13T00:00:00Z",
       "count": 5,
       "uniques": 4
+    },
+    {
+      "timestamp": "2026-11-14T00:00:00Z",
+      "count": 21,
+      "uniques": 14
     }
   ],
   "views": [
@@ -1921,6 +1926,11 @@
       "timestamp": "2026-11-13T00:00:00Z",
       "count": 2,
       "uniques": 2
+    },
+    {
+      "timestamp": "2026-11-14T00:00:00Z",
+      "count": 1,
+      "uniques": 1
     }
   ],
   "referrers": [
@@ -6461,6 +6471,36 @@
         {
           "referrer": "Google",
           "count": 17,
+          "uniques": 4
+        },
+        {
+          "referrer": "github.com",
+          "count": 11,
+          "uniques": 8
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 8,
+          "uniques": 5
+        },
+        {
+          "referrer": "aocr.org",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "l.facebook.com",
+          "count": 2,
+          "uniques": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 18,
           "uniques": 4
         },
         {
@@ -12894,6 +12934,71 @@
           "path": "/NYBaywatch/AgrusScanner/pull/2",
           "title": "/pull/2",
           "count": 5,
+          "uniques": 4
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.8",
+          "title": "/releases/tag/v1.0.8",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/competitive-coverage.md",
+          "title": "/blob/master/docs/competitive-coverage.md",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/checks",
+          "title": "/pull/6/checks",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/6/commits",
+          "title": "/pull/6/commits",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pulls",
+          "title": "/pulls",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/signatures/catalog.json",
+          "title": "/blob/master/signatures/catalog.json",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/branches",
+          "title": "/branches",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/issues",
+          "title": "/issues",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 84,
+          "uniques": 44
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pull/2",
+          "title": "/pull/2",
+          "count": 4,
           "uniques": 4
         },
         {
