@@ -665,6 +665,16 @@
       "note": "TorchServe Metrics — port 8082"
     },
     {
+      "path": "/metrics",
+      "serviceName": "NVIDIA GPU Exporter",
+      "category": "GPU Infra",
+      "confidence": "high",
+      "specificity": 90,
+      "bodyContains": "nvidia_smi_gpu_info",
+      "portHint": 9835,
+      "note": "NVIDIA GPU Exporter (utkuozdemir/nvidia_gpu_exporter) — nvidia-smi-backed Prometheus exporter popular for homelab/workstation GPUs (vs. data-center-focused DCGM); /metrics with the nvidia_smi_gpu_info identity gauge on its documented default port 9835"
+    },
+    {
       "path": "/containers/json",
       "serviceName": "Docker API",
       "category": "Container",
@@ -1315,6 +1325,7 @@
     }
   ],
   "aiPorts": [
+    9835,
     11434,
     8000,
     8080,

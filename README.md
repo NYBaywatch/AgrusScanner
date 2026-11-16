@@ -32,6 +32,12 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 
 ## What's New
 
+### Signatures — November 15, 2026
+
+- **NVIDIA GPU Exporter** detection (GPU Infra) — the popular `nvidia-smi`-backed Prometheus exporter ([utkuozdemir/nvidia_gpu_exporter](https://github.com/utkuozdemir/nvidia_gpu_exporter)) used on homelab/workstation GPUs, complementing the data-center-focused DCGM Exporter already detected; identified via the `nvidia_smi_gpu_info` identity metric on its documented default port 9835
+- Probe catalog grows to **135 definitions**; signatures ship automatically through the rolling feed — no app update needed
+- Dependency check: `Microsoft.NET.Test.Sdk` 18.11.0 → 18.12.0 (test-only, no runtime impact); no vulnerable packages found
+
 ### Signatures — November 8, 2026
 
 - **Comet Opik** detection (LLM) — self-hosted LLM/RAG/agent observability and evaluation platform, no auth by default; identified via its frontend page title on its standard docker-compose port 5173
@@ -44,26 +50,11 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 - **FastGPT** detection (RAG Platform) — self-hosted open-source LLM knowledge-base/RAG platform; identified via its root page branding on its docker-compose default port 3000
 - Probe catalog grows to **134 definitions**; signatures ship automatically through the rolling feed — no app update needed
 
-### Signatures — November 2026
-
-- **Lemonade Server** detection (LLM) — AMD's local OpenAI/Ollama-compatible LLM server for NPU/GPU inference; identified via `/v1/health`'s `model_loaded` field on its distinctive default port 13305
-- **NVIDIA TensorRT-LLM** detection (LLM) — standalone `trtllm-serve` OpenAI-compatible server; identified via the hardcoded `tensorrt_llm` `owned_by` field on `/v1/models`
-- **DeepSpeed-MII** detection (LLM) — Microsoft's OpenAI-compatible inference server; identified via the hardcoded `deepspeed-mii` `owned_by` field on `/v1/models`
-- **MLC LLM** detection (LLM) — OpenAI-compatible REST server for MLC-compiled models; identified via the hardcoded `MLC-LLM` `owned_by` field on `/v1/models`
-- **Portkey AI Gateway** detection (LLM) — self-hosted LLM gateway/router with no built-in auth by default; identified via its fixed root-path greeting on its distinctive default port 8787
-- **Helicone** detection (LLM) — self-hosted LLM observability/gateway; identified via `/healthcheck` on its distinctive default port 8585
-- **NextChat** detection (AI Platform) — self-hosted multi-provider chat UI; identified via its `/site.webmanifest` on its common default port 3000
-- **LobeChat** detection (AI Platform) — self-hosted AI chat workspace branded LobeHub; identified via its `/manifest.webmanifest` on its distinctive default port 3210
-- **AstrBot** detection (AI Platform) — self-hosted multi-platform agent/chatbot framework; identified via its dashboard title on its distinctive default port 6185
-- **h2oGPT** detection (AI Platform) — self-hosted open-source chat UI; identified via the `submit_nochat_api` route name on its Gradio `/info` endpoint
-- Six of the above close gaps found against comparable open-source scanners (Julius, nmap-ai-recon) in this month's [competitive coverage review](docs/competitive-coverage.md)
-- Probe catalog grows to **126 definitions**; signatures ship automatically through the rolling feed — no app update needed
-
 ## Features
 
 - **Ping Sweep** - Fast ICMP discovery across subnets (256 concurrent)
 - **Port Scanning** - TCP connect scan with preset profiles (Quick, Common, Extended, AI, Deep AI)
-- **AI Service Detection** - 134 probe definitions identifying 100+ AI/ML services and MCP servers
+- **AI Service Detection** - 135 probe definitions identifying 100+ AI/ML services and MCP servers
 - **Self-updating Signatures** - detection definitions arrive automatically through a signed feed; no reinstall for new services
 - **Docker Container Enumeration** - Detects AI containers via exposed Docker API
 - **GPU Infrastructure** - Finds NVIDIA DCGM exporters and inference metrics
@@ -87,7 +78,7 @@ Requires Windows 10/11. The installer and the installed binaries are Authenticod
 | **Embeddings** | HF Text Embeddings Inference (TEI), Infinity |
 | **Vector DB** | Qdrant, ChromaDB, Weaviate, Milvus, Typesense, Attu |
 | **MCP Server** | Any MCP server over Streamable HTTP (`initialize` / `server/discover`) or legacy HTTP+SSE, plus Home Assistant MCP; reports name, version, and tools/resources/prompts |
-| **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics |
+| **GPU Infra** | NVIDIA DCGM Exporter, Triton Metrics, TorchServe Metrics, NVIDIA GPU Exporter |
 | **Container** | Docker API with 70+ AI image pattern matches |
 
 Detection goes beyond port scanning - the prober queries service-specific API endpoints, extracts model names, versions, GPU info, and container details.
