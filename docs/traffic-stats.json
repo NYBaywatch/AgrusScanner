@@ -994,6 +994,11 @@
       "timestamp": "2026-11-20T00:00:00Z",
       "count": 16,
       "uniques": 10
+    },
+    {
+      "timestamp": "2026-11-21T00:00:00Z",
+      "count": 8,
+      "uniques": 7
     }
   ],
   "views": [
@@ -1989,6 +1994,11 @@
     },
     {
       "timestamp": "2026-11-20T00:00:00Z",
+      "count": 1,
+      "uniques": 1
+    },
+    {
+      "timestamp": "2026-11-21T00:00:00Z",
       "count": 1,
       "uniques": 1
     }
@@ -6762,6 +6772,41 @@
     },
     {
       "date": "2026-11-21",
+      "sources": [
+        {
+          "referrer": "Google",
+          "count": 9,
+          "uniques": 3
+        },
+        {
+          "referrer": "github.com",
+          "count": 8,
+          "uniques": 8
+        },
+        {
+          "referrer": "reddit.com",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "referrer": "l.facebook.com",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "referrer": "Baidu",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "search.brave.com",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-22",
       "sources": [
         {
           "referrer": "Google",
@@ -13594,6 +13639,59 @@
           "title": "Overview",
           "count": 62,
           "uniques": 41
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/blob/master/docs/competitive-coverage.md",
+          "title": "/blob/master/docs/competitive-coverage.md",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.8",
+          "title": "/releases/tag/v1.0.8",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/issues",
+          "title": "/issues",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/pulls",
+          "title": "/pulls",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases",
+          "title": "/releases",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/NYBaywatch/AgrusScanner/releases/tag/v1.0.10",
+          "title": "/releases/tag/v1.0.10",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "path": "/nybaywatch/agrusscanner",
+          "title": "Overview",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-11-22",
+      "pages": [
+        {
+          "path": "/NYBaywatch/AgrusScanner",
+          "title": "Overview",
+          "count": 62,
+          "uniques": 40
         },
         {
           "path": "/NYBaywatch/AgrusScanner/blob/master/docs/competitive-coverage.md",
