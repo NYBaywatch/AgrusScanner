@@ -5,6 +5,7 @@
 [![Latest release](https://img.shields.io/github/v/release/NYBaywatch/AgrusScanner?style=flat&label=Release)](https://github.com/NYBaywatch/AgrusScanner/releases/latest)
 [![Signature downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fdownloads.jpftech.com%2Fbadge-signatures.json&style=flat&label=Signature%20downloads)](#detection-signatures)
 [![Signatures](https://img.shields.io/badge/signatures-auto--updating-2ea44f?style=flat)](#detection-signatures)
+[![NYBaywatch/AgrusScanner MCP server](https://glama.ai/mcp/servers/NYBaywatch/AgrusScanner/badges/score.svg)](https://glama.ai/mcp/servers/NYBaywatch/AgrusScanner)
 
 Network reconnaissance tool with deep AI/ML service detection. Scans your network to discover hosts, open ports, and identifies AI services running across your infrastructure.
 
