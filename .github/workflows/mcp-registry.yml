@@ -1,0 +1,96 @@
+name: MCP image and registry
+
+# Builds the headless MCP server image from the root Dockerfile and checks that it answers an
+# MCP initialize request. On a version tag (or a manual run) it also pushes the image to
+# ghcr.io and publishes server.json to registry.modelcontextprotocol.io through GitHub OIDC,
+# so no registry secret is stored in this repo.
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+    branches: [master]
+    paths:
+      - "Dockerfile"
+      - "server.json"
+      - "AgrusScanner.McpServer/**"
+      - ".github/workflows/mcp-registry.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  IMAGE: ghcr.io/nybaywatch/agrus-mcp
+  MCP_PUBLISHER_VERSION: v1.8.1
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # push the image to ghcr.io
+      id-token: write # OIDC login to the MCP registry
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Read version
+        run: |
+          VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' AgrusScanner/AgrusScanner.csproj)
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Build image
+        run: docker build --build-arg "VERSION=$VERSION" -t "$IMAGE:$VERSION" -t "$IMAGE:latest" .
+
+      - name: Smoke test (MCP initialize over stdio)
+        run: |
+          req='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci-smoke","version":"0"}}}'
+          # Keep stdin open briefly: the server exits on EOF and may not answer if it closes at once.
+          out=$( (printf '%s\n' "$req"; sleep 10) | timeout 60 docker run -i --rm "$IMAGE:$VERSION" || true)
+          echo "$out"
+          echo "$out" | grep -q '"serverInfo"'
+
+      - name: Set version in server.json
+        run: |
+          jq --arg v "$VERSION" --arg id "$IMAGE:$VERSION" \
+            '.version = $v | .packages[0].identifier = $id' server.json > server.tmp
+          mv server.tmp server.json
+          cat server.json
+
+      - name: Push image
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          echo "$GH_TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+          docker push "$IMAGE:$VERSION"
+          docker push "$IMAGE:latest"
+
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Download and verify mcp-publisher
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+          rm -f "$archive" "$archive.sigstore.json"
+
+      # The registry reads the image label anonymously, so the ghcr.io package must be public.
+      - name: Publish to the MCP registry
+        if: github.event_name != 'pull_request'
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
